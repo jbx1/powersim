@@ -2,6 +2,7 @@ package uk.ac.kcl.inf.aps.powersim.persistence.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
@@ -18,6 +19,27 @@ public class Simulation implements Serializable
 
   @Column(nullable = false)
   private String name;
+
+  /**
+   * The actual timestamp when the simulation started
+   */
+  private Date actualStartTime;
+
+  /**
+   * The actual timestamp when the simulation ended
+   */
+  private Date actualEndTime;
+
+  /**
+   * The start time of the simulated period
+   */
+  private Date simulatedStartTime;
+
+  /**
+   * The end time of the simulated period
+   */
+  private Date simulatedEndTime;
+
 
   public Long getId()
   {
@@ -37,5 +59,45 @@ public class Simulation implements Serializable
   public void setName(String name)
   {
     this.name = name;
+  }
+
+  public Date getActualStartTime()
+  {
+    return actualStartTime;
+  }
+
+  public void setActualStartTime(Date actualStartTime)
+  {
+    this.actualStartTime = actualStartTime;
+  }
+
+  public Date getActualEndTime()
+  {
+    return actualEndTime;
+  }
+
+  public void setActualEndTime(Date actualEndTime)
+  {
+    this.actualEndTime = actualEndTime;
+  }
+
+  public Date getSimulatedStartTime()
+  {
+    return simulatedStartTime;
+  }
+
+  public void setSimulatedStartTime(Date simulatedStartTime)
+  {
+    this.simulatedStartTime = simulatedStartTime;
+  }
+
+  public Date getSimulatedEndTime()
+  {
+    return simulatedEndTime;
+  }
+
+  public void setSimulatedEndTime(Date simulatedEndTime)
+  {
+    this.simulatedEndTime = simulatedEndTime;
   }
 }

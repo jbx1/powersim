@@ -7,6 +7,7 @@ import uk.ac.kcl.inf.aps.powersim.persistence.model.Simulation;
 import uk.ac.kcl.inf.aps.powersim.persistence.model.SimulationDao;
 import uk.ac.kcl.inf.aps.powersim.policies.Policy;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,16 +47,30 @@ public class SimulatorImpl implements Runnable, Simulator
     {
       Simulation simulation = new Simulation();
       simulation.setName("Test Simulation 1! Hello world!");
+      Date now = new Date(System.currentTimeMillis());
+
+      simulation.setActualStartTime(now);
+      simulation.setSimulatedStartTime(now);
       simulationDao.create(simulation);
 
       Thread.currentThread().sleep(5000);
+
+      now = new Date(System.currentTimeMillis());
+
+      log.info("Simulation Ready!");
+      simulation.setActualEndTime(now);
+      simulation.setSimulatedEndTime(now);
+
+      simulationDao.update(simulation);
+
     }
     catch (InterruptedException e)
     {
-      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+      log.warn("Error", e);
     }
 
-    log.info("Simulation Ready!");
+
+
 
     //todo: create the new simulation instance
     //todo: inform all policies to set up their artefacts (households, appliances etc.)
