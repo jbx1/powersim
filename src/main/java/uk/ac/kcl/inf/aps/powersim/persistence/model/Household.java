@@ -18,7 +18,22 @@ public class Household implements Serializable
   @ManyToOne(optional = false)
   private Simulation simulation;
 
-  public Household(Simulation simulation)
+  public Long getId()
+  {
+    return id;
+  }
+
+  public void setId(Long id)
+  {
+    this.id = id;
+  }
+
+  public Simulation getSimulation()
+  {
+    return simulation;
+  }
+
+  public void setSimulation(Simulation simulation)
   {
     this.simulation = simulation;
   }

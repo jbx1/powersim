@@ -7,5 +7,8 @@ package uk.ac.kcl.inf.aps.powersim.simulation;
  */
 public interface Simulator
 {
-
+  /**
+   * Starts the simulation
+   */
+  public void start();
 }

@@ -22,24 +22,38 @@
           class="org.springframework.orm.jpa.JpaTransactionManager"
           p:entityManagerFactory-ref="entityManagerFactory" />
 
-    <!-- Initialization for data source -->
-    <bean id="dataSource"
-          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <!-- todo: move these to a separate property file -->
-        <property name="url" value="jdbc:mysql://localhost:3306/powersim"/>
-        <property name="username" value="root"/>
-        <property name="password" value="root"/>
+    <bean id="simulator" class="uk.ac.kcl.inf.aps.powersim.simulation.SimulatorImpl">
+
     </bean>
 
 
     <bean id="entityManagerFactory"
           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
-          p:dataSource-ref="dataSource"
           p:persistenceUnitName="powersim">
 
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+        </property>
+
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">validate</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+                <prop key="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</prop>
+                <prop key="hibernate.connection.driver_class">com.mysql.jdbc.Driver</prop>
+                <prop key="hibernate.connection.url">jdbc:mysql://localhost:3306/powersim</prop>
+                <prop key="hibernate.connection.username">root</prop>
+                <prop key="hibernate.connection.password">root</prop>
+                <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
+                <prop key="hibernate.c3p0.maxSize">100</prop>
+                <prop key="hibernate.c3p0.minSize">10</prop>
+                <prop key="hibernate.c3p0.acquireIncrement">10</prop>
+                <prop key="hibernate.c3p0.idleTestPeriod">300</prop>
+                <prop key="hibernate.c3p0.maxStatements">0</prop>
+                <prop key="hibernate.c3p0.timeout">1800</prop>
+                <prop key="hibernate.c3p0.checkoutTimeout">0</prop>
+                <prop key="hibernate.c3p0.preferredTestQuery">SELECT 1;</prop>
+            </props>
         </property>
     </bean>
 </beans>

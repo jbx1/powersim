@@ -19,11 +19,6 @@ public class Simulation implements Serializable
   @Column(nullable = false)
   private String name;
 
-  public Simulation(String name)
-  {
-
-  }
-
   public Long getId()
   {
     return id;

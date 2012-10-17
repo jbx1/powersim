@@ -25,13 +25,6 @@ public class Timeslot implements Serializable
   @ManyToOne(optional = false)
   private Simulation simulation;
 
-  public Timeslot(Date startDate, Date endDate, Simulation simulation)
-  {
-    this.startDate = startDate;
-    this.endDate = endDate;
-    this.simulation = simulation;
-  }
-
   public Long getId()
   {
     return id;

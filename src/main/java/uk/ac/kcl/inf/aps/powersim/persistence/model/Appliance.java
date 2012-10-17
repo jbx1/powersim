@@ -20,14 +20,9 @@ public class Appliance implements Serializable
   @ManyToOne(optional = false)
   private Household household;
 
-  private Boolean generator = false;
+  @Column(columnDefinition = "BIT")
+  private boolean generator = false;
 
-  public Appliance(String type, Household household, Boolean generator)
-  {
-    this.type = type;
-    this.household = household;
-    this.generator = generator;
-  }
 
   public Long getId()
   {

@@ -3,6 +3,7 @@ package uk.ac.kcl.inf.aps.powersim;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import uk.ac.kcl.inf.aps.powersim.simulation.Simulator;
 
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
@@ -21,7 +22,8 @@ public class SimulatorLauncher
     log.debug("Loading Spring application context");
     ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
 
-
+    Simulator simulator = (Simulator) ctx.getBean("simulator");
+    simulator.start();
 
     // instantiate our spring dao object from the application context
 //      FileEventDao fileEventDao = (FileEventDao)ctx.getBean("fileEventDao");

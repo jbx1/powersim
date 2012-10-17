@@ -24,13 +24,6 @@ public class ConsumptionEvent implements Serializable
   @Column(nullable = false)
   private Long loadWatts;
 
-  public ConsumptionEvent(Appliance appliance, Timeslot timeslot, Long loadWatts)
-  {
-    this.appliance = appliance;
-    this.timeslot = timeslot;
-    this.loadWatts = loadWatts;
-  }
-
   public Long getId()
   {
     return id;
