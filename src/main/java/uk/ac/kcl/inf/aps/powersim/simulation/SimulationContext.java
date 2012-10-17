@@ -1,6 +1,6 @@
 package uk.ac.kcl.inf.aps.powersim.simulation;
 
-import uk.ac.kcl.inf.aps.powersim.persistence.Timeslot;
+import uk.ac.kcl.inf.aps.powersim.persistence.model.Timeslot;
 
 /**
  * @author Josef Bajada <josef.bajada@kcl.ac.uk>
