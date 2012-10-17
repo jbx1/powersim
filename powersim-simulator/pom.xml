@@ -2,15 +2,18 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>uk.ac.kcl.inf.aps.powersim</groupId>
-  <artifactId>powersim</artifactId>
-  <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
-  
-  <name>Power Network Simulator</name>
-  <modules>
-	<module>powersim-simulator</module>
-  </modules>
+  <packaging>jar</packaging>
+  <parent>
+      <groupId>uk.ac.kcl.inf.aps.powersim</groupId>
+      <artifactId>powersim</artifactId>
+      <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <name>powersim-simulator</name>
+  <groupId>uk.ac.kcl.inf.aps.powersim</groupId>
+  <artifactId>powersim-simulator</artifactId>
+
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -24,6 +27,7 @@
 
 
   <dependencies>
+
       <dependency>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
