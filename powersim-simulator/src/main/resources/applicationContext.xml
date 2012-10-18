@@ -22,11 +22,6 @@
           class="org.springframework.orm.jpa.JpaTransactionManager"
           p:entityManagerFactory-ref="entityManagerFactory" />
 
-    <bean id="simulator" class="uk.ac.kcl.inf.aps.powersim.simulation.SimulatorImpl">
-
-    </bean>
-
-
     <bean id="entityManagerFactory"
           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
           p:persistenceUnitName="powersim">
@@ -37,7 +32,6 @@
 
         <property name="jpaProperties">
             <props>
-                <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
                 <prop key="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</prop>
                 <prop key="hibernate.connection.driver_class">com.mysql.jdbc.Driver</prop>
@@ -45,6 +39,9 @@
                 <prop key="hibernate.connection.username">root</prop>
                 <prop key="hibernate.connection.password">root</prop>
                 <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+
                 <prop key="hibernate.c3p0.maxSize">100</prop>
                 <prop key="hibernate.c3p0.minSize">10</prop>
                 <prop key="hibernate.c3p0.acquireIncrement">10</prop>
@@ -56,4 +53,10 @@
             </props>
         </property>
     </bean>
+
+
+    <bean id="simulator" class="uk.ac.kcl.inf.aps.powersim.simulator.SimulatorImpl">
+
+    </bean>
+
 </beans>
