@@ -42,7 +42,7 @@ public abstract class GenericDaoImpl<T> implements GenericDao<T>
   @Override
   @Transactional
   public T find(final Object id) {
-    return (T) this.em.find(type, id);
+    return this.em.find(type, id);
   }
 
   @Override

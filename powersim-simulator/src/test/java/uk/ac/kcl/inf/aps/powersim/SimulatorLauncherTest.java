@@ -29,7 +29,7 @@ public class SimulatorLauncherTest
     }
 
     /**
-     * Rigourous Test :-)
+     * Rigorous Test :-)
      */
     public void testApp()
     {
