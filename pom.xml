@@ -10,7 +10,8 @@
   <name>Power Network Simulator</name>
   <modules>
     <module>powersim-api</module>
-	<module>powersim-simulator</module>
+    <module>powersim-policies</module>
+    <module>powersim-simulator</module>
   </modules>
 
   <properties>
@@ -25,5 +26,10 @@
 
 
   <dependencies>
+      <dependency>
+          <groupId>uk.ac.kcl.inf.aps.powersim</groupId>
+          <artifactId>powersim-api</artifactId>
+          <version>1.0-SNAPSHOT</version>
+      </dependency>
   </dependencies>
 </project>

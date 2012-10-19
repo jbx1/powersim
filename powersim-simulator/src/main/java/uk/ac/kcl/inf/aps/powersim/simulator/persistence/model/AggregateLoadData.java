@@ -16,10 +16,10 @@ public class AggregateLoadData
   private Long id;
 
   @Column(nullable = false)
-  private int generated = 0;
+  private long generated = 0;
 
   @Column(nullable = false)
-  private int consumed = 0;
+  private long consumed = 0;
 
   @ManyToOne(optional = false)
   @JoinColumn(name="timeslot_id")
@@ -35,22 +35,22 @@ public class AggregateLoadData
     this.id = id;
   }
 
-  public int getGenerated()
+  public long getGenerated()
   {
     return generated;
   }
 
-  public void setGenerated(int generated)
+  public void setGenerated(long generated)
   {
     this.generated = generated;
   }
 
-  public int getConsumed()
+  public long getConsumed()
   {
     return consumed;
   }
 
-  public void setConsumed(int consumed)
+  public void setConsumed(long consumed)
   {
     this.consumed = consumed;
   }

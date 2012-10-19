@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.kcl.inf.aps.powersim.api.*;
 import uk.ac.kcl.inf.aps.powersim.simulator.persistence.model.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static uk.ac.kcl.inf.aps.powersim.simulator.Constants.DEFAULT_TIMESLOT_DURATION;
 
@@ -26,6 +24,8 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
 
   private Thread thread;
 
+  private Map<String, HouseholdData> householdDataMap = new TreeMap<>();
+  private Map<String, ApplianceData> applianceDataMap = new TreeMap<>();
 
   /**
    * Duration of each timeslot (in milliseconds)
@@ -46,6 +46,12 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
    * The time slot currently being simulated
    */
   private Timeslot currentTimeSlot;
+
+
+  /**
+   * The database entity representing the current timeslot.
+   */
+  private TimeslotData currentTimeSlotData;
 
   /**
    * A counter counting how many timeslots where created
@@ -69,6 +75,12 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
 
   @Autowired
   private AggregateLoadDataDao aggregateLoadDataDao;
+
+  @Autowired
+  private ApplianceDataDao applianceDataDao;
+
+  @Autowired
+  private ConsumptionDataDao consumptionDataDao;
 
   //todo: configuration (time intervals, duration, etc.) use YAML?
 
@@ -116,14 +128,14 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     do
     {
       timeslotCount++;
-      log.debug("Saving timeslot data.");
-      TimeslotData timeslotData = registerTimeslot(currentTimeSlot, simulationData);
+//      log.debug("Saving timeslot data.");
+      currentTimeSlotData = registerTimeslot(currentTimeSlot, simulationData);
       simulationContext = new SimulationContext(this, currentTimeSlot);  //todo: more complex information such as weather
 //      log.info("Simulation Context {}", simulationContext);
-      log.debug("Saved timeslot data.");
+//      log.debug("Saved timeslot data.");
 
       AggregateLoadData aggregateLoadData = new AggregateLoadData();
-      aggregateLoadData.setTimeslotData(timeslotData);
+      aggregateLoadData.setTimeslotData(currentTimeSlotData);
 
       //notify all policies with the new timeslot
       for (Policy policy : policies)
@@ -139,9 +151,9 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
         policy.ready(10000);
       }
 
-      log.debug("Saving aggregate data");
+//      log.debug("Saving aggregate data");
       aggregateLoadDataDao.create(aggregateLoadData);
-      log.debug("Saved aggregate data");
+//      log.debug("Saved aggregate data");
 
       progressTimeslot();
       nowMillis = System.currentTimeMillis();
@@ -190,6 +202,11 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     return timeslotDuration;
   }
 
+  public TimeslotData getCurrentTimeSlotData()
+  {
+    return currentTimeSlotData;
+  }
+
   /**
    * Progresses the current timeslot by the time specified in timeslotDuration
    */
@@ -234,11 +251,33 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     householdData.setReferenceId(household.getUid());
     householdData.setPolicyDescriptor(policy.getDescriptor());
 
-    //todo: register the list of households in memory
     //todo: create them all at once (bulk create in some way, using one transaction and prepared statments?)
     householdDataDao.create(householdData);
+    householdDataMap.put(household.getUid(), householdData);
 
     return householdData;
+  }
+
+  public ApplianceData registerAppliance(Household household, Appliance appliance)
+          throws HouseholdNotRegisteredException
+  {
+    HouseholdData householdData = householdDataMap.get(household.getUid());
+    if (householdData == null)
+    {
+      log.error("{} was not registered before! Ignoring {}", household, appliance);
+      throw new HouseholdNotRegisteredException(household);
+    }
+
+    ApplianceData applianceData = new ApplianceData();
+
+    applianceData.setHouseholdData(householdData);
+    applianceData.setReferenceId(appliance.getUid());
+    applianceData.setType(appliance.getType());
+
+    applianceDataDao.create(applianceData);
+    applianceDataMap.put(appliance.getUid(), applianceData);
+
+    return applianceData;
   }
 
   /**
@@ -268,8 +307,45 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
   @Override
   public void handleConsumptionEvents(List<ConsumptionEvent> consumptionEvents)
   {
-    //todo: register any new appliances
-    //todo: update the aggregate load
-    //todo: insert the consumption events
+    List<ConsumptionData> consumptionDataList = new ArrayList<>(consumptionEvents.size());
+
+    for (ConsumptionEvent consumptionEvent : consumptionEvents)
+    {
+      try
+      {
+        ApplianceData applianceData = applianceDataMap.get(consumptionEvent.getAppliance().getUid());
+        if (applianceData == null)
+        {
+          applianceData = registerAppliance(consumptionEvent.getHousehold(), consumptionEvent.getAppliance());
+        }
+
+        ConsumptionData consumptionData = new ConsumptionData();
+        consumptionData.setAppliance(applianceData);
+        consumptionData.setTimeslotData(getCurrentTimeSlotData());
+        consumptionData.setLoadWatts(consumptionEvent.getLoadWatts());
+
+        consumptionDataList.add(consumptionData);
+
+        //update the aggregate data, if the load is negative it means that the load was generated by the appliance
+        //if the load is positive it means that the load was consumed by the appliance
+        if (consumptionEvent.getLoadWatts() < 0)
+        {
+          //load was actually generated by appliance
+          this.currentAggregateLoadData.setGenerated(this.currentAggregateLoadData.getGenerated() + (0 - consumptionEvent.getLoadWatts()));
+        }
+        else
+        {
+          //load was actually consumed by appliance
+          this.currentAggregateLoadData.setGenerated(this.currentAggregateLoadData.getConsumed() + consumptionEvent.getLoadWatts());
+        }
+      }
+      catch (HouseholdNotRegisteredException ex)
+      {
+        log.warn("Unable to register appliance {} since household was not found, ignoring consumption event.", ex);
+        //todo: put it in an ignore list?
+      }
+    }
+
+    consumptionDataDao.createBulk(consumptionDataList);
   }
 }
