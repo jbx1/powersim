@@ -135,21 +135,21 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
       this.currentAggregateLoadData.setTimeslotData(currentTimeSlotData);
 
       //notify all policies with the new timeslot
-      log.debug("Notifying all policies of the new timeslot");
+      log.trace("Notifying all policies of the new timeslot");
       for (Policy policy : policies)
       {
         //handle Time slot is asynchronous, so all will return immediately
         policy.handleTimeSlot(simulationContext);
       }
 
-      log.debug("Waiting for all policies to complete tasks");
+      log.trace("Waiting for all policies to complete tasks");
       //wait for all policies to complete their tasks
       for (Policy policy : policies)
       {
         //wait at most 1 second for a policy to be ready
         policy.ready(1000); //todo: configurable
       }
-      log.debug("All policies complete from this timeslot");
+      log.debug("All policies complete from timeslot {}", timeslotCount);
 
       log.trace("Flushing any remaining deferred consumption events ");
       deferredConsumptionEventDao.flushDeferred();
@@ -170,6 +170,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     simulationData.setActualEndTime(new Date(now));
     simulationData.setSimulatedEndTime(currentTimeSlot.getEndTime().getTime());
     simulationDataDao.update(simulationData);
+
     log.info("Simulation Ready!");
   }
 

@@ -19,6 +19,7 @@ public enum SimpleApplianceType
   LIGHT (10, false, 0, 0, 60),
   PV (-1200, false, 8, 17, 100);
 
+
   /**
    * The typical wattage of the appliance.
    */

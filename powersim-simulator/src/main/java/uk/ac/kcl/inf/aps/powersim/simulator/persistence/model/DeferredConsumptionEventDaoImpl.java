@@ -3,6 +3,7 @@ package uk.ac.kcl.inf.aps.powersim.simulator.persistence.model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,8 +20,10 @@ public class DeferredConsumptionEventDaoImpl implements DeferredConsumptionEvent
 {
   protected static final Logger log = LoggerFactory.getLogger(ConsumptionDataDao.class);
 
-  private final ArrayBlockingQueue<ConsumptionData> deferredConsumptionDataList;
-  private final ArrayBlockingQueue<ApplianceData> deferredApplianceDataList;
+  private ArrayBlockingQueue<ConsumptionData> deferredConsumptionDataList;
+  private ArrayBlockingQueue<ApplianceData> deferredApplianceDataList;
+
+  private int deferredCapacity;
 
   @Autowired
   private ConsumptionDataDao consumptionDataDao;
@@ -28,9 +31,14 @@ public class DeferredConsumptionEventDaoImpl implements DeferredConsumptionEvent
   @Autowired
   private ApplianceDataDao applianceDataDao;
 
+  @Autowired
+  private TaskExecutor databaseTaskExecutor;
+
   public DeferredConsumptionEventDaoImpl(int deferredCapacity)
   {
     log.info("ConsumptionDataDaoImpl created with deferred capacity {}", deferredCapacity);
+    this.deferredCapacity = deferredCapacity;
+
     this.deferredConsumptionDataList = new ArrayBlockingQueue<>(deferredCapacity);
     this.deferredApplianceDataList = new ArrayBlockingQueue<>(deferredCapacity);
   }
@@ -67,26 +75,32 @@ public class DeferredConsumptionEventDaoImpl implements DeferredConsumptionEvent
     deferredApplianceDataList.add(applianceData);
   }
 
-
-  //todo: check for thread safety
-
   /**
    * Flush the deferred data to the database.
    */
   public void flushDeferred()
   {
-    log.trace("Flushing {} rows", deferredConsumptionDataList.size());
+    final ArrayBlockingQueue<ApplianceData> applianceDataToFlush = deferredApplianceDataList;
+    final ArrayBlockingQueue<ConsumptionData> consumptionDataToFlush = deferredConsumptionDataList;
 
-    synchronized (deferredApplianceDataList)
-    {
-      applianceDataDao.createBulk(deferredApplianceDataList);
-      deferredApplianceDataList.clear();
-    }
+    //create new queues so that the old ones can be flushed in the meantime to the database
+    deferredApplianceDataList = new ArrayBlockingQueue<ApplianceData>(this.deferredCapacity);
+    deferredConsumptionDataList = new ArrayBlockingQueue<ConsumptionData>(this.deferredCapacity);
 
-    synchronized (deferredConsumptionDataList)
+    //flush appliances within this thread to avoid other threads referring to the appliance without having it saved
+    log.trace("Flushing {} appliance rows", applianceDataToFlush.size());
+    applianceDataDao.createBulk(applianceDataToFlush);
+    applianceDataToFlush.clear();
+
+    log.trace("Flushing events in separate thread.");
+    databaseTaskExecutor.execute(new Runnable()
     {
-      consumptionDataDao.createBulk(deferredConsumptionDataList);
-      deferredConsumptionDataList.clear();
-    }
+      public void run()
+      {
+        log.trace("Flushing {} consumption rows", consumptionDataToFlush.size());
+        consumptionDataDao.createBulk(consumptionDataToFlush);
+        consumptionDataToFlush.clear();
+      }
+    });
   }
 }

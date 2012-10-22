@@ -69,6 +69,12 @@
         </property>
     </bean>
 
+    <bean id="databaseTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="10" />
+        <property name="maxPoolSize" value="100" />
+        <property name="queueCapacity" value="100" />
+    </bean>
+
 
     <bean id="simulator" class="uk.ac.kcl.inf.aps.powersim.simulator.SimulatorImpl">
         <property name="policies">

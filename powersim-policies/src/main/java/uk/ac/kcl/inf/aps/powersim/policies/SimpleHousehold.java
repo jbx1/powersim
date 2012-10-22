@@ -23,21 +23,24 @@ public class SimpleHousehold extends Household
 
   private void setupAppliances()
   {
+    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LIGHT));
+    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LIGHT));
+    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LIGHT));
+    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LIGHT));
+    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LIGHT));
+    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LIGHT));
+    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LIGHT));
+    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LIGHT));
     appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.FRIDGE));
-    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LIGHT));
-    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LIGHT));
-    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LIGHT));
-    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LIGHT));
-    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LIGHT));
+    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.AQUARIUM));
     appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.WASHING_MACHINE));
     appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.DISHWASHER));
     appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.OVEN));
-    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LAPTOP));
-    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LAPTOP));
-    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.AQUARIUM));
+    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.TV));
     appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.TOASTER));
     appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.KETTLE));
-    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.TV));
+    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LAPTOP));
+    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LAPTOP));
     appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.PV));
   }
 
