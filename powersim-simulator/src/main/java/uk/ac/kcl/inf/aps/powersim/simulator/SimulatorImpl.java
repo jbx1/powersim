@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.kcl.inf.aps.powersim.api.*;
-import uk.ac.kcl.inf.aps.powersim.simulator.persistence.model.*;
+import uk.ac.kcl.inf.aps.powersim.persistence.model.*;
 
 import java.util.*;
 

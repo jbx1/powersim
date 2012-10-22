@@ -1,4 +1,4 @@
-package uk.ac.kcl.inf.aps.powersim.simulator.persistence;
+package uk.ac.kcl.inf.aps.powersim.persistence;
 
 import org.springframework.transaction.annotation.Transactional;
 

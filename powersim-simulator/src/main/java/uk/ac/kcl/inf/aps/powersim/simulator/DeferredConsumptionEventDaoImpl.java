@@ -1,10 +1,14 @@
-package uk.ac.kcl.inf.aps.powersim.simulator.persistence.model;
+package uk.ac.kcl.inf.aps.powersim.simulator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Repository;
+import uk.ac.kcl.inf.aps.powersim.persistence.model.ApplianceData;
+import uk.ac.kcl.inf.aps.powersim.persistence.model.ApplianceDataDao;
+import uk.ac.kcl.inf.aps.powersim.persistence.model.ConsumptionData;
+import uk.ac.kcl.inf.aps.powersim.persistence.model.ConsumptionDataDao;
 
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -103,4 +107,7 @@ public class DeferredConsumptionEventDaoImpl implements DeferredConsumptionEvent
       }
     });
   }
+
+  //todo: move database registration stuff to here from SimulatorImpl
+  //todo: rename to something Repository
 }

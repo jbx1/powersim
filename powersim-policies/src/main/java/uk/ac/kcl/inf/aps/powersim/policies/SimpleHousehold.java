@@ -42,6 +42,7 @@ public class SimpleHousehold extends Household
     appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LAPTOP));
     appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.LAPTOP));
     appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.PV));
+    appliances.add(new SimpleAppliance(UUID.randomUUID().toString(), SimpleApplianceType.WIND_GENERATOR));
   }
 
   /**

@@ -11,6 +11,7 @@
   <modules>
     <module>powersim-api</module>
     <module>powersim-policies</module>
+    <module>powersim-persistence</module>
     <module>powersim-simulator</module>
   </modules>
 
@@ -24,5 +25,20 @@
     <org.hibernate.version>4.1.7.Final</org.hibernate.version>
     <c3p0.version>0.9.1.2</c3p0.version>
   </properties>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

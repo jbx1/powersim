@@ -17,7 +17,8 @@ public enum SimpleApplianceType
   WASHING_MACHINE (600, false, 19, 22, 15),
   DISHWASHER (1500, false, 21, 23, 20),
   LIGHT (10, false, 0, 0, 60),
-  PV (-1200, false, 8, 17, 100);
+  PV (-1200, false, 8, 17, 80),
+  WIND_GENERATOR (-800, false, 0, 0, 50);
 
 
   /**

@@ -1,7 +1,9 @@
-package uk.ac.kcl.inf.aps.powersim.simulator.persistence.model;
+package uk.ac.kcl.inf.aps.powersim.persistence.model;
 
 import org.springframework.stereotype.Repository;
-import uk.ac.kcl.inf.aps.powersim.simulator.persistence.GenericDaoImpl;
+import uk.ac.kcl.inf.aps.powersim.persistence.GenericDaoImpl;
+import uk.ac.kcl.inf.aps.powersim.persistence.model.TimeslotData;
+import uk.ac.kcl.inf.aps.powersim.persistence.model.TimeslotDataDao;
 
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;

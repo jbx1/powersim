@@ -23,7 +23,7 @@
           p:entityManagerFactory-ref="entityManagerFactory" />
 
     <bean id="deferredConsumptionDataDao"
-          class="uk.ac.kcl.inf.aps.powersim.simulator.persistence.model.DeferredConsumptionEventDaoImpl">
+          class="uk.ac.kcl.inf.aps.powersim.simulator.DeferredConsumptionEventDaoImpl">
         <constructor-arg name="deferredCapacity" value="10000" />
     </bean>
 

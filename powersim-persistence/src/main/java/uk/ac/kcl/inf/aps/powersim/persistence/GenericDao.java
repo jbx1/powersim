@@ -1,4 +1,4 @@
-package uk.ac.kcl.inf.aps.powersim.simulator.persistence;
+package uk.ac.kcl.inf.aps.powersim.persistence;
 
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;

@@ -1,4 +1,8 @@
-package uk.ac.kcl.inf.aps.powersim.simulator.persistence.model;
+package uk.ac.kcl.inf.aps.powersim.simulator;
+
+
+import uk.ac.kcl.inf.aps.powersim.persistence.model.ApplianceData;
+import uk.ac.kcl.inf.aps.powersim.persistence.model.ConsumptionData;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package uk.ac.kcl.inf.aps.powersim.simulator.persistence.model;
+package uk.ac.kcl.inf.aps.powersim.persistence.model;
 
-import uk.ac.kcl.inf.aps.powersim.simulator.persistence.GenericDao;
+import uk.ac.kcl.inf.aps.powersim.persistence.GenericDao;
 
 import java.util.List;
 
