@@ -14,8 +14,4 @@
   <groupId>uk.ac.kcl.inf.aps.powersim</groupId>
   <artifactId>powersim-api</artifactId>
 
-
-  <dependencies>
-
-  </dependencies>
 </project>

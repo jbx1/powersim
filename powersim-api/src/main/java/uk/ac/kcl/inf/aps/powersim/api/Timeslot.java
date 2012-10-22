@@ -1,5 +1,6 @@
 package uk.ac.kcl.inf.aps.powersim.api;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -7,23 +8,41 @@ import java.util.Date;
  *         Date: 18/10/12
  *         Time: 14:48
  */
-public class Timeslot
+public final class Timeslot
 {
-  private Date startTime;
-  private Date endTime;
+  private Calendar startTime;
+  private Calendar endTime;
 
   public Timeslot(Date startTime, Date endTime)
+  {
+    this.startTime = Calendar.getInstance();
+    this.startTime.setTime(startTime);
+
+    this.endTime = Calendar.getInstance();
+    this.endTime.setTime(endTime);
+  }
+
+  public Timeslot(long starTimeMillis, long endTimeMillis)
+  {
+    this.startTime = Calendar.getInstance();
+    this.startTime.setTimeInMillis(starTimeMillis);
+
+    this.endTime = Calendar.getInstance();
+    this.endTime.setTimeInMillis(endTimeMillis);
+  }
+
+  public Timeslot(Calendar startTime, Calendar endTime)
   {
     this.startTime = startTime;
     this.endTime = endTime;
   }
 
-  public Date getStartTime()
+  public Calendar getStartTime()
   {
     return startTime;
   }
 
-  public Date getEndTime()
+  public Calendar getEndTime()
   {
     return endTime;
   }

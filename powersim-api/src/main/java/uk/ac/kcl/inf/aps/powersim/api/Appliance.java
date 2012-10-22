@@ -1,11 +1,14 @@
 package uk.ac.kcl.inf.aps.powersim.api;
 
 /**
+ * Represents an Appliance.
+ * Should be extended by the respective Policy implementation.
+ *
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
  *         Date: 18/10/12
  *         Time: 15:17
  */
-public class Appliance
+public abstract class Appliance
 {
   /**
    * A unique identifier for this appliance. Ideally a UUID / GUID.
@@ -38,7 +41,6 @@ public class Appliance
   public String toString()
   {
     final StringBuilder sb = new StringBuilder();
-    sb.append("Appliance");
     sb.append("{uid='").append(uid).append('\'');
     sb.append(", type='").append(type).append('\'');
     sb.append('}');

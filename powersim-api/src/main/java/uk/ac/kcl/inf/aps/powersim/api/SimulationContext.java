@@ -5,7 +5,7 @@ package uk.ac.kcl.inf.aps.powersim.api;
  *         Date: 15/10/12
  *         Time: 14:56
  */
-public class SimulationContext
+public final class SimulationContext
 {
   private Simulation simulation;
 

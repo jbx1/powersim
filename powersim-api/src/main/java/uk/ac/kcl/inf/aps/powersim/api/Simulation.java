@@ -11,5 +11,5 @@ public interface Simulation
 {
   String getName();
 
-  void handleConsumptionEvents(List<ConsumptionEvent> consumptionEvents);
+  void notifyConsumptionEvents(List<ConsumptionEvent> consumptionEvents);
 }

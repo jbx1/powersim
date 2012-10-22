@@ -19,7 +19,7 @@ public interface Policy
    * Households are assumed to be fixed throughout a simulation, while appliances can be added throughout the simulation.
    * Note: In the current version an appliance cannot move between households.
    */
-  public List<Household> setup();
+  public List<? extends Household> setup();
 
   /**
    * Notifies the policy that a new time tick of the simulation has commenced.

@@ -20,16 +20,9 @@
     <ch.qos.logback.version>1.0.6</ch.qos.logback.version>
     <org.slf4j.version>1.6.6</org.slf4j.version>
     <mysql.version>5.1.21</mysql.version>
+    <postgresql.version>9.1-901.jdbc4</postgresql.version>
     <org.hibernate.version>4.1.7.Final</org.hibernate.version>
     <c3p0.version>0.9.1.2</c3p0.version>
   </properties>
 
-
-  <dependencies>
-      <dependency>
-          <groupId>uk.ac.kcl.inf.aps.powersim</groupId>
-          <artifactId>powersim-api</artifactId>
-          <version>1.0-SNAPSHOT</version>
-      </dependency>
-  </dependencies>
 </project>

@@ -2,12 +2,13 @@ package uk.ac.kcl.inf.aps.powersim.api;
 
 /**
  * Represents a household aggregation point where there is a Smart Meter controlling the load of a number of appliances.
+ * Should be extended by the individual Policy implementation, depending on what information is needed.
  *
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
  *         Date: 18/10/12
  *         Time: 15:17
  */
-public class Household
+public abstract class Household
 {
   /**
    * A unique identifier of the household. Has to be unique across the simulation.

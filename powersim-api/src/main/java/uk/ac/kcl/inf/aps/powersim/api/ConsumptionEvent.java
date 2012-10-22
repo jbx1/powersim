@@ -5,7 +5,7 @@ package uk.ac.kcl.inf.aps.powersim.api;
  *         Date: 18/10/12
  *         Time: 15:16
  */
-public class ConsumptionEvent
+public final class ConsumptionEvent
 {
   /**
    * The household in which the appliance is.
