@@ -2,6 +2,8 @@ package uk.ac.kcl.inf.aps.powersim.simulator.persistence.model;
 
 import uk.ac.kcl.inf.aps.powersim.simulator.persistence.GenericDao;
 
+import java.util.List;
+
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
  *         Date: 17/10/12
@@ -9,4 +11,6 @@ import uk.ac.kcl.inf.aps.powersim.simulator.persistence.GenericDao;
  */
 public interface HouseholdDataDao extends GenericDao<HouseholdData>
 {
+  public void createBulk(List<HouseholdData> householdDataList);
+
 }

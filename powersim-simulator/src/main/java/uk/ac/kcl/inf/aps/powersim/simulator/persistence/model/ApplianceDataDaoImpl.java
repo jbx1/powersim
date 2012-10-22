@@ -1,6 +1,7 @@
 package uk.ac.kcl.inf.aps.powersim.simulator.persistence.model;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.kcl.inf.aps.powersim.simulator.persistence.GenericDaoImpl;
 
 /**
@@ -11,4 +12,15 @@ import uk.ac.kcl.inf.aps.powersim.simulator.persistence.GenericDaoImpl;
 @Repository("applianceDataDao")
 public class ApplianceDataDaoImpl extends GenericDaoImpl<ApplianceData> implements ApplianceDataDao
 {
+  @Transactional
+  @Override
+  public void createBulk(Iterable<ApplianceData> applianceDataList)
+  {
+    for (ApplianceData applianceData : applianceDataList)
+    {
+      em.persist(applianceData);
+    }
+
+    em.flush();
+  }
 }

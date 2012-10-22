@@ -95,17 +95,17 @@
           <version>${org.hibernate.version}</version>
       </dependency>
 
-<!--      <dependency>
+      <dependency>
           <groupId>mysql</groupId>
           <artifactId>mysql-connector-java</artifactId>
           <version>${mysql.version}</version>
-      </dependency> -->
+      </dependency>
 
-      <dependency>
+<!--      <dependency>
           <groupId>postgresql</groupId>
           <artifactId>postgresql</artifactId>
           <version>${postgresql.version}</version>
-      </dependency>
+      </dependency> -->
 
       <dependency>
           <groupId>uk.ac.kcl.inf.aps.powersim</groupId>

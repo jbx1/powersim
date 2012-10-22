@@ -80,7 +80,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
   private ApplianceDataDao applianceDataDao;
 
   @Autowired
-  private ConsumptionDataDao consumptionDataDao;
+  private DeferredConsumptionEventDao deferredConsumptionEventDao;
 
   //todo: configuration (time intervals, duration, etc.) use YAML?
 
@@ -109,10 +109,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     {
       log.info("Setting up policy {}", policy);
       List<? extends Household> households = policy.setup();
-      for (Household household : households)
-      {
-        registerHousehold(household, policy);
-      }
+      registerHouseholds(households, policy);
       log.info("Policy {} registered {} households", policy, households.size());
     }
 
@@ -129,33 +126,39 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     do
     {
       timeslotCount++;
-//      log.debug("Saving timeslot data.");
+      log.trace("Registering timeslot to database");
       currentTimeSlotData = registerTimeslot(currentTimeSlot, simulationData);
       simulationContext = new SimulationContext(this, currentTimeSlot);  //todo: more complex information such as weather
-//      log.info("Simulation Context {}", simulationContext);
-//      log.debug("Saved timeslot data.");
+      log.trace("Simulation Context {}", simulationContext);
 
       this.currentAggregateLoadData = new AggregateLoadData();
       this.currentAggregateLoadData.setTimeslotData(currentTimeSlotData);
 
       //notify all policies with the new timeslot
+      log.debug("Notifying all policies of the new timeslot");
       for (Policy policy : policies)
       {
         //handle Time slot is asynchronous, so all will return immediately
         policy.handleTimeSlot(simulationContext);
       }
 
+      log.debug("Waiting for all policies to complete tasks");
       //wait for all policies to complete their tasks
       for (Policy policy : policies)
       {
-        //wait at most 10 seconds for a policy to be ready
-        policy.ready(10000);
+        //wait at most 1 second for a policy to be ready
+        policy.ready(1000); //todo: configurable
       }
+      log.debug("All policies complete from this timeslot");
 
-//      log.debug("Saving aggregate data");
+      log.trace("Flushing any remaining deferred consumption events ");
+      deferredConsumptionEventDao.flushDeferred();
+
+      log.trace("Saving aggregate data.");
       aggregateLoadDataDao.create(currentAggregateLoadData);
 //      log.debug("Saved aggregate data");
 
+      log.trace("Progressing timeslot");
       progressTimeslot();
       nowMillis = System.currentTimeMillis();
  //     log.debug("Elapsed time: {}", now.getTime() - actualStart.getTime());
@@ -239,24 +242,28 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
   }
 
   /**
-   * Registers a household being governed by a policy to the database.
-   * @param household - the household
+   * Registers households being governed by a policy to the database.
+   * @param households - the household list
    * @param policy - the policy
    * @return the Entity representing the household in the database
    */
-  public HouseholdData registerHousehold(Household household, Policy policy)
+  public void registerHouseholds(List<? extends Household> households, Policy policy)
   {
-    HouseholdData householdData = new HouseholdData();
-    householdData.setSimulationData(getSimulationData());
-    householdData.setCategory(household.getCategory());
-    householdData.setReferenceId(household.getUid());
-    householdData.setPolicyDescriptor(policy.getDescriptor());
+    List<HouseholdData> householdDataList = new ArrayList<>(households.size());
+    for (Household household : households)
+    {
+      HouseholdData householdData = new HouseholdData();
+      householdData.setSimulationData(getSimulationData());
+      householdData.setCategory(household.getCategory());
+      householdData.setReferenceId(household.getUid());
+      householdData.setPolicyDescriptor(policy.getDescriptor());
+
+      householdDataList.add(householdData);
+      householdDataMap.put(household.getUid(), householdData);
+    }
 
     //todo: create them all at once (bulk create in some way, using one transaction and prepared statments?)
-    householdDataDao.create(householdData);
-    householdDataMap.put(household.getUid(), householdData);
-
-    return householdData;
+    householdDataDao.createBulk(householdDataList);
   }
 
   public ApplianceData registerAppliance(Household household, Appliance appliance)
@@ -275,7 +282,8 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     applianceData.setReferenceId(appliance.getUid());
     applianceData.setType(appliance.getType());
 
-    applianceDataDao.create(applianceData);
+//    applianceDataDao.create(applianceData);
+    deferredConsumptionEventDao.createDeferredApplianceData(applianceData);
     applianceDataMap.put(appliance.getUid(), applianceData);
 
     return applianceData;
@@ -350,7 +358,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
       }
     }
 
-    consumptionDataDao.createBulk(consumptionDataList);
+    deferredConsumptionEventDao.createBulkDeferredConcumptionData(consumptionDataList);
   }
 
   public List<Policy> getPolicies()

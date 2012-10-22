@@ -1,5 +1,7 @@
 package uk.ac.kcl.inf.aps.powersim.policies;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.kcl.inf.aps.powersim.api.Household;
 import uk.ac.kcl.inf.aps.powersim.api.Policy;
 import uk.ac.kcl.inf.aps.powersim.api.SimulationContext;
@@ -17,6 +19,8 @@ import java.util.UUID;
  */
 public class SimpleConsumerPolicy implements Policy
 {
+  protected static final Logger log = LoggerFactory.getLogger(Policy.class);
+
   private List<SimpleHousehold> households;
 
   private int householdCount = 0;
@@ -50,6 +54,7 @@ public class SimpleConsumerPolicy implements Policy
     //todo: handle multithreading
     for (SimpleHousehold household : households)
     {
+   //   log.debug("Handling household {} ", household.getUid());
       household.handleTimeslot(context);
     }
   }

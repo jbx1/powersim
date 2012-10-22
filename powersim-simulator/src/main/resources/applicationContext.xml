@@ -14,13 +14,18 @@
                            http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <context:component-scan base-package="uk.ac.kcl.inf.aps.powersim" />
-    <tx:annotation-driven />
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 
     <bean id="transactionManager"
           class="org.springframework.orm.jpa.JpaTransactionManager"
           p:entityManagerFactory-ref="entityManagerFactory" />
+
+    <bean id="deferredConsumptionDataDao"
+          class="uk.ac.kcl.inf.aps.powersim.simulator.persistence.model.DeferredConsumptionEventDaoImpl">
+        <constructor-arg name="deferredCapacity" value="10000" />
+    </bean>
 
     <bean id="entityManagerFactory"
           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
@@ -34,18 +39,18 @@
             <props>
                 <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
                 <prop key="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</prop>
-<!--                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
                 <prop key="hibernate.connection.driver_class">com.mysql.jdbc.Driver</prop>
                 <prop key="hibernate.connection.url">jdbc:mysql://localhost:3306/powersim</prop>
                 <prop key="hibernate.connection.username">root</prop>
-                <prop key="hibernate.connection.password">root</prop> -->
+                <prop key="hibernate.connection.password">root</prop>
 
 
-                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL82Dialect</prop>
+          <!--      <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL82Dialect</prop>
                 <prop key="hibernate.connection.driver_class">org.postgresql.Driver</prop>
                 <prop key="hibernate.connection.url">jdbc:postgresql://localhost:5432/powersim</prop>
                 <prop key="hibernate.connection.username">postgres</prop>
-                <prop key="hibernate.connection.password">postgres</prop>
+                <prop key="hibernate.connection.password">postgres</prop> -->
 
                 <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
                 <prop key="hibernate.id.new_generator_mappings">true</prop>
@@ -69,7 +74,7 @@
         <property name="policies">
             <list>
                 <bean name="simplePolicy" class="uk.ac.kcl.inf.aps.powersim.policies.SimpleConsumerPolicy">
-                    <constructor-arg name="householdCount" value="100" />
+                    <constructor-arg name="householdCount" value="1000" />
                 </bean>
             </list>
         </property>
