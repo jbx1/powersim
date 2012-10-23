@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 @Repository("deferredConsumptionDataDao")
 public class DeferredConsumptionEventDaoImpl implements DeferredConsumptionEventDao
 {
-  protected static final Logger log = LoggerFactory.getLogger(ConsumptionDataDao.class);
+  protected static final Logger log = LoggerFactory.getLogger(DeferredConsumptionEventDaoImpl.class);
 
   private ArrayBlockingQueue<ConsumptionData> deferredConsumptionDataList;
   private ArrayBlockingQueue<ApplianceData> deferredApplianceDataList;
@@ -83,14 +83,14 @@ public class DeferredConsumptionEventDaoImpl implements DeferredConsumptionEvent
   @Override
   public void shutdown()
   {
-    log.info("Shutting down database task executor");
+    log.info("Shutting down database task executor ...");
     databaseTaskExecutor.shutdown();
 
     try
     {
       while (!databaseTaskExecutor.getThreadPoolExecutor().awaitTermination(10, TimeUnit.SECONDS))
       {
-        log.info("Still waiting for all tasks to terminate...");
+        log.info("Still waiting for all tasks to terminate ...");
       }
     }
     catch (InterruptedException ex)
@@ -116,7 +116,7 @@ public class DeferredConsumptionEventDaoImpl implements DeferredConsumptionEvent
     //flush appliances within this thread to avoid other threads referring to the appliance without having it saved
     if (applianceDataToFlush.size() > 0)
     {
-      log.debug("Adding {} appliance rows", applianceDataToFlush.size());
+      log.debug("Adding {} appliance(s)", applianceDataToFlush.size());
       applianceDataDao.createBulk(applianceDataToFlush);
       applianceDataToFlush.clear();
     }
