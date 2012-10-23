@@ -3,6 +3,7 @@ package uk.ac.kcl.inf.aps.powersim.simulator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import uk.ac.kcl.inf.aps.powersim.api.*;
 import uk.ac.kcl.inf.aps.powersim.persistence.model.*;
 
@@ -21,8 +22,6 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
 
 
   private List<Policy> policies = new ArrayList<Policy>();
-
-  private Thread thread;
 
   private Map<String, HouseholdData> householdDataMap = new TreeMap<>();
   private Map<String, ApplianceData> applianceDataMap = new TreeMap<>();
@@ -82,6 +81,9 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
   @Autowired
   private DeferredConsumptionEventDao deferredConsumptionEventDao;
 
+  @Autowired
+  private ThreadPoolTaskExecutor databaseTaskExecutor;
+
   //todo: configuration (time intervals, duration, etc.) use YAML?
 
   public SimulatorImpl()
@@ -90,7 +92,8 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
 
   public void start()
   {
-    thread = new Thread(this);
+    Thread thread = new Thread(this);
+    thread.setName("Simulator");
     thread.start();
   }
 
@@ -171,6 +174,8 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     simulationData.setSimulatedEndTime(currentTimeSlot.getEndTime().getTime());
     simulationDataDao.update(simulationData);
 
+    deferredConsumptionEventDao.shutdown();
+
     log.info("Simulation Ready!");
   }
 
@@ -250,6 +255,8 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
    */
   public void registerHouseholds(List<? extends Household> households, Policy policy)
   {
+    log.debug("Registering {} households", households.size());
+
     List<HouseholdData> householdDataList = new ArrayList<>(households.size());
     for (Household household : households)
     {

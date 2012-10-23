@@ -2,9 +2,7 @@ package uk.ac.kcl.inf.aps.powersim.policies;
 
 import uk.ac.kcl.inf.aps.powersim.api.Appliance;
 import uk.ac.kcl.inf.aps.powersim.api.SimulationContext;
-import uk.ac.kcl.inf.aps.powersim.api.Timeslot;
 
-import java.util.Calendar;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -44,7 +42,8 @@ public class SimpleAppliance extends Appliance
    */
   public long handleTimeslot(SimulationContext simulationContext)
   {
-    if (applianceType.isAlwaysOn())
+    //todo: re-enable the following
+/*    if (applianceType.isAlwaysOn())
     {
       this.on = true; //redundant, but we do it for defensive programming
     }
@@ -78,8 +77,8 @@ public class SimpleAppliance extends Appliance
     else
     { //we're not at the right time for the appliance to turn on
       this.on = false;
-    }
-
+    } */
+    this.on = true; //todo: remove this in actual production
     return getCurrentWattageLoad();
   }
 

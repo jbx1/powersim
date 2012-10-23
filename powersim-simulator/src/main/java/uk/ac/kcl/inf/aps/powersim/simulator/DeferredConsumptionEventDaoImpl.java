@@ -3,7 +3,7 @@ package uk.ac.kcl.inf.aps.powersim.simulator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Repository;
 import uk.ac.kcl.inf.aps.powersim.persistence.model.ApplianceData;
 import uk.ac.kcl.inf.aps.powersim.persistence.model.ApplianceDataDao;
@@ -12,6 +12,7 @@ import uk.ac.kcl.inf.aps.powersim.persistence.model.ConsumptionDataDao;
 
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class batches rows together until the deferred limit is reached so that all rows are dumped at once.
@@ -36,7 +37,7 @@ public class DeferredConsumptionEventDaoImpl implements DeferredConsumptionEvent
   private ApplianceDataDao applianceDataDao;
 
   @Autowired
-  private TaskExecutor databaseTaskExecutor;
+  private ThreadPoolTaskExecutor databaseTaskExecutor;
 
   public DeferredConsumptionEventDaoImpl(int deferredCapacity)
   {
@@ -79,6 +80,27 @@ public class DeferredConsumptionEventDaoImpl implements DeferredConsumptionEvent
     deferredApplianceDataList.add(applianceData);
   }
 
+  @Override
+  public void shutdown()
+  {
+    log.info("Shutting down database task executor");
+    databaseTaskExecutor.shutdown();
+
+    try
+    {
+      while (!databaseTaskExecutor.getThreadPoolExecutor().awaitTermination(10, TimeUnit.SECONDS))
+      {
+        log.info("Still waiting for all tasks to terminate...");
+      }
+    }
+    catch (InterruptedException ex)
+    {
+      log.warn("Termination wait interrupted!", ex);
+    }
+    log.info("Database task scheduler shutdown complete.");
+  }
+
+
   /**
    * Flush the deferred data to the database.
    */
@@ -92,9 +114,12 @@ public class DeferredConsumptionEventDaoImpl implements DeferredConsumptionEvent
     deferredConsumptionDataList = new ArrayBlockingQueue<ConsumptionData>(this.deferredCapacity);
 
     //flush appliances within this thread to avoid other threads referring to the appliance without having it saved
-    log.trace("Flushing {} appliance rows", applianceDataToFlush.size());
-    applianceDataDao.createBulk(applianceDataToFlush);
-    applianceDataToFlush.clear();
+    if (applianceDataToFlush.size() > 0)
+    {
+      log.debug("Adding {} appliance rows", applianceDataToFlush.size());
+      applianceDataDao.createBulk(applianceDataToFlush);
+      applianceDataToFlush.clear();
+    }
 
     log.trace("Flushing events in separate thread.");
     databaseTaskExecutor.execute(new Runnable()
@@ -104,6 +129,7 @@ public class DeferredConsumptionEventDaoImpl implements DeferredConsumptionEvent
         log.trace("Flushing {} consumption rows", consumptionDataToFlush.size());
         consumptionDataDao.createBulk(consumptionDataToFlush);
         consumptionDataToFlush.clear();
+        log.trace("Flush ready");
       }
     });
   }

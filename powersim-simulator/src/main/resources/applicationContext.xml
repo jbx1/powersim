@@ -39,18 +39,19 @@
             <props>
                 <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
                 <prop key="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</prop>
-                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+
+<!--                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
                 <prop key="hibernate.connection.driver_class">com.mysql.jdbc.Driver</prop>
                 <prop key="hibernate.connection.url">jdbc:mysql://localhost:3306/powersim</prop>
                 <prop key="hibernate.connection.username">root</prop>
-                <prop key="hibernate.connection.password">root</prop>
+                <prop key="hibernate.connection.password">root</prop> -->
 
 
-          <!--      <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL82Dialect</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL82Dialect</prop>
                 <prop key="hibernate.connection.driver_class">org.postgresql.Driver</prop>
                 <prop key="hibernate.connection.url">jdbc:postgresql://localhost:5432/powersim</prop>
                 <prop key="hibernate.connection.username">postgres</prop>
-                <prop key="hibernate.connection.password">postgres</prop> -->
+                <prop key="hibernate.connection.password">postgres</prop>
 
                 <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
                 <prop key="hibernate.id.new_generator_mappings">true</prop>
@@ -70,9 +71,14 @@
     </bean>
 
     <bean id="databaseTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-        <property name="corePoolSize" value="10" />
-        <property name="maxPoolSize" value="100" />
-        <property name="queueCapacity" value="100" />
+        <property name="corePoolSize" value="4" />
+        <property name="maxPoolSize" value="20" />
+        <property name="queueCapacity" value="80" />
+        <property name="waitForTasksToCompleteOnShutdown" value="true" />
+        <property name="keepAliveSeconds" value="10" />
+        <property name="rejectedExecutionHandler" >
+            <bean class="java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy"/>
+        </property>
     </bean>
 
 

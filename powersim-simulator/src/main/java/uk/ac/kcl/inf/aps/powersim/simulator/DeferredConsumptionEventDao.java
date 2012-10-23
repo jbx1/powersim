@@ -20,4 +20,6 @@ public interface DeferredConsumptionEventDao
   public void createBulkDeferredApplianceData(List<ApplianceData> applianceDataList);
 
   public void createDeferredApplianceData(ApplianceData applianceData);
+
+  public void shutdown();
 }

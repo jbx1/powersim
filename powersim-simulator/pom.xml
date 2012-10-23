@@ -101,11 +101,11 @@
           <version>${mysql.version}</version>
       </dependency>
 
-<!--      <dependency>
+      <dependency>
           <groupId>postgresql</groupId>
           <artifactId>postgresql</artifactId>
           <version>${postgresql.version}</version>
-      </dependency> -->
+      </dependency>
 
       <dependency>
           <groupId>uk.ac.kcl.inf.aps.powersim</groupId>
