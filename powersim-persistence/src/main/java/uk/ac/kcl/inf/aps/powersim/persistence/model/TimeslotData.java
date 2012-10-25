@@ -11,6 +11,9 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "timeslots")
+@NamedQueries(
+        @NamedQuery(name = "TimeslotData.findAll", query = "select t from TimeslotData t where t.simulationData.id=:simulation_id order by startTime")
+)
 public class TimeslotData implements Serializable
 {
   @Id
@@ -23,7 +26,7 @@ public class TimeslotData implements Serializable
   @Column(nullable = false)
   private Date endTime;
 
-  @ManyToOne(optional = false)
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
   @JoinColumn(name="simulation_id")
   private SimulationData simulationData;
 

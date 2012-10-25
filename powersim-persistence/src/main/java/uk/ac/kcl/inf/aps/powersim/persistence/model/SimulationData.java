@@ -12,6 +12,9 @@ import java.util.Date;
 
 @Entity
 @Table(name = "simulations")
+@NamedQueries(
+        @NamedQuery(name = "SimulationData.findAll", query = "select s from SimulationData s order by actualStartTime")
+)
 public class SimulationData implements Serializable
 {
   @Id

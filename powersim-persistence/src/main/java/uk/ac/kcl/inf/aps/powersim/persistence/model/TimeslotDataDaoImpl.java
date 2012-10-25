@@ -2,8 +2,9 @@ package uk.ac.kcl.inf.aps.powersim.persistence.model;
 
 import org.springframework.stereotype.Repository;
 import uk.ac.kcl.inf.aps.powersim.persistence.GenericDaoImpl;
-import uk.ac.kcl.inf.aps.powersim.persistence.model.TimeslotData;
-import uk.ac.kcl.inf.aps.powersim.persistence.model.TimeslotDataDao;
+
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
@@ -13,5 +14,10 @@ import uk.ac.kcl.inf.aps.powersim.persistence.model.TimeslotDataDao;
 @Repository("timeslotDataDao")
 public class TimeslotDataDaoImpl extends GenericDaoImpl<TimeslotData> implements TimeslotDataDao
 {
-
+  public List<TimeslotData> findAll(Long simulationId)
+  {
+    TypedQuery<TimeslotData> query = em.createNamedQuery("TimeslotData.findAll", TimeslotData.class);
+    query.setParameter("simulation_id", simulationId);
+    return query.getResultList();
+  }
 }

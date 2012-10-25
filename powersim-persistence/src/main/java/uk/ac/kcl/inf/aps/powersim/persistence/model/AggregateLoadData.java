@@ -9,6 +9,13 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "aggregate_load")
+@NamedQueries(
+        @NamedQuery(name="AggregateLoadData.getAggregateLoadForSimulation",
+        query="select new uk.ac.kcl.inf.aps.powersim.persistence.reporting.SimulationTimeslotAggregateData(t.startTime, t.endTime, a.consumed, a.generated) " +
+                "from AggregateLoadData a JOIN a.timeslotData t " +
+                "where t.simulationData.id = :simulationId " +
+                "order by t.startTime")
+)
 public class AggregateLoadData
 {
   @Id
@@ -21,7 +28,7 @@ public class AggregateLoadData
   @Column(nullable = false)
   private long consumed = 0;
 
-  @ManyToOne(optional = false)
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
   @JoinColumn(name="timeslot_id")
   private TimeslotData timeslotData;
 

@@ -1,7 +1,8 @@
 package uk.ac.kcl.inf.aps.powersim.persistence.model;
 
 import uk.ac.kcl.inf.aps.powersim.persistence.GenericDao;
-import uk.ac.kcl.inf.aps.powersim.persistence.model.TimeslotData;
+
+import java.util.List;
 
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
@@ -10,4 +11,5 @@ import uk.ac.kcl.inf.aps.powersim.persistence.model.TimeslotData;
  */
 public interface TimeslotDataDao extends GenericDao<TimeslotData>
 {
+  public List<TimeslotData> findAll(Long simulationId);
 }

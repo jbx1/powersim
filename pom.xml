@@ -25,6 +25,10 @@
     <postgresql.version>9.1-901.jdbc4</postgresql.version>
     <org.hibernate.version>4.1.7.Final</org.hibernate.version>
     <c3p0.version>0.9.1.2</c3p0.version>
+    <cglib.version>2.2.2</cglib.version>
+    <jackson-mapper-asl.version>1.9.9</jackson-mapper-asl.version>
+    <jaxb-api.version>2.2.7</jaxb-api.version>
+    <org.apache.velocity.version>1.7</org.apache.velocity.version>
   </properties>
 
 
@@ -39,7 +43,30 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.0</version>
+                <configuration>
+                    <!-- http port -->
+                    <port>8080</port>
+                    <!-- application path always starts with /-->
+                    <path>/</path>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>tomcat-run</id>
+                        <goals>
+                            <goal>exec-war-only</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <path>powersim-reporter</path>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
 </project>

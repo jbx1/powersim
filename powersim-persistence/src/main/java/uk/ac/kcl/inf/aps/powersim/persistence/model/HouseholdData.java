@@ -23,7 +23,7 @@ public class HouseholdData implements Serializable
 
   private String policyDescriptor;
 
-  @ManyToOne(optional = false)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name="simulation_id")
   private SimulationData simulationData;
 

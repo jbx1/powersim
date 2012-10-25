@@ -21,7 +21,7 @@ public class ApplianceData implements Serializable
 
   private String type;
 
-  @ManyToOne(optional = false)
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
   @JoinColumn(name="household_id")
   private HouseholdData householdData;
 

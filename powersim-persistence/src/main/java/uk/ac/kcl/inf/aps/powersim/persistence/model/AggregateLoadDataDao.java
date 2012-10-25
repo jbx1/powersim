@@ -1,6 +1,10 @@
 package uk.ac.kcl.inf.aps.powersim.persistence.model;
 
 import uk.ac.kcl.inf.aps.powersim.persistence.GenericDao;
+import uk.ac.kcl.inf.aps.powersim.persistence.reporting.SimulationTimeslotAggregateData;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
@@ -9,4 +13,7 @@ import uk.ac.kcl.inf.aps.powersim.persistence.GenericDao;
  */
 public interface AggregateLoadDataDao extends GenericDao<AggregateLoadData>
 {
+//  public List<AggregateLoadData> getAggregateLoadDataForSimulation(Long simulationId, Date startTime, Date endTime);
+
+  public List<SimulationTimeslotAggregateData> getAggregateLoadDataForSimulation(Long simulationId, Date startTime, Date endTime);
 }
