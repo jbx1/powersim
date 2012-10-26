@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.kcl.inf.aps.powersim.persistence.GenericDaoImpl;
 
+import javax.persistence.Query;
 import java.util.List;
 
 /**
@@ -24,5 +25,13 @@ public class HouseholdDataDaoImpl extends GenericDaoImpl<HouseholdData> implemen
     }
 
     em.flush();
+  }
+
+  @Override
+  public int getHouseholdCountForSimulation(long simulationId)
+  {
+    Query query = em.createNamedQuery("HouseholdData.countForSimulation");
+    query.setParameter("simulationId", simulationId);
+    return ((Long) query.getSingleResult()).intValue();
   }
 }

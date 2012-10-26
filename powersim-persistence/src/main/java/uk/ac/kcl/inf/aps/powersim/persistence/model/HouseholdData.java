@@ -10,6 +10,10 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "households")
+@NamedQueries(
+        @NamedQuery(name="HouseholdData.countForSimulation",
+                query="select count(h) from HouseholdData h where h.simulationData.id=:simulationId")
+)
 public class HouseholdData implements Serializable
 {
   @Id
@@ -23,7 +27,7 @@ public class HouseholdData implements Serializable
 
   private String policyDescriptor;
 
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(optional = false)
   @JoinColumn(name="simulation_id")
   private SimulationData simulationData;
 
@@ -75,5 +79,19 @@ public class HouseholdData implements Serializable
   public void setPolicyDescriptor(String policyDescriptor)
   {
     this.policyDescriptor = policyDescriptor;
+  }
+
+  @Override
+  public String toString()
+  {
+    final StringBuilder sb = new StringBuilder();
+    sb.append("HouseholdData");
+    sb.append("{id=").append(id);
+    sb.append(", referenceId='").append(referenceId).append('\'');
+    sb.append(", category='").append(category).append('\'');
+    sb.append(", policyDescriptor='").append(policyDescriptor).append('\'');
+    sb.append(", simulationData=").append(simulationData);
+    sb.append('}');
+    return sb.toString();
   }
 }

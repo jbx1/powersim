@@ -10,6 +10,10 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name="appliances")
+@NamedQueries(
+        @NamedQuery(name = "ApplianceData.countForSimulation",
+                query = "select count(a) from ApplianceData a where a.householdData.simulationData.id=:simulationId")
+)
 public class ApplianceData implements Serializable
 {
   @Id
@@ -63,5 +67,18 @@ public class ApplianceData implements Serializable
   public void setReferenceId(String referenceId)
   {
     this.referenceId = referenceId;
+  }
+
+  @Override
+  public String toString()
+  {
+    final StringBuilder sb = new StringBuilder();
+    sb.append("ApplianceData");
+    sb.append("{id=").append(id);
+    sb.append(", referenceId='").append(referenceId).append('\'');
+    sb.append(", type='").append(type).append('\'');
+    sb.append(", householdData=").append(householdData);
+    sb.append('}');
+    return sb.toString();
   }
 }

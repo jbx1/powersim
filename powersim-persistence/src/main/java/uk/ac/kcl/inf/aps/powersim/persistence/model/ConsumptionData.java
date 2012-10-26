@@ -66,4 +66,17 @@ public class ConsumptionData implements Serializable
   {
     this.loadWatts = loadWatts;
   }
+
+  @Override
+  public String toString()
+  {
+    final StringBuilder sb = new StringBuilder();
+    sb.append("ConsumptionData");
+    sb.append("{id=").append(id);
+    sb.append(", appliance=").append(appliance);
+    sb.append(", timeslotData=").append(timeslotData);
+    sb.append(", loadWatts=").append(loadWatts);
+    sb.append('}');
+    return sb.toString();
+  }
 }

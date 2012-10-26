@@ -19,13 +19,13 @@
     </listener>
 
     <servlet>
-        <servlet-name>reporter</servlet-name>
+        <servlet-name>simulations</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>reporter</servlet-name>
-        <url-pattern>/reporter/*</url-pattern>
+        <servlet-name>simulations</servlet-name>
+        <url-pattern>/simulations/*</url-pattern>
     </servlet-mapping>
 </web-app>

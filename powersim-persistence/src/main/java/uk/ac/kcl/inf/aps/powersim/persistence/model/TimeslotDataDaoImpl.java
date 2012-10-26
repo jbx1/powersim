@@ -17,7 +17,7 @@ public class TimeslotDataDaoImpl extends GenericDaoImpl<TimeslotData> implements
   public List<TimeslotData> findAll(Long simulationId)
   {
     TypedQuery<TimeslotData> query = em.createNamedQuery("TimeslotData.findAll", TimeslotData.class);
-    query.setParameter("simulation_id", simulationId);
+    query.setParameter("simulationId", simulationId);
     return query.getResultList();
   }
 }

@@ -12,7 +12,7 @@ import java.util.Date;
 @Entity
 @Table(name = "timeslots")
 @NamedQueries(
-        @NamedQuery(name = "TimeslotData.findAll", query = "select t from TimeslotData t where t.simulationData.id=:simulation_id order by startTime")
+        @NamedQuery(name = "TimeslotData.findAll", query = "select t from TimeslotData t where t.simulationData.id=:simulationId order by startTime")
 )
 public class TimeslotData implements Serializable
 {
@@ -68,5 +68,18 @@ public class TimeslotData implements Serializable
   public void setSimulationData(SimulationData simulationData)
   {
     this.simulationData = simulationData;
+  }
+
+  @Override
+  public String toString()
+  {
+    final StringBuilder sb = new StringBuilder();
+    sb.append("TimeslotData");
+    sb.append("{id=").append(id);
+    sb.append(", startTime=").append(startTime);
+    sb.append(", endTime=").append(endTime);
+    sb.append(", simulationData=").append(simulationData);
+    sb.append('}');
+    return sb.toString();
   }
 }

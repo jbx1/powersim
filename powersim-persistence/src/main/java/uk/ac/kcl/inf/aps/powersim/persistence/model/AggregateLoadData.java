@@ -71,4 +71,17 @@ public class AggregateLoadData
   {
     this.timeslotData = timeslotData;
   }
+
+  @Override
+  public String toString()
+  {
+    final StringBuilder sb = new StringBuilder();
+    sb.append("AggregateLoadData");
+    sb.append("{id=").append(id);
+    sb.append(", generated=").append(generated);
+    sb.append(", consumed=").append(consumed);
+    sb.append(", timeslotData=").append(timeslotData);
+    sb.append('}');
+    return sb.toString();
+  }
 }

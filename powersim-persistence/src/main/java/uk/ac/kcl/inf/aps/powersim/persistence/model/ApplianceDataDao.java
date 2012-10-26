@@ -10,4 +10,6 @@ import uk.ac.kcl.inf.aps.powersim.persistence.GenericDao;
 public interface ApplianceDataDao extends GenericDao<ApplianceData>
 {
   public void createBulk(Iterable<ApplianceData> applianceDataList);
+
+  public int getApplianceCountForSimulation(long simulationId);
 }

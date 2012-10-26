@@ -13,4 +13,5 @@ public interface HouseholdDataDao extends GenericDao<HouseholdData>
 {
   public void createBulk(List<HouseholdData> householdDataList);
 
+  public int getHouseholdCountForSimulation(long simulationId);
 }

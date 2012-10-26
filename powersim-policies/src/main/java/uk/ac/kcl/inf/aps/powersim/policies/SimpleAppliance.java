@@ -1,5 +1,7 @@
 package uk.ac.kcl.inf.aps.powersim.policies;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.kcl.inf.aps.powersim.api.Appliance;
 import uk.ac.kcl.inf.aps.powersim.api.SimulationContext;
 import uk.ac.kcl.inf.aps.powersim.api.Timeslot;
@@ -14,6 +16,8 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class SimpleAppliance extends Appliance
 {
+  protected static final Logger log = LoggerFactory.getLogger(SimpleAppliance.class);
+
   private SimpleApplianceType applianceType;
   private boolean on = false;
 
@@ -29,8 +33,10 @@ public class SimpleAppliance extends Appliance
     return on;
   }
 
-  public long getCurrentWattageLoad()
+  public long getCurrentWattageLoad(SimulationContext simulationContext)
   {
+    //todo: calcualate wattage more intelligently rather than a flat wattage
+
     if (isOn())
       return applianceType.getWattage();
     else
@@ -50,37 +56,55 @@ public class SimpleAppliance extends Appliance
     }
 
     Timeslot timeslot = simulationContext.getTimeslot();
-    int timeslotStartHour = timeslot.getStartTime().get(Calendar.HOUR_OF_DAY);
-    int timeslotEndHour = timeslot.getStartTime().get(Calendar.HOUR_OF_DAY);
-
-    if (applianceType.getStartHour() == applianceType.getEndHour())
-    { //the start time and end time are equal, so the appliance can turn on/off all day or night
+    if (isWithinOperatingTime(timeslot))
+    {
+      log.trace("Appliance {} within operating timeframe", applianceType);
       turnOnRandomly();
     }
-    else if (applianceType.getStartHour() < applianceType.getEndHour())
-    { //the start and end time don't span over midnight
-      //todo: average timeslots
-      if ((timeslotStartHour > applianceType.getStartHour()) &&
-            (timeslotEndHour < applianceType.getEndHour()))
-      {
-        turnOnRandomly();
-      }
-    }
-    else if (applianceType.getStartHour() > applianceType.getEndHour())
-    { //the start and end time span over midnight
-
-      if (((timeslotStartHour > applianceType.getStartHour()) || timeslotStartHour  < applianceType.getEndHour()) &&
-          (timeslotEndHour > applianceType.getStartHour() || timeslotEndHour < applianceType.getEndHour()))
-      {
-        turnOnRandomly();
-      }
-    }
     else
-    { //we're not at the right time for the appliance to turn on
+    {
+      log.trace("Turning appliance {} off since time is out of its operating timeframe", applianceType.getDescription());
       this.on = false;
     }
 
-    return getCurrentWattageLoad();
+    return getCurrentWattageLoad(simulationContext);
+  }
+
+  private boolean isWithinOperatingTime(Timeslot timeslot)
+  {
+    int timeslotStartHour = timeslot.getStartTime().get(Calendar.HOUR_OF_DAY);
+    int timeslotEndHour = timeslot.getStartTime().get(Calendar.HOUR_OF_DAY);
+
+    log.trace("Timeslot hour: {} Appliance {}", timeslotStartHour, applianceType.getDescription());
+
+    if (applianceType.getStartHour() == applianceType.getEndHour())
+    {//if the appliance start hour and end hour are the same, than the appliance can turn on/off any time during the day
+      return true;
+    }
+    else if (applianceType.getStartHour() < applianceType.getEndHour())
+    { //if the appliance start hour is smaller than the end hour, than we are not spanning over midnight
+      //check that the timeslot start is greater or equal to the appliance start hour
+      //and that the timeslot end is smaller or equal to the appliance end hour
+      if ((timeslotStartHour >= applianceType.getStartHour()) &&
+              (timeslotEndHour <= applianceType.getEndHour()))
+      {
+        return true;
+      }
+    }
+    else if (applianceType.getStartHour() > applianceType.getEndHour())
+    { //if the start hour is greater than the end hour, than the appliance operating time spans over midnight
+
+      //check that the timeslot start hour is greater than or equal than the appliance start hour OR smaller than the end hour
+      //and check that the timeslot end hour is also greater than the appliance start hour OR smaller than the end hour
+      if (((timeslotStartHour >= applianceType.getStartHour()) || timeslotStartHour  <= applianceType.getEndHour()) &&
+              (timeslotEndHour >= applianceType.getStartHour() || timeslotEndHour <= applianceType.getEndHour()))
+      {
+        return true;
+      }
+    }
+
+    //if none of the above criteria were found to be true, appliance should be off
+    return false;
   }
 
   /**
@@ -95,10 +119,12 @@ public class SimpleAppliance extends Appliance
     int rand = ThreadLocalRandom.current().nextInt(0, 100);
     if (isOn() && (rand >= applianceType.getProbabilityPercOn()))
     {
+      log.trace("Turning appliance {} off", applianceType);
       this.on = false;
     }
     else if (!isOn() && (rand < applianceType.getProbabilityPercOn()))
     {
+      log.trace("Turning appliance {} on", applianceType);
       this.on = true;
     }
 

@@ -7,5 +7,5 @@ package uk.ac.kcl.inf.aps.powersim.simulator;
  */
 public class Constants
 {
-  public static final long DEFAULT_TIMESLOT_DURATION = 5000;
+  public static final long DEFAULT_TIMESLOT_DURATION = 300000; //5 minutes
 }

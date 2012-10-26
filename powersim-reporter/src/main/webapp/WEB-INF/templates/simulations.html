@@ -9,7 +9,7 @@
     <ul>
     #foreach( $simulation in $simulations )
         <li>
-            $simulation.getName()
+            <a href="./$simulation.getId()">$simulation.getName()</a>
         </li>
     #end
     </ul>

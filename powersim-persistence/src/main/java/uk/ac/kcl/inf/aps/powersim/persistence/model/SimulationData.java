@@ -104,4 +104,19 @@ public class SimulationData implements Serializable
   {
     this.simulatedEndTime = simulatedEndTime;
   }
+
+  @Override
+  public String toString()
+  {
+    final StringBuilder sb = new StringBuilder();
+    sb.append("SimulationData");
+    sb.append("{id=").append(id);
+    sb.append(", name='").append(name).append('\'');
+    sb.append(", actualStartTime=").append(actualStartTime);
+    sb.append(", actualEndTime=").append(actualEndTime);
+    sb.append(", simulatedStartTime=").append(simulatedStartTime);
+    sb.append(", simulatedEndTime=").append(simulatedEndTime);
+    sb.append('}');
+    return sb.toString();
+  }
 }

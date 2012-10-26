@@ -19,7 +19,7 @@ public class SimulatorLauncher
 
     // open/read the application context file
     log.debug("Loading Spring application context");
-    ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+    ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("application-context.xml");
 
     Simulator simulator = (Simulator) ctx.getBean("simulator");
     simulator.start();

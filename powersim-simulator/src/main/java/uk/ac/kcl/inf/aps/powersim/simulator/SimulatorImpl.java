@@ -101,12 +101,12 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
   public void run()
   {
     log.info("Starting Simulation!");
-    long now = System.currentTimeMillis();
-    long actualStart = now;
+    long nowMillis = System.currentTimeMillis();
+    long actualStart = nowMillis;
     //todo: get the start time of the timeslot from configuration
     long simulatedStart = actualStart;
 
-    this.simulationData = registerSimulation("Test", new Date(actualStart), new Date(simulatedStart));
+    this.simulationData = registerSimulation("Simulation 1000 houses with 20 appliances for 24hrs", new Date(actualStart), new Date(simulatedStart));
 
     for (Policy policy : policies)
     {
@@ -123,8 +123,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     log.info("Starting simulation at {} with granularity {}ms", this.currentTimeSlot.getStartTime().getTime(), this.getTimeslotDuration());
 
     long elapsed = 0;
-    long nowMillis = 0;
-
+    long simulatedElapsed = 0;
     long simStart = System.currentTimeMillis();
     do
     {
@@ -157,7 +156,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
       log.trace("Flushing any remaining deferred consumption events ");
       deferredConsumptionEventDao.flushDeferred();
 
-      log.trace("Saving aggregate data.");
+      log.trace("Saving aggregate load {} ", currentAggregateLoadData);
       aggregateLoadDataDao.create(currentAggregateLoadData);
 //      log.debug("Saved aggregate data");
 
@@ -166,11 +165,12 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
       nowMillis = System.currentTimeMillis();
  //     log.debug("Elapsed time: {}", now.getTime() - actualStart.getTime());
       elapsed = nowMillis - simStart;
+      simulatedElapsed = currentTimeSlot.getStartTime().getTimeInMillis() - simulatedStart;
     }
-    while (elapsed < 60000);
+    while (simulatedElapsed < 86400000);      //run for 24 hours
 
     log.info("Completed {} time ticks in {}ms", timeslotCount, elapsed);
-    simulationData.setActualEndTime(new Date(now));
+    simulationData.setActualEndTime(new Date(nowMillis));
     simulationData.setSimulatedEndTime(currentTimeSlot.getEndTime().getTime());
     simulationDataDao.update(simulationData);
 

@@ -50,7 +50,7 @@ final class DataController
     return simulationDataDao.findAll();
   }
 
-  @RequestMapping(value = "/{simulationId}/timeslots", method = RequestMethod.GET, produces = "application/json")
+/*  @RequestMapping(value = "/{simulationId}/timeslots", method = RequestMethod.GET, produces = "application/json")
   @ResponseBody
   public final List<TimeslotData> getTimeslotsForSimulation(@PathVariable("simulationId") Long simulationId)
   {
@@ -58,9 +58,9 @@ final class DataController
     List<TimeslotData> timeslotDataList = timeslotDataDao.findAll(simulationId);
     log.info("Retrieved {} rows", timeslotDataList.size());
     return timeslotDataList;
-  }
+  }*/
 
-  @RequestMapping(value = "/{simulationId}/data", method = RequestMethod.GET, produces = "application/json")
+  @RequestMapping(value = "/{simulationId}", method = RequestMethod.GET, produces = "application/json")
   @ResponseBody
   public final Object[][] getSimulationData(@PathVariable("simulationId") Long simulationId,
                                             @RequestParam(value="startTime", required = false) String startTime,
@@ -75,7 +75,7 @@ final class DataController
     int i = 0;
     for (SimulationTimeslotAggregateData aggregateLoadData : aggregateLoadDataList)
     {
-      data[i][0] = formatDate(aggregateLoadData.getTimeSlotStartTime()); //todo: remove milliseconds
+      data[i][0] = formatDate(aggregateLoadData.getTimeSlotStartTime());
       data[i][1] = aggregateLoadData.getGenerated();
       data[i][2] = aggregateLoadData.getConsumed();
       //calculate the net
