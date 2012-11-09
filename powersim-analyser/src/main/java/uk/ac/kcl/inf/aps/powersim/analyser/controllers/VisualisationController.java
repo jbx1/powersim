@@ -1,4 +1,4 @@
-package uk.ac.kcl.inf.aps.powersim.reporter.controllers;
+package uk.ac.kcl.inf.aps.powersim.analyser.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

@@ -13,7 +13,7 @@
     <module>powersim-policies</module>
     <module>powersim-persistence</module>
     <module>powersim-simulator</module>
-    <module>powersim-reporter</module>
+    <module>powersim-analyser</module>
   </modules>
 
   <properties>

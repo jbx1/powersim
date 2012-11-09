@@ -1,4 +1,4 @@
-package uk.ac.kcl.inf.aps.powersim.policies;
+package uk.ac.kcl.inf.aps.powersim.policies.simpleonoff;
 
 import uk.ac.kcl.inf.aps.powersim.api.*;
 

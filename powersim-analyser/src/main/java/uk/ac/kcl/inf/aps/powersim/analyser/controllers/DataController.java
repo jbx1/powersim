@@ -1,4 +1,4 @@
-package uk.ac.kcl.inf.aps.powersim.reporter.controllers;
+package uk.ac.kcl.inf.aps.powersim.analyser.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

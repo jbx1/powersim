@@ -1,0 +1,81 @@
+html
+{
+    margin: 0px;
+    padding: 0px;
+}
+
+body
+{
+   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+   font-weight: 300;
+   font-size: 12px;
+   margin: 0px;
+   padding: 0px;
+}
+
+a
+{
+    font-size: 13px;
+    font-weight: bold;
+}
+
+li
+{
+    list-style: none;
+}
+
+td, th
+{
+    font-size: 12px;
+    text-align: left;
+}
+
+table
+{
+    border: 1px solid #111111;
+
+}
+
+div#data
+{
+    margin-top: 15px;
+}
+
+div#graphdiv
+{
+   width:100%;
+   height:500px;
+}
+
+div#masthead
+{
+    background: #0F3360 url("images/glossy-3d-blue-power-icon.png") no-repeat left;
+    margin: 0px;
+    padding: 15px 15px 15px 70px;
+    color: #EEFFFF;
+}
+
+div#masthead h1
+{
+    padding: 0px;
+    margin: 0px;
+}
+
+h2
+{
+    color: #0F5580;
+    padding: 0px;
+    margin: 0px;
+}
+
+div#simulation
+{
+    padding: 10px;
+}
+
+.dygraph-legend
+{
+    margin-top: -50px;
+    text-align: right;
+    width: 50px;
+}

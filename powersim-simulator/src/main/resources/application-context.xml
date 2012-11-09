@@ -85,7 +85,7 @@
     <bean id="simulator" class="uk.ac.kcl.inf.aps.powersim.simulator.SimulatorImpl">
         <property name="policies">
             <list>
-                <bean name="simplePolicy" class="uk.ac.kcl.inf.aps.powersim.policies.SimpleConsumerPolicy">
+                <bean name="simplePolicy" class="uk.ac.kcl.inf.aps.powersim.policies.simpleonoff.SimpleConsumerPolicy">
                     <constructor-arg name="householdCount" value="1000" />
                 </bean>
             </list>

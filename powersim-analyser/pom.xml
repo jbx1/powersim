@@ -8,11 +8,11 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>powersim-reporter</artifactId>
+    <artifactId>powersim-analyser</artifactId>
     <packaging>war</packaging>
     <groupId>uk.ac.kcl.inf.aps.powersim</groupId>
     <version>1.0-SNAPSHOT</version>
-    <name>powersim-reporter</name>
+    <name>powersim-analyser</name>
 
     <dependencies>
         <!-- internal dependencies -->

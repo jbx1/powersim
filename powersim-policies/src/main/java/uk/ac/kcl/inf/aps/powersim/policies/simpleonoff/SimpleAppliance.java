@@ -1,4 +1,4 @@
-package uk.ac.kcl.inf.aps.powersim.policies;
+package uk.ac.kcl.inf.aps.powersim.policies.simpleonoff;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

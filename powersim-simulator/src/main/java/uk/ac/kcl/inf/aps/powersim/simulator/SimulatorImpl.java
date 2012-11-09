@@ -106,7 +106,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     //todo: get the start time of the timeslot from configuration
     long simulatedStart = actualStart;
 
-    this.simulationData = registerSimulation("Simulation 1000 houses with 20 appliances for 24hrs", new Date(actualStart), new Date(simulatedStart));
+    this.simulationData = registerSimulation("Simulation 1000 houses with 20 appliances for 24hrs (1 minute granularity)", new Date(actualStart), new Date(simulatedStart));
 
     for (Policy policy : policies)
     {

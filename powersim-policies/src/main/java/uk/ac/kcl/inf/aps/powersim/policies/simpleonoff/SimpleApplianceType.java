@@ -1,6 +1,15 @@
-package uk.ac.kcl.inf.aps.powersim.policies;
+package uk.ac.kcl.inf.aps.powersim.policies.simpleonoff;
 
 /**
+ * The Simple Appliance Type simulates the simple on/off model with each appliance having a
+ * probability P of going ON, and 1-P of going OFF.
+ *
+ * Each appliance can have hourly boundaries within which the appliance can go ON.
+ *
+ * An appliance can also be always ON, which will always treat the appliance as ON
+ * without going through the random switching process. This is ideal for appliances such as Refrigerators that
+ * run continuously.
+ *
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
  *         Date: 19/10/12
  *         Time: 16:03

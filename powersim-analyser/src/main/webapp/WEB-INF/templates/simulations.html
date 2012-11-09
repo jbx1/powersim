@@ -1,15 +1,15 @@
 <html>
 <head>
-    <title>Powersim Reporter</title>
+    <title>Powersim Analyser</title>
     <link rel="stylesheet" href="../css/powersim.css" type="text/css">
 </head>
 <body>
 <div id="content">
-    <h1>Powersim Reporter</h1>
+    #parse("masthead.html")
     <ul>
     #foreach( $simulation in $simulations )
         <li>
-            <a href="./$simulation.getId()">$simulation.getName()</a>
+            <a href="./$simulation.getId()">$simulation.getName() [$simulation.getId()]</a>
         </li>
     #end
     </ul>
