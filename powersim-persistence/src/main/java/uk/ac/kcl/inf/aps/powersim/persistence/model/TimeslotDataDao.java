@@ -12,4 +12,6 @@ import java.util.List;
 public interface TimeslotDataDao extends GenericDao<TimeslotData>
 {
   public List<TimeslotData> findAll(Long simulationId);
+
+  public int deleteBySimulationId(long simulationId);
 }

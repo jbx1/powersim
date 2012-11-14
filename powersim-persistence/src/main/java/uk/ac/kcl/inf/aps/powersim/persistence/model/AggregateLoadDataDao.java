@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface AggregateLoadDataDao extends GenericDao<AggregateLoadData>
 {
-//  public List<AggregateLoadData> getAggregateLoadDataForSimulation(Long simulationId, Date startTime, Date endTime);
-
   public List<SimulationTimeslotAggregateData> getAggregateLoadDataForSimulation(Long simulationId, Date startTime, Date endTime);
+
+  public int deleteBySimulationId(long simulationId);
 }

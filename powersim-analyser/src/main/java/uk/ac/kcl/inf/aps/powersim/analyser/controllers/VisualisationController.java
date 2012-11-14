@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import uk.ac.kcl.inf.aps.powersim.persistence.model.*;
 
 /**
@@ -24,14 +26,33 @@ public class VisualisationController
   @Autowired
   private HouseholdDataDao householdDataDao;
 
+  @Autowired
+  private AggregateLoadDataDao aggregateLoadDataDao;
+
+  @Autowired
+  private ConsumptionDataDao consumptionDataDao;
+
+  @Autowired
+  private TimeslotDataDao timeslotDataDao;
+
+
   @RequestMapping("/")
-  public String getSimulations(Model model)
+  public String getSimulations(@RequestParam(value="message", required = false) String message, @RequestParam(value="error_message", required = false) String error_message, Model model)
   {
+    if (message != null)
+    {
+      model.addAttribute("message", message);
+    }
+    if (error_message != null)
+    {
+      model.addAttribute("error_message", error_message);
+    }
+
     model.addAttribute("simulations", simulationDataDao.findAll());
     return "simulations";
   }
 
-  @RequestMapping("/{simulationId}")
+  @RequestMapping(value = "/{simulationId}", method = RequestMethod.GET)
   public String getSimulations(@PathVariable Long simulationId, Model model)
   {
     SimulationData simulationData = simulationDataDao.find(simulationId);
@@ -45,8 +66,5 @@ public class VisualisationController
 
     return "simulation";
   }
-
-
-
 
 }

@@ -68,7 +68,36 @@ h2
     margin: 0px;
 }
 
+div#messagearea
+{
+   background-color: #dddddd;
+   margin: 0px;
+   font-size: 14px;
+   overflow: auto;
+}
+
+#message
+{
+   font-weight: normal;
+   font-style: italic;
+   color: #0F3360;
+   padding: 5px;
+}
+
+#error_message
+{
+   padding: 5px;
+   font-weight: bold;
+   font-style: italic;
+   color: #B03030;
+}
+
 div#simulation
+{
+    padding: 10px;
+}
+
+div#simulations
 {
     padding: 10px;
 }
@@ -78,4 +107,43 @@ div#simulation
     margin-top: -50px;
     text-align: right;
     width: 50px;
+}
+
+table#simulationlist
+{
+    border: 0px;
+    font-size: 12px;
+    font-weight: normal;
+    color: #222222;
+    width: 100%;
+    margin-top: 10px;
+}
+
+table#simulationlist a
+{
+    font-weight: normal;
+    text-decoration: none;
+    color: #222222;
+}
+
+table#simulationlist th
+{
+    padding: 5px;
+    background-color: #666666;
+    color: #EEFFFF;
+}
+
+table#simulationlist td
+{
+    padding: 5px;
+}
+
+table#simulationlist tr:nth-child(even)
+{
+    background-color: #dddddd;
+}
+
+table#simulationlist tr:hover
+{
+    background-color: #6FB5F0;
 }

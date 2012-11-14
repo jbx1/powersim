@@ -1,5 +1,8 @@
 package uk.ac.kcl.inf.aps.powersim.persistence.model;
 
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.OnDelete;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -11,9 +14,16 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "timeslots")
-@NamedQueries(
-        @NamedQuery(name = "TimeslotData.findAll", query = "select t from TimeslotData t where t.simulationData.id=:simulationId order by startTime")
-)
+@org.hibernate.annotations.Table(appliesTo = "timeslots", indexes =
+        {
+                @Index(name = "timeslots_simulation_id_idx", columnNames = "simulation_id")
+        })
+@NamedQueries({
+        @NamedQuery(name = "TimeslotData.findAll",
+                query = "select t from TimeslotData t where t.simulationData.id = :simulationId order by startTime"),
+        @NamedQuery(name="TimeslotData.deleteBySimulationId",
+                query = "delete from TimeslotData t where t.simulationData.id = :simulationId")
+})
 public class TimeslotData implements Serializable
 {
   @Id
@@ -28,6 +38,7 @@ public class TimeslotData implements Serializable
 
   @ManyToOne(optional = false, fetch = FetchType.EAGER)
   @JoinColumn(name="simulation_id")
+  @OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
   private SimulationData simulationData;
 
   public Long getId()

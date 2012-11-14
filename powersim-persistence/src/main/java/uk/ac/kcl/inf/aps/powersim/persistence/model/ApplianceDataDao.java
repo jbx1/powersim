@@ -12,4 +12,6 @@ public interface ApplianceDataDao extends GenericDao<ApplianceData>
   public void createBulk(Iterable<ApplianceData> applianceDataList);
 
   public int getApplianceCountForSimulation(long simulationId);
+
+  public int deleteBySimulationId(long simulationId);
 }

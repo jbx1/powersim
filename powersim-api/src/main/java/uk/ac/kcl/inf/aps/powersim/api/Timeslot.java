@@ -47,6 +47,12 @@ public final class Timeslot
     return endTime;
   }
 
+  public long getDuration()
+  {
+    return endTime.getTimeInMillis() - startTime.getTimeInMillis();
+  }
+
+
   @Override
   public String toString()
   {

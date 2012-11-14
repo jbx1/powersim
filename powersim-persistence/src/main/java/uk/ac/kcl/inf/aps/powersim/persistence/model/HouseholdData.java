@@ -1,5 +1,8 @@
 package uk.ac.kcl.inf.aps.powersim.persistence.model;
 
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.OnDelete;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -10,10 +13,16 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "households")
-@NamedQueries(
+@org.hibernate.annotations.Table(appliesTo = "households", indexes =
+        {
+                @Index(name = "households_simulation_id_idx", columnNames = "simulation_id")
+        })
+@NamedQueries({
         @NamedQuery(name="HouseholdData.countForSimulation",
-                query="select count(h) from HouseholdData h where h.simulationData.id=:simulationId")
-)
+                query="select count(h) from HouseholdData h where h.simulationData.id=:simulationId"),
+        @NamedQuery(name="HouseholdData.deleteBySimulationId",
+        query = "delete from HouseholdData h where h.simulationData.id = :simulationId")
+})
 public class HouseholdData implements Serializable
 {
   @Id
@@ -29,6 +38,7 @@ public class HouseholdData implements Serializable
 
   @ManyToOne(optional = false)
   @JoinColumn(name="simulation_id")
+  @OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
   private SimulationData simulationData;
 
   public Long getId()

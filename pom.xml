@@ -29,6 +29,8 @@
     <jackson-mapper-asl.version>1.9.9</jackson-mapper-asl.version>
     <jaxb-api.version>2.2.7</jaxb-api.version>
     <org.apache.velocity.version>1.7</org.apache.velocity.version>
+    <junit.version>4.10</junit.version>
+    <org.apache.commons.commons-math3.version>3.0</org.apache.commons.commons-math3.version>
   </properties>
 
 

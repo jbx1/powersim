@@ -1,3 +1,17 @@
 <div id="masthead">
     <h1>Powersim Analyser</h1>
 </div>
+
+<div id="messagearea">
+#if ($message)
+<div id="message">
+    $message
+</div>
+#end
+
+#if ($error_message)
+<div id="error_message">
+    $error_message
+</div>
+#end
+</div>

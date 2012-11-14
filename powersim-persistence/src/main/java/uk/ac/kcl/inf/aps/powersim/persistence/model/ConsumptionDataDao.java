@@ -10,4 +10,6 @@ import uk.ac.kcl.inf.aps.powersim.persistence.GenericDao;
 public interface ConsumptionDataDao extends GenericDao<ConsumptionData>
 {
   public void createBulk(Iterable<ConsumptionData> consumptionDataList);
+
+  public int deleteBySimulationId(long simulationId);
 }

@@ -34,4 +34,13 @@ public class HouseholdDataDaoImpl extends GenericDaoImpl<HouseholdData> implemen
     query.setParameter("simulationId", simulationId);
     return ((Long) query.getSingleResult()).intValue();
   }
+
+  @Override
+  @Transactional
+  public int deleteBySimulationId(long simulationId)
+  {
+    Query query = em.createNamedQuery("HouseholdData.deleteBySimulationId");
+    query.setParameter("simulationId", simulationId);
+    return query.executeUpdate();
+  }
 }

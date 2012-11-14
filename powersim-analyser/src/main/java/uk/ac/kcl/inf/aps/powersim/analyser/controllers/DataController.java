@@ -3,6 +3,7 @@ package uk.ac.kcl.inf.aps.powersim.analyser.controllers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.kcl.inf.aps.powersim.persistence.model.*;
@@ -28,10 +29,20 @@ final class DataController
   private SimulationDataDao simulationDataDao;
 
   @Autowired
-  private TimeslotDataDao timeslotDataDao;
+  private ApplianceDataDao applianceDataDao;
+
+  @Autowired
+  private HouseholdDataDao householdDataDao;
 
   @Autowired
   private AggregateLoadDataDao aggregateLoadDataDao;
+
+  @Autowired
+  private ConsumptionDataDao consumptionDataDao;
+
+  @Autowired
+  private TimeslotDataDao timeslotDataDao;
+
 
   // SimpleDateFormat is not thread-safe, so give one to each thread
   private static final ThreadLocal<SimpleDateFormat> sdf = new ThreadLocal<SimpleDateFormat>()
@@ -86,10 +97,51 @@ final class DataController
     return data;
   }
 
+  @RequestMapping(value = "/{simulationId}", method = RequestMethod.DELETE, produces = "application/json")
+  @ResponseBody
+  public final String deleteSimulation(@PathVariable Long simulationId)
+          throws Exception
+  {
+    try
+    {
+      SimulationData simulationData = simulationDataDao.find(simulationId);
+      if (simulationData == null)
+      {
+        log.warn("Unable to delete simulation, it does not exist.");
+        throw new Exception( "Error: Unable to delete simulation, it does not exist");
+      }
+
+      if (simulationData.getActualEndTime() == null)
+      {
+        log.warn("Unable to delete simulation, it is still in progress.");
+        throw new Exception("Error: Unable to delete simulation, it is still in progress");
+      }
+
+      log.info("Deleting data for simuation {}",simulationId);
+      simulationDataDao.delete(simulationId);
+      log.info("Simulation {} data deleted.", simulationId);
+    }
+    catch (Exception ex)
+    {
+      log.error("Error deleting simulation data", ex);
+      throw ex;
+    }
+
+    return "Simulation " + simulationId + " Data Deleted!";
+  }
+
+  @ExceptionHandler (Exception.class)
+  @ResponseStatus (HttpStatus.INTERNAL_SERVER_ERROR)
+  @ResponseBody
+  public final String handleAllExceptions(Exception ex)
+  {
+    log.debug("Handling Exception Return the error message.");
+    return ex.getMessage();
+  }
+
   private String formatDate(Date date)
   {
     return sdf.get().format(date);
   }
-
 }
 

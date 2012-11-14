@@ -32,7 +32,7 @@
 
         <property name="jpaProperties">
             <props>
-                <prop key="hibernate.hbm2ddl.auto">validate</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</prop>
 
 <!--                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
@@ -83,9 +83,11 @@
 
 
     <bean id="simulator" class="uk.ac.kcl.inf.aps.powersim.simulator.SimulatorImpl">
+        <constructor-arg name="name" value="1000 household 18 appliances" />
+        <constructor-arg name="timeslotDuration" value="60000" />
         <property name="policies">
             <list>
-                <bean name="simplePolicy" class="uk.ac.kcl.inf.aps.powersim.policies.simpleonoff.SimpleConsumerPolicy">
+                <bean name="simplePolicy" class="uk.ac.kcl.inf.aps.powersim.policies.ondemand.EnergyOnDemandPolicy">
                     <constructor-arg name="householdCount" value="1000" />
                 </bean>
             </list>

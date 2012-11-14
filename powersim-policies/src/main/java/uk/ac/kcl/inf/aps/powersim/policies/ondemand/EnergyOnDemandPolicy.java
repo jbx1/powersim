@@ -1,4 +1,4 @@
-package uk.ac.kcl.inf.aps.powersim.policies.simpleonoff;
+package uk.ac.kcl.inf.aps.powersim.policies.ondemand;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,21 +11,19 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * A simple test consumer policy.
- * Creates 1000 households each with a number of appliances and randomly switches them on and off.
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
- *         Date: 19/10/12
- *         Time: 14:01
+ *         Date: 09/11/12
+ *         Time: 16:46
  */
-public class SimpleConsumerPolicy implements Policy
+public class EnergyOnDemandPolicy implements Policy
 {
-  protected static final Logger log = LoggerFactory.getLogger(SimpleConsumerPolicy.class);
+  protected static final Logger log = LoggerFactory.getLogger(EnergyOnDemandPolicy.class);
 
-  private List<SimpleHousehold> households;
+  private List<EnergyOnDemandHousehold> households;
 
   private int householdCount = 0;
 
-  public SimpleConsumerPolicy(int householdCount)
+  public EnergyOnDemandPolicy(int householdCount)
   {
     this.householdCount = householdCount;
   }
@@ -39,11 +37,10 @@ public class SimpleConsumerPolicy implements Policy
   public List<? extends Household> setup()
   {
     //create 100 households
-    log.debug("Creating {} households", householdCount);
     households = new ArrayList<>(householdCount);
     for (int i = 0; i < householdCount; i++)
     {
-      households.add(new SimpleHousehold(UUID.randomUUID().toString(), "default", this));
+      households.add(new EnergyOnDemandHousehold(UUID.randomUUID().toString(), "default", this));
     }
 
     return households;
@@ -53,10 +50,10 @@ public class SimpleConsumerPolicy implements Policy
   public void handleTimeSlot(SimulationContext context)
   {
     //todo: handle multithreading
-    for (SimpleHousehold household : households)
+    for (EnergyOnDemandHousehold household : households)
     {
-   //   log.debug("Handling household {} ", household.getUid());
-      household.handleTimeslot(context);
+      //   log.debug("Handling household {} ", household.getUid());
+      household.consumeTimeSlot(context);
     }
   }
 
@@ -70,17 +67,18 @@ public class SimpleConsumerPolicy implements Policy
   @Override
   public String getDescriptor()
   {
-    return "simple-consumer-policy";
+    return "energy-on-demand-policy";
   }
 
   @Override
   public String toString()
   {
     final StringBuilder sb = new StringBuilder();
-    sb.append("SimpleConsumerPolicy");
+    sb.append("EnergyOnDemandPolicy");
     sb.append("{descriptor=").append(getDescriptor());
     sb.append(", householdCount=").append(householdCount);
     sb.append('}');
     return sb.toString();
   }
+
 }

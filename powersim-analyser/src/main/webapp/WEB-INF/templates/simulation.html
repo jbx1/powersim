@@ -4,6 +4,30 @@
     <link rel="stylesheet" href="../../css/powersim.css" type="text/css">
     <script type="text/javascript" src="../../js/jquery-1.8.2.min.js"></script>
     <script type="text/javascript" src="../../js/dygraph-combined.js"></script>
+    <script type="text/javascript" language="JavaScript1.5">
+        function deleteSimulation(simulation_id)
+        {
+            if (confirm('Are you sure you want to delete simulation ' + simulation_id + '?'))
+            {
+                $.ajax(
+                {
+                    url: './data/'+simulation_id,
+                    type: 'delete',
+                    dataType: 'text',
+                    success: function(message)
+                    {
+                        $('#messagearea').html('<div id="message">' + message + '</div>');
+                        window.location.replace('./?message='+message);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError)
+                    {
+                        $('#messagearea').html('<div id="error_message">' + thrownError + '</div>');
+                    }
+                });
+            }
+        };
+    </script>
+
     <script>
         simulation_id = $simulation.getId();
     </script>
@@ -15,6 +39,7 @@
     <div id="siminfo">
         <h2>Simulation: $simulation.getName() [$simulation.getId()]</h2>
         <a href="../simulations/">Back to Simulation list</a>
+        <td><a href="#" onclick="deleteSimulation($simulation.getId())">Delete Simulation</a></td>
 
         <div id="data">
             <table cellpadding="2" cellspacing="1">
@@ -82,16 +107,16 @@
     <script>
         $(document).ready(function()
         {
-        $.getJSON('./data/'+simulation_id, function(simdata)
-        {
-        var i;
-        for (i = 0; i < simdata.length; i++)
-        {
-        simdata[i][0] = new Date(simdata[i][0]);
-        }
+            $.getJSON('./data/'+simulation_id, function(simdata)
+            {
+                var i;
+                for (i = 0; i < simdata.length; i++)
+                {
+                    simdata[i][0] = new Date(simdata[i][0]);
+                }
 
-        graph.updateOptions({file : simdata});
-        });
+                graph.updateOptions({file : simdata});
+            });
         });
     </script>
     </div>

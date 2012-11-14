@@ -34,5 +34,12 @@ public class ApplianceDataDaoImpl extends GenericDaoImpl<ApplianceData> implemen
     return ((Long) query.getSingleResult()).intValue();
   }
 
-
+  @Override
+  @Transactional
+  public int deleteBySimulationId(long simulationId)
+  {
+    Query query = em.createNamedQuery("ApplianceData.deleteBySimulationId");
+    query.setParameter("simulationId", simulationId);
+    return query.executeUpdate();
+  }
 }

@@ -7,9 +7,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import uk.ac.kcl.inf.aps.powersim.api.*;
 import uk.ac.kcl.inf.aps.powersim.persistence.model.*;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static uk.ac.kcl.inf.aps.powersim.simulator.Constants.DEFAULT_TIMESLOT_DURATION;
 
 /**
  * @author Josef Bajada <josef.bajada@kcl.ac.uk>
@@ -26,10 +25,26 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
   private Map<String, HouseholdData> householdDataMap = new TreeMap<>();
   private Map<String, ApplianceData> applianceDataMap = new TreeMap<>();
 
+
+
+  private static final ThreadLocal<SimpleDateFormat> sdf = new ThreadLocal<SimpleDateFormat>()
+  {
+    @Override
+    protected SimpleDateFormat initialValue()
+    {
+      return new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    }
+  };
+
+  /**
+   * Name of the simulation.
+   */
+  private final String name;
+
   /**
    * Duration of each timeslot (in milliseconds)
    */
-  private long timeslotDuration = DEFAULT_TIMESLOT_DURATION;
+  private final long timeslotDuration;
 
   /**
    * The current simulation data.
@@ -45,7 +60,6 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
    * The time slot currently being simulated
    */
   private Timeslot currentTimeSlot;
-
 
   /**
    * The database entity representing the current timeslot.
@@ -86,8 +100,16 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
 
   //todo: configuration (time intervals, duration, etc.) use YAML?
 
-  public SimulatorImpl()
+
+  public SimulatorImpl(String name, long timeslotDuration)
   {
+    this.name = name;
+    this.timeslotDuration = timeslotDuration;
+  }
+
+  public String getName()
+  {
+    return name;
   }
 
   public void start()
@@ -106,7 +128,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     //todo: get the start time of the timeslot from configuration
     long simulatedStart = actualStart;
 
-    this.simulationData = registerSimulation("Simulation 1000 houses with 20 appliances for 24hrs (1 minute granularity)", new Date(actualStart), new Date(simulatedStart));
+    this.simulationData = registerSimulation(getName(), new Date(actualStart), new Date(simulatedStart));
 
     for (Policy policy : policies)
     {
@@ -151,7 +173,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
         //wait at most 1 second for a policy to be ready
         policy.ready(1000); //todo: configurable
       }
-      log.debug("All policies complete from timeslot {}", timeslotCount);
+      log.debug("All policies complete from timeslot {} simulated current time {}", timeslotCount, sdf.get().format(currentTimeSlot.getEndTime().getTime()));
 
       log.trace("Flushing any remaining deferred consumption events ");
       deferredConsumptionEventDao.flushDeferred();
@@ -313,12 +335,6 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     timeslotDataDao.create(timeslotData);
 
     return timeslotData;
-  }
-
-  @Override
-  public String getName()
-  {
-    return getSimulationData().getName();
   }
 
   @Override

@@ -1,18 +1,55 @@
 <html>
 <head>
-    <title>Powersim Analyser</title>
+    <title>Powersim Analyser - Simulations</title>
     <link rel="stylesheet" href="../css/powersim.css" type="text/css">
+    <script type="text/javascript" src="../../js/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="../../js/dygraph-combined.js"></script>
+
+    <script type="text/javascript" language="JavaScript1.5">
+        function deleteSimulation(simulation_id)
+        {
+            if (confirm('Are you sure you want to delete simulation ' + simulation_id + '?'))
+            {
+                $.ajax(
+                {
+                    url: './data/'+simulation_id,
+                    type: 'delete',
+                    dataType: 'text',
+                    success: function(message)
+                    {
+                        $('#messagearea').html('<div id="message">' + message + '</div>');
+                        window.location.replace('./?message='+message);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError)
+                    {
+                        $('#messagearea').html('<div id="error_message">' + xhr.responseText + '</div>');
+                    }
+               });
+            }
+        };
+
+    </script>
 </head>
 <body>
 <div id="content">
     #parse("masthead.html")
-    <ul>
-    #foreach( $simulation in $simulations )
-        <li>
-            <a href="./$simulation.getId()">$simulation.getName() [$simulation.getId()]</a>
-        </li>
-    #end
-    </ul>
+
+    <div id="simulations">
+
+        <h2>Simulation Data Available</h2>
+
+        <table id="simulationlist" border="0" cellpadding="2" cellspacing="0">
+            <tr><th>ID</th><th>Simulation Name</th><th>Actions</th></tr>
+        #foreach( $simulation in $simulations )
+
+            <tr>
+                <td>$simulation.getId()</td>
+                <td><a href="./$simulation.getId()">$simulation.getName()</a></td>
+                <td><a href="#" onclick="deleteSimulation($simulation.getId())">Delete</a></td>
+            </tr>
+        #end
+        </table>
+    </div>
 </div>
 </body>
 <html>

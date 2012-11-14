@@ -9,7 +9,7 @@ import java.util.List;
  *         Date: 15/10/12
  *         Time: 17:55
  */
-public interface Policy
+public interface Policy extends SimulationTimeslotListener
 {
   /**
    * Informs the policy that the simulation is about to start.
@@ -20,13 +20,6 @@ public interface Policy
    * Note: In the current version an appliance cannot move between households.
    */
   public List<? extends Household> setup();
-
-  /**
-   * Notifies the policy that a new time tick of the simulation has commenced.
-   * This method will return immediately and the time tick will be handled asynchronously.
-   * @param context - The SimulatorImpl Context, including date, time and any other conditions to which the policy must react.
-   */
-  public void handleTimeSlot(SimulationContext context);
 
   /**
    * Determines whether the policy has completed all the tasks needed for the current time tick.

@@ -1,5 +1,8 @@
 package uk.ac.kcl.inf.aps.powersim.persistence.model;
 
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.OnDelete;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -10,6 +13,15 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name="consumption")
+@org.hibernate.annotations.Table(appliesTo = "consumption", indexes =
+        {
+                @Index(name = "consumption_appliance_id_idx", columnNames = "appliance_id"),
+                @Index(name = "consumption_timeslot_id_idx", columnNames = "timeslot_id")
+        })
+@NamedQueries(
+        @NamedQuery(name="ConsumptionData.deleteBySimulationId",
+                query = "delete from ConsumptionData c where c.timeslotData.simulationData.id = :simulationId")
+)
 public class ConsumptionData implements Serializable
 {
   @Id
@@ -18,10 +30,12 @@ public class ConsumptionData implements Serializable
 
   @ManyToOne(optional = false)
   @JoinColumn(name="appliance_id")
+  @OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
   private ApplianceData appliance;
 
   @ManyToOne(optional = false)
   @JoinColumn(name="timeslot_id")
+  @OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
   private TimeslotData timeslotData;
 
   @Column(nullable = false)

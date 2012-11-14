@@ -1,6 +1,10 @@
 package uk.ac.kcl.inf.aps.powersim.persistence.model;
 
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.OnDelete;
+
 import javax.persistence.*;
+
 
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
@@ -9,12 +13,20 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "aggregate_load")
-@NamedQueries(
+@org.hibernate.annotations.Table(appliesTo = "aggregate_load", indexes =
+        {
+                @Index(name = "aggregate_load_timeslot_id_idx", columnNames = "timeslot_id")
+        })
+@NamedQueries({
         @NamedQuery(name="AggregateLoadData.getAggregateLoadForSimulation",
         query="select new uk.ac.kcl.inf.aps.powersim.persistence.reporting.SimulationTimeslotAggregateData(t.startTime, t.endTime, a.consumed, a.generated) " +
                 "from AggregateLoadData a JOIN a.timeslotData t " +
                 "where t.simulationData.id = :simulationId " +
-                "order by t.startTime")
+                "order by t.startTime"),
+
+        @NamedQuery(name="AggregateLoadData.deleteBySimulationId",
+                query = "delete from AggregateLoadData a where a.timeslotData.simulationData.id = :simulationId")
+}
 )
 public class AggregateLoadData
 {
@@ -30,6 +42,7 @@ public class AggregateLoadData
 
   @ManyToOne(optional = false, fetch = FetchType.EAGER)
   @JoinColumn(name="timeslot_id")
+  @OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
   private TimeslotData timeslotData;
 
   public Long getId()
