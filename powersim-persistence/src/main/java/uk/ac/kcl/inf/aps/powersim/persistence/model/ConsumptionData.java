@@ -14,14 +14,27 @@ import java.io.Serializable;
 @Entity
 @Table(name="consumption")
 @org.hibernate.annotations.Table(appliesTo = "consumption", indexes =
-        {
-                @Index(name = "consumption_appliance_id_idx", columnNames = "appliance_id"),
-                @Index(name = "consumption_timeslot_id_idx", columnNames = "timeslot_id")
-        })
-@NamedQueries(
+{
+      @Index(name = "consumption_appliance_id_idx", columnNames = "appliance_id"),
+      @Index(name = "consumption_timeslot_id_idx", columnNames = "timeslot_id"),
+      @Index(name = "consumption_household_id_idx", columnNames = "household_id")
+})
+@NamedQueries({
+        @NamedQuery(name="ConsumptionData.getConsumptionForHousehold",
+                query = "select new uk.ac.kcl.inf.aps.powersim.persistence.reporting.TimeslotConsumptionData(t.id, t.startTime, t.endTime, c.loadWatts) " +
+                        "from ConsumptionData c JOIN c.timeslotData t " +
+                        "where c.householdData.id = :householdId " +
+                        "order by t.id"),
+
+        @NamedQuery(name="ConsumptionData.getConsumptionForAppliance",
+                query = "select new uk.ac.kcl.inf.aps.powersim.persistence.reporting.TimeslotConsumptionData(t.id, t.startTime, t.endTime, c.loadWatts) " +
+                        "from ConsumptionData c JOIN c.timeslotData t " +
+                        "where c.applianceData.id = :applianceId " +
+                        "order by t.id"),
+
         @NamedQuery(name="ConsumptionData.deleteBySimulationId",
                 query = "delete from ConsumptionData c where c.timeslotData.simulationData.id = :simulationId")
-)
+})
 public class ConsumptionData implements Serializable
 {
   @Id
@@ -29,9 +42,14 @@ public class ConsumptionData implements Serializable
   private Long id;
 
   @ManyToOne(optional = false)
+  @JoinColumn(name="household_id")
+  @OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
+  private HouseholdData householdData;
+
+  @ManyToOne(optional = false)
   @JoinColumn(name="appliance_id")
   @OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
-  private ApplianceData appliance;
+  private ApplianceData applianceData;
 
   @ManyToOne(optional = false)
   @JoinColumn(name="timeslot_id")
@@ -51,14 +69,14 @@ public class ConsumptionData implements Serializable
     this.id = id;
   }
 
-  public ApplianceData getAppliance()
+  public ApplianceData getApplianceData()
   {
-    return appliance;
+    return applianceData;
   }
 
-  public void setAppliance(ApplianceData appliance)
+  public void setApplianceData(ApplianceData applianceData)
   {
-    this.appliance = appliance;
+    this.applianceData = applianceData;
   }
 
   public TimeslotData getTimeslotData()
@@ -76,6 +94,17 @@ public class ConsumptionData implements Serializable
     return loadWatts;
   }
 
+  public HouseholdData getHouseholdData()
+  {
+    return householdData;
+  }
+
+  public void setHouseholdData(HouseholdData householdData)
+  {
+    this.householdData = householdData;
+  }
+
+
   public void setLoadWatts(Long loadWatts)
   {
     this.loadWatts = loadWatts;
@@ -87,7 +116,8 @@ public class ConsumptionData implements Serializable
     final StringBuilder sb = new StringBuilder();
     sb.append("ConsumptionData");
     sb.append("{id=").append(id);
-    sb.append(", appliance=").append(appliance);
+    sb.append(", applianceData=").append(applianceData);
+    sb.append(", householdData=").append(householdData);
     sb.append(", timeslotData=").append(timeslotData);
     sb.append(", loadWatts=").append(loadWatts);
     sb.append('}');

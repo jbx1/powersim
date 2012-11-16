@@ -52,6 +52,11 @@ public final class Timeslot
     return endTime.getTimeInMillis() - startTime.getTimeInMillis();
   }
 
+  public long getMidTimeInMillis()
+  {
+    return (endTime.getTimeInMillis() + startTime.getTimeInMillis()) / 2;
+  }
+
 
   @Override
   public String toString()

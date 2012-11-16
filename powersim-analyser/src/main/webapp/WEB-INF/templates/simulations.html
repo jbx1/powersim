@@ -39,12 +39,14 @@
         <h2>Simulation Data Available</h2>
 
         <table id="simulationlist" border="0" cellpadding="2" cellspacing="0">
-            <tr><th>ID</th><th>Simulation Name</th><th>Actions</th></tr>
+            <tr><th>ID</th><th>Simulation Name</th><th>Simulated Start Date/Time</th><th>Simulated End Date/Time</th><th>Actions</th></tr>
         #foreach( $simulation in $simulations )
 
             <tr>
                 <td>$simulation.getId()</td>
                 <td><a href="./$simulation.getId()">$simulation.getName()</a></td>
+                <td>$simulation.getSimulatedStartTime()</td>
+                <td>$simulation.getActualStartTime()</td>
                 <td><a href="#" onclick="deleteSimulation($simulation.getId())">Delete</a></td>
             </tr>
         #end

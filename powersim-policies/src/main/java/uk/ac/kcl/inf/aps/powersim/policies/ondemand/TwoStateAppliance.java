@@ -2,9 +2,7 @@ package uk.ac.kcl.inf.aps.powersim.policies.ondemand;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.kcl.inf.aps.powersim.api.Appliance;
 import uk.ac.kcl.inf.aps.powersim.api.SimulationContext;
-import uk.ac.kcl.inf.aps.powersim.api.SimulationTimeslotConsumer;
 import uk.ac.kcl.inf.aps.powersim.api.Timeslot;
 import uk.ac.kcl.inf.aps.powersim.policies.stochastic.NonHomogenousPoissonProcess;
 import uk.ac.kcl.inf.aps.powersim.policies.stochastic.NormalDistProcess;
@@ -22,7 +20,7 @@ import java.util.Calendar;
  *         Date: 09/11/12
  *         Time: 17:06
  */
-public class TwoStateAppliance extends Appliance implements SimulationTimeslotConsumer
+public class TwoStateAppliance extends EnergyOnDemandAppliance
 {
   protected static final Logger log = LoggerFactory.getLogger(TwoStateAppliance.class);
 
@@ -174,7 +172,7 @@ public class TwoStateAppliance extends Appliance implements SimulationTimeslotCo
     return false;
   }
 
-  public static TwoStateAppliance getNHPoissonNormalDistInstance(String uuid, String name, ApplianceUsageRating usageRating)
+  public static TwoStateAppliance getInstance(String uuid, String name, TwoStateApplianceUsageRating usageRating)
   {
     TwoStateAppliance appliance = new TwoStateAppliance(uuid, name,
             usageRating.getOnWattage(), usageRating.getOffWattage(),

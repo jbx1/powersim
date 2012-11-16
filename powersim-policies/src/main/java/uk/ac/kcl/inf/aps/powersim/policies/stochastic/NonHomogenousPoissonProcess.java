@@ -135,8 +135,8 @@ public class NonHomogenousPoissonProcess implements StochasticProcess
 
     //todo: check if the floating point operations can be changed to integer (change the rate per second?)
     //determine the x for which we want to calculate y
-    double minuteIncr = time.get(Calendar.MINUTE) / 60;
-    double secondIncr = time.get(Calendar.SECOND) / 3600;
+    double minuteIncr = (double) time.get(Calendar.MINUTE) / 60;
+    double secondIncr = (double) time.get(Calendar.SECOND) / 3600;
     double inputX = hour + minuteIncr + secondIncr;
 
     //inputX is currently for the startTime of the timeslot, but we want it for the mid point of the duration

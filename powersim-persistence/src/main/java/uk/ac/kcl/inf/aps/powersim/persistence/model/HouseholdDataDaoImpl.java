@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.ac.kcl.inf.aps.powersim.persistence.GenericDaoImpl;
 
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 /**
@@ -33,6 +34,17 @@ public class HouseholdDataDaoImpl extends GenericDaoImpl<HouseholdData> implemen
     Query query = em.createNamedQuery("HouseholdData.countForSimulation");
     query.setParameter("simulationId", simulationId);
     return ((Long) query.getSingleResult()).intValue();
+  }
+
+  @Override
+  public List<HouseholdData> getHouseholdsForSimulation(long simulationId, int offset, int limit)
+  {
+    TypedQuery<HouseholdData> query = em.createNamedQuery("HouseholdData.getForSimulation", HouseholdData.class);
+    query.setParameter("simulationId", simulationId);
+    query.setFirstResult(offset);
+    query.setMaxResults(limit);
+
+    return query.getResultList();
   }
 
   @Override

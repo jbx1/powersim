@@ -11,18 +11,18 @@ import java.util.Map;
  *         Date: 13/11/12
  *         Time: 12:02
  */
-public enum ApplianceUsageRating
+public enum TwoStateApplianceUsageRating
 {
-  LAPTOP (50, 0, 120, 20, ApplianceSwitchOnFreq.LAPTOP),
-  FRIDGE (800, 50, 2, 0.5, ApplianceSwitchOnFreq.FRIDGE),
-  WASHING_MACHINE (600, 0, 40, 2, ApplianceSwitchOnFreq.WASHING_MACHINE),
-  AQUARIUM (500, 5, 5, 0.5, ApplianceSwitchOnFreq.AQUARIUM),
-  KETTLE (1200, 0, 4, 0.3, ApplianceSwitchOnFreq.KETTLE),
-  TV (110, 0, 240, 20, ApplianceSwitchOnFreq.TV),
-  TOASTER (1000, 0, 5, 0.1, ApplianceSwitchOnFreq.TOASTER),
-  OVEN (1200, 0, 45, 10, ApplianceSwitchOnFreq.OVEN),
-  DISHWASHER (1500, 0, 120, 25, ApplianceSwitchOnFreq.DISHWASHER),
-  LIGHT (10, 0, 60, 18, ApplianceSwitchOnFreq.LIGHT);
+  LAPTOP (50, 0, 120, 20, TwoStateApplianceSwitchOnFreq.LAPTOP),
+  FRIDGE (800, 50, 2, 0.5, TwoStateApplianceSwitchOnFreq.FRIDGE),
+  WASHING_MACHINE (600, 0, 40, 2, TwoStateApplianceSwitchOnFreq.WASHING_MACHINE),
+  AQUARIUM (500, 5, 5, 0.5, TwoStateApplianceSwitchOnFreq.AQUARIUM),
+  KETTLE (1200, 0, 4, 0.3, TwoStateApplianceSwitchOnFreq.KETTLE),
+  TV (110, 0, 240, 20, TwoStateApplianceSwitchOnFreq.TV),
+  TOASTER (1000, 0, 5, 0.1, TwoStateApplianceSwitchOnFreq.TOASTER),
+  OVEN (1200, 0, 45, 10, TwoStateApplianceSwitchOnFreq.OVEN),
+  DISHWASHER (1500, 0, 120, 25, TwoStateApplianceSwitchOnFreq.DISHWASHER),
+  LIGHT (10, 0, 60, 18, TwoStateApplianceSwitchOnFreq.LIGHT);
 
   private final long onWattage;
   private final long offWattage;
@@ -30,7 +30,7 @@ public enum ApplianceUsageRating
   private final double stdDev;
   private Map<Integer, Double> mapSwitchOnFreq;
 
-  private ApplianceUsageRating(long onWattage, long offWattage, int meanDurationMins, double stdDev, Map<Integer, Double> mapSwitchOnFreq)
+  private TwoStateApplianceUsageRating(long onWattage, long offWattage, int meanDurationMins, double stdDev, Map<Integer, Double> mapSwitchOnFreq)
   {
     this.onWattage = onWattage;
     this.offWattage = offWattage;
@@ -68,7 +68,7 @@ public enum ApplianceUsageRating
   public String toString()
   {
     final StringBuilder sb = new StringBuilder();
-    sb.append("ApplianceUsageRating");
+    sb.append("TwoStateApplianceUsageRating");
     sb.append("{").append(this.name());
     sb.append(", onWattage=").append(onWattage);
     sb.append(", offWattage=").append(offWattage);

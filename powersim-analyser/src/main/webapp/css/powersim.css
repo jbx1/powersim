@@ -138,6 +138,11 @@ table#simulationlist td
     padding: 5px;
 }
 
+table#simulationlist td a
+{
+    font-weight: bold;
+}
+
 table#simulationlist tr:nth-child(even)
 {
     background-color: #dddddd;

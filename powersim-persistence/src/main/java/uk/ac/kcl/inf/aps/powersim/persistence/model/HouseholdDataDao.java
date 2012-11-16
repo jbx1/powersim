@@ -15,5 +15,7 @@ public interface HouseholdDataDao extends GenericDao<HouseholdData>
 
   public int getHouseholdCountForSimulation(long simulationId);
 
+  public List<HouseholdData> getHouseholdsForSimulation(long simulationId, int offset, int limit);
+
   public int deleteBySimulationId(long simulationId);
 }

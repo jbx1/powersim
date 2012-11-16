@@ -21,5 +21,9 @@ public interface DeferredConsumptionEventDao
 
   public void createDeferredApplianceData(ApplianceData applianceData);
 
+  public void turnOnConsumptionIndexes();
+
+  public void turnOffConsumptionIndexes();
+
   public void shutdown();
 }

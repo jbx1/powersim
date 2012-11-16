@@ -15,13 +15,17 @@ import java.io.Serializable;
 @Table(name="appliances")
 @org.hibernate.annotations.Table(appliesTo = "appliances", indexes =
         {
-                @Index(name = "appliances_household_id_idx", columnNames = "household_id")
+                @Index(name = "appliances_simulation_id_idx", columnNames = "simulation_id")
         })
 @NamedQueries({
         @NamedQuery(name = "ApplianceData.countForSimulation",
-                query = "select count(a) from ApplianceData a where a.householdData.simulationData.id=:simulationId"),
+                query = "select count(a) from ApplianceData a where a.simulationData.id = :simulationId"),
+
+        @NamedQuery(name = "ApplianceData.getForHousehold",
+                query = "select a from ApplianceData a, ConsumptionData c where c.applianceData.id = a.id and c.householdData.id = :householdId"),
+
         @NamedQuery(name="ApplianceData.deleteBySimulationId",
-                query = "delete from ApplianceData a where a.householdData.simulationData.id = :simulationId")
+                query = "delete from ApplianceData a where a.simulationData.id = :simulationId")
 
 })
 public class ApplianceData implements Serializable
@@ -35,10 +39,10 @@ public class ApplianceData implements Serializable
 
   private String type;
 
-  @ManyToOne(optional = false, fetch = FetchType.EAGER)
-  @JoinColumn(name="household_id")
+  @ManyToOne(optional = false)
+  @JoinColumn(name="simulation_id")
   @OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
-  private HouseholdData householdData;
+  private SimulationData simulationData;
 
   public Long getId()
   {
@@ -60,16 +64,6 @@ public class ApplianceData implements Serializable
     this.type = type;
   }
 
-  public HouseholdData getHouseholdData()
-  {
-    return householdData;
-  }
-
-  public void setHouseholdData(HouseholdData householdData)
-  {
-    this.householdData = householdData;
-  }
-
   public String getReferenceId()
   {
     return referenceId;
@@ -80,6 +74,16 @@ public class ApplianceData implements Serializable
     this.referenceId = referenceId;
   }
 
+  public SimulationData getSimulationData()
+  {
+    return simulationData;
+  }
+
+  public void setSimulationData(SimulationData simulationData)
+  {
+    this.simulationData = simulationData;
+  }
+
   @Override
   public String toString()
   {
@@ -88,7 +92,7 @@ public class ApplianceData implements Serializable
     sb.append("{id=").append(id);
     sb.append(", referenceId='").append(referenceId).append('\'');
     sb.append(", type='").append(type).append('\'');
-    sb.append(", householdData=").append(householdData);
+    sb.append(", simulationData=").append(simulationData);
     sb.append('}');
     return sb.toString();
   }

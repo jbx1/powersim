@@ -5,8 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.kcl.inf.aps.powersim.persistence.GenericDaoImpl;
+import uk.ac.kcl.inf.aps.powersim.persistence.reporting.TimeslotConsumptionData;
 
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
@@ -39,4 +42,21 @@ public class ConsumptionDataDaoImpl extends GenericDaoImpl<ConsumptionData> impl
     query.setParameter("simulationId", simulationId);
     return query.executeUpdate();
   }
+
+  @Override
+  public List<TimeslotConsumptionData> getConsumptionDataForHousehold(Long householdId)
+  {
+    TypedQuery<TimeslotConsumptionData> query = em.createNamedQuery("ConsumptionData.getConsumptionForHousehold", TimeslotConsumptionData.class);
+    query.setParameter("householdId", householdId);
+    return query.getResultList();
+  }
+
+  @Override
+  public List<TimeslotConsumptionData> getConsumptionDataForAppliance(Long applianceId)
+  {
+    TypedQuery<TimeslotConsumptionData> query = em.createNamedQuery("ConsumptionData.getConsumptionForAppliance", TimeslotConsumptionData.class);
+    query.setParameter("applianceId", applianceId);
+    return query.getResultList();
+  }
+
 }

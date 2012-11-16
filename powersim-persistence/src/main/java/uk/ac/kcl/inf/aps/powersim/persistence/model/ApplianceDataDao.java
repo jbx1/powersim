@@ -2,6 +2,8 @@ package uk.ac.kcl.inf.aps.powersim.persistence.model;
 
 import uk.ac.kcl.inf.aps.powersim.persistence.GenericDao;
 
+import java.util.List;
+
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
  *         Date: 17/10/12
@@ -14,4 +16,6 @@ public interface ApplianceDataDao extends GenericDao<ApplianceData>
   public int getApplianceCountForSimulation(long simulationId);
 
   public int deleteBySimulationId(long simulationId);
+
+  public List<ApplianceData> getAppliancesForHousehold(long householdId, int offset, int limit);
 }

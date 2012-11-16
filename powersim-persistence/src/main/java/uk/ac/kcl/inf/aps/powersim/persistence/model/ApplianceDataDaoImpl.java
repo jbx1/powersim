@@ -5,6 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.ac.kcl.inf.aps.powersim.persistence.GenericDaoImpl;
 
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
@@ -41,5 +43,16 @@ public class ApplianceDataDaoImpl extends GenericDaoImpl<ApplianceData> implemen
     Query query = em.createNamedQuery("ApplianceData.deleteBySimulationId");
     query.setParameter("simulationId", simulationId);
     return query.executeUpdate();
+  }
+
+  @Override
+  public List<ApplianceData> getAppliancesForHousehold(long householdId, int offset, int limit)
+  {
+    TypedQuery<ApplianceData> query = em.createNamedQuery("ApplianceData.getForHousehold", ApplianceData.class);
+    query.setParameter("householdId", householdId);
+    query.setFirstResult(offset);
+    query.setMaxResults(limit);
+
+    return query.getResultList();
   }
 }

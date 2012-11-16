@@ -20,6 +20,10 @@ import java.io.Serializable;
 @NamedQueries({
         @NamedQuery(name="HouseholdData.countForSimulation",
                 query="select count(h) from HouseholdData h where h.simulationData.id=:simulationId"),
+
+        @NamedQuery(name="HouseholdData.getForSimulation",
+                query="select h from HouseholdData h where h.simulationData.id=:simulationId order by h.referenceId"),
+
         @NamedQuery(name="HouseholdData.deleteBySimulationId",
         query = "delete from HouseholdData h where h.simulationData.id = :simulationId")
 })

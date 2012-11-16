@@ -6,12 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import uk.ac.kcl.inf.aps.powersim.analyser.utilities.ConsumptionAggregate;
 import uk.ac.kcl.inf.aps.powersim.persistence.model.*;
 import uk.ac.kcl.inf.aps.powersim.persistence.reporting.SimulationTimeslotAggregateData;
+import uk.ac.kcl.inf.aps.powersim.persistence.reporting.TimeslotConsumptionData;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * Controller that provides REST style data about the simuations
@@ -61,15 +65,6 @@ final class DataController
     return simulationDataDao.findAll();
   }
 
-/*  @RequestMapping(value = "/{simulationId}/timeslots", method = RequestMethod.GET, produces = "application/json")
-  @ResponseBody
-  public final List<TimeslotData> getTimeslotsForSimulation(@PathVariable("simulationId") Long simulationId)
-  {
-    log.info("Retrieving timeslots for simulation {}", simulationId);
-    List<TimeslotData> timeslotDataList = timeslotDataDao.findAll(simulationId);
-    log.info("Retrieved {} rows", timeslotDataList.size());
-    return timeslotDataList;
-  }*/
 
   @RequestMapping(value = "/{simulationId}", method = RequestMethod.GET, produces = "application/json")
   @ResponseBody
@@ -97,6 +92,84 @@ final class DataController
     return data;
   }
 
+  @RequestMapping(value = "/{simulationId}/households", method = RequestMethod.GET, produces = "application/json")
+  @ResponseBody
+  public final List<HouseholdData> getSimulationHouseholds(@PathVariable("simulationId") Long simulationId,
+                                            @RequestParam(value="offset", required = false, defaultValue = "0") int offset,
+                                            @RequestParam(value="limit", required = false, defaultValue = "25") int limit)
+  {
+    log.info("Retrieving list of households for simulation {}", simulationId);
+    return householdDataDao.getHouseholdsForSimulation(simulationId, offset, limit);
+  }
+
+
+  @RequestMapping(value = "/{simulationId}/households/{householdId}", method = RequestMethod.GET, produces = "application/json")
+  @ResponseBody
+  public final Object[][] getSimulationDataForHousehold(@PathVariable("simulationId") Long simulationId,
+                                                        @PathVariable("householdId") Long householdId)
+  {
+    log.info("Retrieving consumption load data for simulation {} household {}", simulationId, householdId);
+
+    List<TimeslotConsumptionData> timeslotConsumptionDataList = consumptionDataDao.getConsumptionDataForHousehold(householdId);
+    SortedMap<Long, ConsumptionAggregate> consumptionAggregateMap = ConsumptionAggregate.aggregateConsumption(timeslotConsumptionDataList);
+
+    Object[][] data = new Object[consumptionAggregateMap.keySet().size()][4];
+    int i = 0;
+    for (Map.Entry<Long, ConsumptionAggregate> entry : consumptionAggregateMap.entrySet())
+    {
+      ConsumptionAggregate consumptionAggregate = entry.getValue();
+      data[i][0] = formatDate(consumptionAggregate.getTimeslotTime());
+      data[i][1] = consumptionAggregate.getGenerated();
+      data[i][2] = consumptionAggregate.getConsumed();
+      //calculate the net
+      data[i][3] = consumptionAggregate.getConsumed() - consumptionAggregate.getGenerated();
+      i++;
+    }
+
+    return data;
+  }
+
+
+
+  @RequestMapping(value = "/{simulationId}/households/{householdId}/appliances", method = RequestMethod.GET, produces = "application/json")
+  @ResponseBody
+  public final List<ApplianceData> getSimulationHouseholds(@PathVariable("simulationId") Long simulationId,
+                                                           @PathVariable("householdId") Long householdId,
+                                                           @RequestParam(value="offset", required = false, defaultValue = "0") int offset,
+                                                           @RequestParam(value="limit", required = false, defaultValue = "25") int limit)
+  {
+    log.info("Retrieving list of households for simulation {}", simulationId);
+    return applianceDataDao.getAppliancesForHousehold(householdId, offset, limit);
+  }
+
+
+  @RequestMapping(value = "/{simulationId}/households/{householdId}/appliances/{applianceId}", method = RequestMethod.GET, produces = "application/json")
+  @ResponseBody
+  public final Object[][] getSimulationDataForHousehold(@PathVariable("simulationId") Long simulationId,
+                                                        @PathVariable("householdId") Long householdId,
+                                                        @PathVariable("householdId") Long applianceId)
+  {
+    log.info("Retrieving consumption load data for simulation {} household {} appliance {}", new Object[]{simulationId, householdId, applianceId});
+
+    List<TimeslotConsumptionData> timeslotConsumptionDataList = consumptionDataDao.getConsumptionDataForAppliance(applianceId);
+    SortedMap<Long, ConsumptionAggregate> consumptionAggregateMap = ConsumptionAggregate.aggregateConsumption(timeslotConsumptionDataList);
+
+    Object[][] data = new Object[consumptionAggregateMap.keySet().size()][4];
+    int i = 0;
+    for (Map.Entry<Long, ConsumptionAggregate> entry : consumptionAggregateMap.entrySet())
+    {
+      ConsumptionAggregate consumptionAggregate = entry.getValue();
+      data[i][0] = formatDate(consumptionAggregate.getTimeslotTime());
+      data[i][1] = consumptionAggregate.getGenerated();
+      data[i][2] = consumptionAggregate.getConsumed();
+      //calculate the net
+      data[i][3] = consumptionAggregate.getConsumed() - consumptionAggregate.getGenerated();
+      i++;
+    }
+
+    return data;
+  }
+
   @RequestMapping(value = "/{simulationId}", method = RequestMethod.DELETE, produces = "application/json")
   @ResponseBody
   public final String deleteSimulation(@PathVariable Long simulationId)
@@ -111,11 +184,11 @@ final class DataController
         throw new Exception( "Error: Unable to delete simulation, it does not exist");
       }
 
-      if (simulationData.getActualEndTime() == null)
+ /*     if (simulationData.getActualEndTime() == null)
       {
         log.warn("Unable to delete simulation, it is still in progress.");
         throw new Exception("Error: Unable to delete simulation, it is still in progress");
-      }
+      }*/
 
       log.info("Deleting data for simuation {}",simulationId);
       simulationDataDao.delete(simulationId);
@@ -131,7 +204,7 @@ final class DataController
   }
 
   @ExceptionHandler (Exception.class)
-  @ResponseStatus (HttpStatus.INTERNAL_SERVER_ERROR)
+  @ResponseStatus (HttpStatus.NOT_FOUND)
   @ResponseBody
   public final String handleAllExceptions(Exception ex)
   {

@@ -19,12 +19,11 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
 {
   protected static final Logger log = LoggerFactory.getLogger(SimulatorImpl.class);
 
-
-  private List<Policy> policies = new ArrayList<Policy>();
+  private List<Policy> policies = new ArrayList<>();
 
   private Map<String, HouseholdData> householdDataMap = new TreeMap<>();
-  private Map<String, ApplianceData> applianceDataMap = new TreeMap<>();
 
+  private Map<String, ApplianceData> applianceDataMap = new TreeMap<>();
 
 
   private static final ThreadLocal<SimpleDateFormat> sdf = new ThreadLocal<SimpleDateFormat>()
@@ -122,11 +121,23 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
   @Override
   public void run()
   {
+    log.info("Preparing simulation, turning off indexes for faster data insertion.");
+    deferredConsumptionEventDao.turnOffConsumptionIndexes();
+
     log.info("Starting Simulation!");
     long nowMillis = System.currentTimeMillis();
     long actualStart = nowMillis;
     //todo: get the start time of the timeslot from configuration
-    long simulatedStart = actualStart;
+
+    //set the start simulation time as today, but starting from midnight
+    Calendar calSimulatedStart = Calendar.getInstance();
+    calSimulatedStart.setTimeInMillis(actualStart);
+    calSimulatedStart.set(Calendar.HOUR_OF_DAY, 4);
+    calSimulatedStart.set(Calendar.MINUTE, 0);
+    calSimulatedStart.set(Calendar.SECOND, 0);
+    calSimulatedStart.set(Calendar.MILLISECOND, 0);
+
+    long simulatedStart = calSimulatedStart.getTimeInMillis();
 
     this.simulationData = registerSimulation(getName(), new Date(actualStart), new Date(simulatedStart));
 
@@ -142,7 +153,8 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     this.currentTimeSlot = new Timeslot(simulatedStart, simulatedStart + timeslotDuration);
     this.timeslotCount = 0;
 
-    log.info("Starting simulation at {} with granularity {}ms", this.currentTimeSlot.getStartTime().getTime(), this.getTimeslotDuration());
+
+    log.info("Starting simulation execution at {} with granularity {}ms", this.currentTimeSlot.getStartTime().getTime(), this.getTimeslotDuration());
 
     long elapsed = 0;
     long simulatedElapsed = 0;
@@ -197,8 +209,11 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     simulationDataDao.update(simulationData);
 
     deferredConsumptionEventDao.shutdown();
+    log.info("Simulation execution ready!");
 
-    log.info("Simulation Ready!");
+    deferredConsumptionEventDao.turnOnConsumptionIndexes();
+
+    log.info("Simulation complete.");
   }
 
   /**
@@ -273,7 +288,6 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
    * Registers households being governed by a policy to the database.
    * @param households - the household list
    * @param policy - the policy
-   * @return the Entity representing the household in the database
    */
   public void registerHouseholds(List<? extends Household> households, Policy policy)
   {
@@ -292,25 +306,18 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
       householdDataMap.put(household.getUid(), householdData);
     }
 
-    //todo: create them all at once (bulk create in some way, using one transaction and prepared statments?)
     householdDataDao.createBulk(householdDataList);
   }
 
-  public ApplianceData registerAppliance(Household household, Appliance appliance)
+  public ApplianceData registerAppliance(Appliance appliance)
           throws HouseholdNotRegisteredException
   {
-    HouseholdData householdData = householdDataMap.get(household.getUid());
-    if (householdData == null)
-    {
-      log.error("{} was not registered before! Ignoring {}", household, appliance);
-      throw new HouseholdNotRegisteredException(household);
-    }
-
     ApplianceData applianceData = new ApplianceData();
 
-    applianceData.setHouseholdData(householdData);
+//    applianceData.setHouseholdData(householdData);
     applianceData.setReferenceId(appliance.getUid());
     applianceData.setType(appliance.getType());
+    applianceData.setSimulationData(getSimulationData());
 
 //    applianceDataDao.create(applianceData);
     deferredConsumptionEventDao.createDeferredApplianceData(applianceData);
@@ -346,14 +353,23 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     {
       try
       {
+        Household household = consumptionEvent.getHousehold();
+        HouseholdData householdData = householdDataMap.get(household.getUid());
+        if (householdData == null)
+        {
+          log.error("{} was not registered before! Ignoring event!", household);
+          throw new HouseholdNotRegisteredException(household);
+        }
+
         ApplianceData applianceData = applianceDataMap.get(consumptionEvent.getAppliance().getUid());
         if (applianceData == null)
         {
-          applianceData = registerAppliance(consumptionEvent.getHousehold(), consumptionEvent.getAppliance());
+          applianceData = registerAppliance(consumptionEvent.getAppliance());
         }
 
         ConsumptionData consumptionData = new ConsumptionData();
-        consumptionData.setAppliance(applianceData);
+        consumptionData.setHouseholdData(householdData);
+        consumptionData.setApplianceData(applianceData);
         consumptionData.setTimeslotData(getCurrentTimeSlotData());
         consumptionData.setLoadWatts(consumptionEvent.getLoadWatts());
 

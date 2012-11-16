@@ -8,7 +8,7 @@ import java.util.TreeMap;
  *         Date: 13/11/12
  *         Time: 11:09
  */
-public class ApplianceSwitchOnFreq
+public class TwoStateApplianceSwitchOnFreq
 {
   public static final Map<Integer, Double> KETTLE = new TreeMap<Integer, Double>()
   {
@@ -19,8 +19,8 @@ public class ApplianceSwitchOnFreq
       put(9, 0.4d);
       put(12, 0.1d);
       put(16, 0.2d);
-      put(17, 0.3d);
-      put(20, 0.2d);
+      put(19, 0.25d);
+      put(21, 0.3d);
       put(23, 0.1d);
     }
   };
@@ -33,8 +33,8 @@ public class ApplianceSwitchOnFreq
       put(7, 0.2d);
       put(9, 0.1d);
       put(12, 0d);
-      put(16, 0d);
-      put(17, 0.3d);
+      put(16, 0.1d);
+      put(17, 0.2d);
       put(20, 0.3d);
       put(23, 0d);
     }
@@ -61,7 +61,7 @@ public class ApplianceSwitchOnFreq
       put(0, 0.05d);
       put(2, 0d);
       put(16, 0d);
-      put(17, 0.05d);
+      put(18, 0.05d);
       put(20, 0.2d);
       put(22, 0.3d);
     }
@@ -93,7 +93,7 @@ public class ApplianceSwitchOnFreq
       put(9, 1.5d);
       put(12, 1.5d);
       put(16, 1.5d);
-      put(17, 2d);
+      put(17, 1.8d);
       put(20, 2d);
       put(23, 2d);
     }
@@ -159,11 +159,6 @@ public class ApplianceSwitchOnFreq
       put(23, 1d);
     }
   };
-
-
-
-
-
 }
 
 

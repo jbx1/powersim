@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Repository;
+import uk.ac.kcl.inf.aps.powersim.persistence.DbIndexManager;
 import uk.ac.kcl.inf.aps.powersim.persistence.model.ApplianceData;
 import uk.ac.kcl.inf.aps.powersim.persistence.model.ApplianceDataDao;
 import uk.ac.kcl.inf.aps.powersim.persistence.model.ConsumptionData;
@@ -37,7 +38,11 @@ public class DeferredConsumptionEventDaoImpl implements DeferredConsumptionEvent
   private ApplianceDataDao applianceDataDao;
 
   @Autowired
+  private DbIndexManager dbIndexManager;
+
+  @Autowired
   private ThreadPoolTaskExecutor databaseTaskExecutor;
+
 
   public DeferredConsumptionEventDaoImpl(int deferredCapacity)
   {
@@ -110,8 +115,8 @@ public class DeferredConsumptionEventDaoImpl implements DeferredConsumptionEvent
     final ArrayBlockingQueue<ConsumptionData> consumptionDataToFlush = deferredConsumptionDataList;
 
     //create new queues so that the old ones can be flushed in the meantime to the database
-    deferredApplianceDataList = new ArrayBlockingQueue<ApplianceData>(this.deferredCapacity);
-    deferredConsumptionDataList = new ArrayBlockingQueue<ConsumptionData>(this.deferredCapacity);
+    deferredApplianceDataList = new ArrayBlockingQueue<>(this.deferredCapacity);
+    deferredConsumptionDataList = new ArrayBlockingQueue<>(this.deferredCapacity);
 
     //flush appliances within this thread to avoid other threads referring to the appliance without having it saved
     if (applianceDataToFlush.size() > 0)
@@ -133,6 +138,77 @@ public class DeferredConsumptionEventDaoImpl implements DeferredConsumptionEvent
       }
     });
   }
+
+  public void turnOffConsumptionIndexes()
+  {
+    log.info("Dropping indexes on Consumption table for faster inserting (deleting/analysing will be slower)...");
+
+    try
+    {
+      dbIndexManager.turnOffApplianceIndex();
+    }
+    catch (Exception ex)
+    {
+      log.warn("Unable to remove appliance index, proceeding anyway. Due to: {}", ex.getMessage());
+    }
+
+    try
+    {
+      dbIndexManager.turnOffHouseholdIndex();
+    }
+    catch (Exception ex)
+    {
+      log.warn("Unable to remove household index, proceeding anyway. Due to: {}", ex.getMessage());
+    }
+
+    try
+    {
+      dbIndexManager.turnOffTimeslotIndex();
+    }
+    catch (Exception ex)
+    {
+      log.warn("Unable to remove timeslot index, proceeding anyway. Due to: {}", ex.getMessage());
+    }
+
+    log.info("Consumption Table Indexes dropped.");
+  }
+
+
+
+  public void turnOnConsumptionIndexes()
+  {
+    log.info("Creating indexes on Consumption table for faster analysis and deletion...");
+
+    try
+    {
+      dbIndexManager.turnOnApplianceIndex();
+    }
+    catch (Exception ex)
+    {
+      log.warn("Unable to create appliance index, proceeding anyway. Due to: {}", ex.getMessage());
+    }
+
+    try
+    {
+      dbIndexManager.turnOnHouseholdIndex();
+    }
+    catch (Exception ex)
+    {
+      log.warn("Unable to create household index, proceeding anyway. Due to: {}", ex.getMessage());
+    }
+
+    try
+    {
+      dbIndexManager.turnOnTimeslotIndex();
+    }
+    catch (Exception ex)
+    {
+      log.warn("Unable to create timeslot index, proceeding anyway. Due to: {}", ex.getMessage());
+    }
+
+    log.info("Consumption Table Indexes created.");
+  }
+
 
   //todo: move database registration stuff to here from SimulatorImpl
   //todo: rename to something Repository
