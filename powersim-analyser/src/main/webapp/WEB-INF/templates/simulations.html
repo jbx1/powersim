@@ -47,7 +47,7 @@
                 <td><a href="./$simulation.getId()">$simulation.getName()</a></td>
                 <td>$simulation.getSimulatedStartTime()</td>
                 <td>$simulation.getActualStartTime()</td>
-                <td><a href="#" onclick="deleteSimulation($simulation.getId())">Delete</a></td>
+                <td><a class="delete" href="#" onclick="deleteSimulation($simulation.getId())" title="Delete Simulation Data"></a></td>
             </tr>
         #end
         </table>

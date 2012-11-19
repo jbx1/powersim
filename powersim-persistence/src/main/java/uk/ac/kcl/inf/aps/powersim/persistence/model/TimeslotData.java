@@ -21,8 +21,9 @@ import java.util.Date;
 @NamedQueries({
         @NamedQuery(name = "TimeslotData.findAll",
                 query = "select t from TimeslotData t where t.simulationData.id = :simulationId order by startTime"),
+
         @NamedQuery(name="TimeslotData.deleteBySimulationId",
-                query = "delete from TimeslotData t where t.simulationData.id = :simulationId")
+                query = "delete from TimeslotData t where t.simulationData.id = :simulationId"),
 })
 public class TimeslotData implements Serializable
 {

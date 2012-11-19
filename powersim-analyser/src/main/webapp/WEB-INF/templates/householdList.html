@@ -1,0 +1,5 @@
+<span class="page">
+#foreach( $household in $households )
+  <p class="result"><a href="#" class="household" onclick="renderHouseholdData($household.getId());">Household $household.getId() [$household.getReferenceId()]</a></p>
+#end
+</span>

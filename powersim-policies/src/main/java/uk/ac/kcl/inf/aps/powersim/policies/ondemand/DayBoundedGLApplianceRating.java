@@ -7,7 +7,7 @@ package uk.ac.kcl.inf.aps.powersim.policies.ondemand;
  */
 public enum DayBoundedGLApplianceRating
 {
-  PV (1400, 12, 2, 100, 6, 19, true);
+  PV (1000, 12, 2, 100, 6, 19, true);
 
   private long peakLoadWatts;
   private int peakTimeHour;

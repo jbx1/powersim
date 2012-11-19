@@ -22,7 +22,7 @@ import java.io.Serializable;
                 query = "select count(a) from ApplianceData a where a.simulationData.id = :simulationId"),
 
         @NamedQuery(name = "ApplianceData.getForHousehold",
-                query = "select a from ApplianceData a, ConsumptionData c where c.applianceData.id = a.id and c.householdData.id = :householdId"),
+                query = "select a from ApplianceData a, ConsumptionData c where c.applianceData.id = a.id and c.householdData.id = :householdId group by a order by a.type, a.id"),
 
         @NamedQuery(name="ApplianceData.deleteBySimulationId",
                 query = "delete from ApplianceData a where a.simulationData.id = :simulationId")

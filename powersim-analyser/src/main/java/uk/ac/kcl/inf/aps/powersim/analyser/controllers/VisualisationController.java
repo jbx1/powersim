@@ -1,5 +1,7 @@
 package uk.ac.kcl.inf.aps.powersim.analyser.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import uk.ac.kcl.inf.aps.powersim.persistence.model.*;
 
+import java.util.List;
+
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
  *         Date: 25/10/12
@@ -17,6 +21,8 @@ import uk.ac.kcl.inf.aps.powersim.persistence.model.*;
 @Controller
 public class VisualisationController
 {
+  protected static final Logger log = LoggerFactory.getLogger(VisualisationController.class);
+
   @Autowired
   private SimulationDataDao simulationDataDao;
 
@@ -66,5 +72,24 @@ public class VisualisationController
 
     return "simulation";
   }
+
+  @RequestMapping(value = "/{simulationId}/households", method = RequestMethod.GET)
+  public String getHouseholds(@PathVariable Long simulationId,
+                              @RequestParam(value = "actualPage", required = false, defaultValue = "0") int offsetPage,
+                              @RequestParam(value = "elementsPerPage", required = false, defaultValue = "0") int limit,
+                              Model model)
+  {
+    log.debug("Getting list of households for simulation {} offsetPage {} limit {}", new Object[]{simulationId, offsetPage, limit});
+
+    model.addAttribute("simulationId", simulationId);
+
+    int offset = offsetPage * limit;
+    List<HouseholdData> households = householdDataDao.getHouseholdsForSimulation(simulationId, offset, limit);
+    model.addAttribute("households", households);
+
+    return "householdList";
+  }
+
+
 
 }

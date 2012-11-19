@@ -1,9 +1,18 @@
 <html>
 <head>
     <title>Powersim Analyser - Simulation: $simulation.getName() [$simulation.getId()]</title>
+    <script>
+        simulation_id = $simulation.getId();
+    </script>
+
     <link rel="stylesheet" href="../../css/powersim.css" type="text/css">
     <script type="text/javascript" src="../../js/jquery-1.8.2.min.js"></script>
     <script type="text/javascript" src="../../js/dygraph-combined.js"></script>
+    <script type="text/javascript" src="../../js/jquery.easing.1.3.js"></script>
+    <script type="text/javascript" src="../../js/mbVerticalSlider.js"></script>
+    <script type="text/javascript" src="../../js/jquery.mousewheel.min.js"></script>
+
+
     <script type="text/javascript" language="JavaScript1.5">
         function deleteSimulation(simulation_id)
         {
@@ -26,97 +35,161 @@
                 });
             }
         };
+
+        function updateGraphData(url)
+        {
+            $.getJSON(url, function(simdata)
+            {
+                var i;
+                for (i = 0; i < simdata.length; i++)
+                {
+                  simdata[i][0] = new Date(simdata[i][0]);
+                }
+
+                graph.updateOptions({file : simdata});
+            });
+        }
+
+        function renderApplianceData(householdId, applianceId)
+        {
+            updateGraphData('./data/'+simulation_id+'/households/'+householdId+'/appliances/'+applianceId);
+        }
+
+        function onApplianceChange(householdId, applianceId)
+        {
+            if (applianceId == 0)
+            {
+                updateGraphData('./data/'+simulation_id+'/households/'+householdId);
+            }
+            else
+            {
+                renderApplianceData(householdId, applianceId);
+            }
+        }
+
+        function renderHouseholdData(householdId)
+        {
+            updateGraphData('./data/'+simulation_id+'/households/'+householdId);
+
+            $.getJSON('./data/'+simulation_id+'/households/'+householdId+'/appliances', function(appliances)
+            {
+                $('#appliance_list').empty();
+                $('#appliance_list').removeAttr('disabled');
+                $('#appliance_list').change(function()
+                {
+                    onApplianceChange(householdId, $('#appliance_list').val());
+                });
+
+                $('#appliance_list').append('<option value="0">All Appliances</option>')
+
+                var i;
+                for (i = 0; i < appliances.length; i++)
+                {
+                    $('#appliance_list').append('<option value="' + appliances[i].id + '">' + appliances[i].type + '[' + appliances[i].id + ']</option>')
+                }
+            });
+        }
+
+        function updateGraphDataWithSimulation()
+        {
+            updateGraphData('./data/'+simulation_id);
+            $('.result').removeClass('selected');
+            $('#appliance_list').empty();
+            $('#appliance_list').unbind('change');
+            $('#appliance_list').append('<option value="0">All Appliances</option>')
+            $('#appliance_list').attr('disabled', 'disabled');
+        }
     </script>
 
-    <script>
-        simulation_id = $simulation.getId();
+    <script type="text/javascript">
+        $(function(){
+        $(".slider").mb_vSlider({
+            //default attributes of the mb.vSlider
+            template:"./"+simulation_id+"/households"
+            ,totalElements: $households
+            ,easing:"easeOutExpo"
+            ,slideTimer:1000
+            ,nextEl:".vSnext"
+            ,prevEl:".vSprev"
+            ,height:492
+            ,width:220
+            },{ //data passed in the ajax query string
+            elementsPerPage:20
+            ,actualPage:0
+        })
+        });
     </script>
+
 </head>
 <body>
 <div id="content">
     #parse("masthead.html")
     <div id="simulation">
     <div id="siminfo">
-        <h2>Simulation: $simulation.getName() [$simulation.getId()]</h2>
-        <a href="../simulations/">Back to Simulation list</a>
-        <td><a href="#" onclick="deleteSimulation($simulation.getId())">Delete Simulation</a></td>
-
-        <div id="data">
-            <table cellpadding="2" cellspacing="1">
-                <tr>
-                    <th>Households:</th>
-                    <td>$households</td>
-                    <th>Appliances:</th>
-                    <td>$appliances</td>
-                </tr>
-            </table>
-
-            <table cellpadding="2" cellspacing="1">
-                <tr>
-                    <td></td>
-                    <th>Simulated</th>
-                    <th>Actual</th>
-                    </comment></tr>
-                <tr>
-                    <th>Start Time</th>
-                    <td>$simulation.getSimulatedStartTime()</td>
-                    <td>$simulation.getActualStartTime()</td>
-                </tr>
-                #if ($simulation.getSimulatedEndTime())
-                <tr>
-                    <th>End Time</th>
-                    <td>$simulation.getSimulatedEndTime()</td>
-                    <td>$simulation.getActualEndTime()</td>
-                </tr>
-                #else
-                <tr>
-                    <th colspan="3" align="center">Simulation still running (or terminated prematurely)</th>
-                </tr>
-                #end
-            </table>
-        </div>
+        <h2>$simulation.getName() [$simulation.getId()]</h2><a class="delete" href="#" onclick="deleteSimulation($simulation.getId())" title="Delete Simulation Data"></a>
+        <a class="home" href="../simulations/">Back to Simulation list</a>
     </div>
 
-    <div id="graphdiv">
-
+    <div id="datacontainer">
+        <div id="slider_container">
+            <button id="fulldatabtn" onclick="updateGraphDataWithSimulation();">Show Full Aggregate Data</button>
+            <button class="vSprev" onclick="$('.slider').vsPrevPage()">Prev</button>
+            <button class="vSnext" onclick="$('.slider').vsNextPage()">Next</button>
+            <div class="slider"></div>
+            <div id="appliances"><select id="appliance_list">
+            <option name="all">All Appliances</option>
+            </select>
+            </div>
+        </div>
+        <div id="graphcontainer">
+            <div id="data">
+                <table id="simdetail" cellpadding="2" cellspacing="1">
+                    <tr>
+                        <th>Households:</th>
+                        <td>$households</td>
+                        <th>Appliances:</th>
+                        <td>$appliances</td>
+                        #if ($simulation.getSimulatedEndTime())
+                        <th>Simulated Time:</th>
+                        <td>$simulation.getSimulatedStartTime() to $simulation.getSimulatedEndTime()</td>
+                        <th>Actual Time:</th>
+                        <td>$simulation.getActualStartTime() to $simulation.getActualEndTime()</td>
+                        #else
+                        <th>Simulation still running (or terminated prematurely)</th>
+                        #end
+                    </tr>
+                </table>
+            </div>
+            <div id="graphdiv"></div>
+        </div>
     </div>
 
     <script type="text/javascript">
         data_temp = [[0,0,0,0]];
         graph = new Dygraph(document.getElementById("graphdiv"),
-        data_temp,
-        {
-        fillGraph: true,
-        labelsKMB: true,
-        title: 'Simulated Load',
-        ylabel: 'Watts',
-        labels: ['Date/Time', 'Generated', 'Consumed', 'Net Load'],
-        labelsSeparateLines: true,
-        legend: 'always',
-        labelsDivStyles: { 'textAlign': 'right' },
-        labelsDivWidth: 150,
-        showRangeSelector: true,
-        strokeWidth: 1,
-        'Net Load': { strokeWidth: 1 },
-        colors: ['#408000', '#400080', '#B04000']
-
-        }
+            data_temp,
+            {
+                fillGraph: true,
+                labelsKMB: true,
+                title: 'Simulated Load',
+                ylabel: 'Watts',
+                labels: ['Date/Time', 'Generated', 'Consumed', 'Net Load'],
+                labelsSeparateLines: true,
+                legend: 'always',
+                labelsDivStyles: { 'textAlign': 'right' },
+                labelsDivWidth: 150,
+                showRangeSelector: true,
+                strokeWidth: 1,
+                'Net Load': { strokeWidth: 1 },
+                colors: ['#408000', '#400080', '#B04000']
+            }
         );
     </script>
 
     <script>
         $(document).ready(function()
         {
-            $.getJSON('./data/'+simulation_id, function(simdata)
-            {
-                var i;
-                for (i = 0; i < simdata.length; i++)
-                {
-                    simdata[i][0] = new Date(simdata[i][0]);
-                }
-
-                graph.updateOptions({file : simdata});
-            });
+            updateGraphDataWithSimulation();
         });
     </script>
     </div>

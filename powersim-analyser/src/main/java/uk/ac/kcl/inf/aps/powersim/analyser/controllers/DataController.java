@@ -110,8 +110,10 @@ final class DataController
   {
     log.info("Retrieving consumption load data for simulation {} household {}", simulationId, householdId);
 
+    List<TimeslotData> timeslotList = timeslotDataDao.findAll(simulationId);
     List<TimeslotConsumptionData> timeslotConsumptionDataList = consumptionDataDao.getConsumptionDataForHousehold(householdId);
-    SortedMap<Long, ConsumptionAggregate> consumptionAggregateMap = ConsumptionAggregate.aggregateConsumption(timeslotConsumptionDataList);
+
+    SortedMap<Long, ConsumptionAggregate> consumptionAggregateMap = ConsumptionAggregate.aggregateConsumption(timeslotList, timeslotConsumptionDataList);
 
     Object[][] data = new Object[consumptionAggregateMap.keySet().size()][4];
     int i = 0;
@@ -134,25 +136,24 @@ final class DataController
   @RequestMapping(value = "/{simulationId}/households/{householdId}/appliances", method = RequestMethod.GET, produces = "application/json")
   @ResponseBody
   public final List<ApplianceData> getSimulationHouseholds(@PathVariable("simulationId") Long simulationId,
-                                                           @PathVariable("householdId") Long householdId,
-                                                           @RequestParam(value="offset", required = false, defaultValue = "0") int offset,
-                                                           @RequestParam(value="limit", required = false, defaultValue = "25") int limit)
+                                                           @PathVariable("householdId") Long householdId)
   {
     log.info("Retrieving list of households for simulation {}", simulationId);
-    return applianceDataDao.getAppliancesForHousehold(householdId, offset, limit);
+    return applianceDataDao.getAppliancesForHousehold(householdId);
   }
 
-
+  //todo: move appliances URL to upper level, same level as households
   @RequestMapping(value = "/{simulationId}/households/{householdId}/appliances/{applianceId}", method = RequestMethod.GET, produces = "application/json")
   @ResponseBody
   public final Object[][] getSimulationDataForHousehold(@PathVariable("simulationId") Long simulationId,
                                                         @PathVariable("householdId") Long householdId,
-                                                        @PathVariable("householdId") Long applianceId)
+                                                        @PathVariable("applianceId") Long applianceId)
   {
     log.info("Retrieving consumption load data for simulation {} household {} appliance {}", new Object[]{simulationId, householdId, applianceId});
 
+    List<TimeslotData> timeslotList = timeslotDataDao.findAll(simulationId);
     List<TimeslotConsumptionData> timeslotConsumptionDataList = consumptionDataDao.getConsumptionDataForAppliance(applianceId);
-    SortedMap<Long, ConsumptionAggregate> consumptionAggregateMap = ConsumptionAggregate.aggregateConsumption(timeslotConsumptionDataList);
+    SortedMap<Long, ConsumptionAggregate> consumptionAggregateMap = ConsumptionAggregate.aggregateConsumption(timeslotList, timeslotConsumptionDataList);
 
     Object[][] data = new Object[consumptionAggregateMap.keySet().size()][4];
     int i = 0;

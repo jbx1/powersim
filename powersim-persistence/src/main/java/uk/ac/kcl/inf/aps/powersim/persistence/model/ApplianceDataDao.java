@@ -17,5 +17,5 @@ public interface ApplianceDataDao extends GenericDao<ApplianceData>
 
   public int deleteBySimulationId(long simulationId);
 
-  public List<ApplianceData> getAppliancesForHousehold(long householdId, int offset, int limit);
+  public List<ApplianceData> getAppliancesForHousehold(long householdId);
 }

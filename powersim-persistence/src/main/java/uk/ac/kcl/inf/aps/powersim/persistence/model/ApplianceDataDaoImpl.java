@@ -46,12 +46,10 @@ public class ApplianceDataDaoImpl extends GenericDaoImpl<ApplianceData> implemen
   }
 
   @Override
-  public List<ApplianceData> getAppliancesForHousehold(long householdId, int offset, int limit)
+  public List<ApplianceData> getAppliancesForHousehold(long householdId)
   {
     TypedQuery<ApplianceData> query = em.createNamedQuery("ApplianceData.getForHousehold", ApplianceData.class);
     query.setParameter("householdId", householdId);
-    query.setFirstResult(offset);
-    query.setMaxResults(limit);
 
     return query.getResultList();
   }

@@ -86,7 +86,7 @@ public class DayBoundedGLAppliance extends EnergyOnDemandAppliance
     log.trace("Euler power result: {}", expRes);
 
     double expectedLoadWatts = (double) peakLoadWatts * expRes;
-    log.debug("Expected load {}watts from peak load {}watts", expectedLoadWatts, peakLoadWatts);
+    log.trace("Expected load {}watts from peak load {}watts", expectedLoadWatts, peakLoadWatts);
 
 //    long actualLoadWatts = (long) expectedLoadWatts;
 
@@ -95,11 +95,11 @@ public class DayBoundedGLAppliance extends EnergyOnDemandAppliance
     double errorRand = ThreadLocalRandom.current().nextDouble(1);
     double expVariance = peakErrorVariance * expectedLoadWatts / peakLoadWatts;
 
-    log.debug("Expected error variance {} random {}", expVariance, errorRand);
+    log.trace("Expected error variance {} random {}", expVariance, errorRand);
     NormalDistribution normalDistribution = new NormalDistribution(expectedLoadWatts, expVariance);
 
     long actualLoadWatts = (long) normalDistribution.inverseCumulativeProbability(errorRand);
-    log.debug("Actual load: {}watts", actualLoadWatts);
+    log.trace("Actual load: {}watts", actualLoadWatts);
 
     return generator ? 0 - actualLoadWatts : actualLoadWatts;
   }

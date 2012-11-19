@@ -1,5 +1,6 @@
 package uk.ac.kcl.inf.aps.powersim.analyser.utilities;
 
+import uk.ac.kcl.inf.aps.powersim.persistence.model.TimeslotData;
 import uk.ac.kcl.inf.aps.powersim.persistence.reporting.TimeslotConsumptionData;
 
 import java.util.Date;
@@ -56,18 +57,23 @@ public class ConsumptionAggregate
     this.timeslotTime = timeslotTime;
   }
 
-  public static SortedMap<Long, ConsumptionAggregate> aggregateConsumption(List<TimeslotConsumptionData> timeslotConsumptionDataList)
+  public static SortedMap<Long, ConsumptionAggregate> aggregateConsumption(List<TimeslotData> timeslotList, List<TimeslotConsumptionData> timeslotConsumptionDataList)
   {
     SortedMap<Long, ConsumptionAggregate> consumptionAggregateMap = new TreeMap<>();
+
+    for (TimeslotData timeslotData : timeslotList)
+    {
+      consumptionAggregateMap.put(timeslotData.getId(), new ConsumptionAggregate(timeslotData.getStartTime(), 0, 0));
+    }
 
     for (TimeslotConsumptionData timeslotConsumptionData: timeslotConsumptionDataList)
     {
       long id = timeslotConsumptionData.getTimeslotId();
       long consumed = timeslotConsumptionData.getLoad() < 0 ? 0 : timeslotConsumptionData.getLoad();
-      long generated = timeslotConsumptionData.getLoad() > 0 ? timeslotConsumptionData.getLoad() : 0;
+      long generated = timeslotConsumptionData.getLoad() > 0 ? 0 : 0-timeslotConsumptionData.getLoad();
 
       ConsumptionAggregate consumptionAggregate = consumptionAggregateMap.get(id);
-      if (consumptionAggregate == null)
+      if (consumptionAggregate == null) //this should never happen, but just in case
       {
         consumptionAggregate = new ConsumptionAggregate(timeslotConsumptionData.getTimeSlotStartTime(), consumed, generated);
         consumptionAggregateMap.put(id, consumptionAggregate);
