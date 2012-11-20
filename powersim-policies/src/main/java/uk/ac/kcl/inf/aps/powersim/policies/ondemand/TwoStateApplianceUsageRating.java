@@ -13,15 +13,15 @@ import java.util.Map;
  */
 public enum TwoStateApplianceUsageRating
 {
-  LAPTOP (50, 0, 120, 20, TwoStateApplianceSwitchOnFreq.LAPTOP),
-  FRIDGE (800, 50, 2, 0.5, TwoStateApplianceSwitchOnFreq.FRIDGE),
-  WASHING_MACHINE (600, 0, 40, 2, TwoStateApplianceSwitchOnFreq.WASHING_MACHINE),
+  LAPTOP (120, 0, 120, 20, TwoStateApplianceSwitchOnFreq.LAPTOP),
+  FRIDGE (110, 10, 2, 0.5, TwoStateApplianceSwitchOnFreq.FRIDGE),
+  WASHING_MACHINE (2125, 0, 40, 2, TwoStateApplianceSwitchOnFreq.WASHING_MACHINE),
   AQUARIUM (500, 5, 5, 0.5, TwoStateApplianceSwitchOnFreq.AQUARIUM),
-  KETTLE (1200, 0, 4, 0.3, TwoStateApplianceSwitchOnFreq.KETTLE),
-  TV (110, 0, 240, 20, TwoStateApplianceSwitchOnFreq.TV),
+  KETTLE (2000, 0, 4, 0.3, TwoStateApplianceSwitchOnFreq.KETTLE),
+  TV (105, 0, 240, 20, TwoStateApplianceSwitchOnFreq.TV),
   TOASTER (1000, 0, 5, 0.1, TwoStateApplianceSwitchOnFreq.TOASTER),
-  OVEN (1200, 0, 45, 10, TwoStateApplianceSwitchOnFreq.OVEN),
-  DISHWASHER (1500, 0, 120, 25, TwoStateApplianceSwitchOnFreq.DISHWASHER),
+  OVEN (1100, 0, 45, 10, TwoStateApplianceSwitchOnFreq.OVEN),
+  DISHWASHER (1800, 0, 120, 25, TwoStateApplianceSwitchOnFreq.DISHWASHER),
   LIGHT (10, 0, 60, 18, TwoStateApplianceSwitchOnFreq.LIGHT);
 
   private final long onWattage;

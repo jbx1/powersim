@@ -206,6 +206,15 @@ public class DeferredConsumptionEventDaoImpl implements DeferredConsumptionEvent
       log.warn("Unable to create timeslot index, proceeding anyway. Due to: {}", ex.getMessage());
     }
 
+    try
+    {
+      dbIndexManager.analyzeIndexes();
+    }
+    catch (Exception ex)
+    {
+      log.warn("Unable to run ANALYZE on database.");
+    }
+
     log.info("Consumption Table Indexes created.");
   }
 

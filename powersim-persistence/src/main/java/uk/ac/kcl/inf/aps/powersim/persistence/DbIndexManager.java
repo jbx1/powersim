@@ -18,4 +18,6 @@ public interface DbIndexManager
   public void turnOnTimeslotIndex();
 
   public void turnOffTimeslotIndex();
+
+  public void analyzeIndexes();
 }

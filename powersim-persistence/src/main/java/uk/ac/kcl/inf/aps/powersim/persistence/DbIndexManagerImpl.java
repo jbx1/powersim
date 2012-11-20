@@ -22,6 +22,7 @@ public class DbIndexManagerImpl implements DbIndexManager
   @PersistenceContext
   protected EntityManager em;
 
+  @Override
   @Transactional
   public void turnOnApplianceIndex()
   {
@@ -30,7 +31,7 @@ public class DbIndexManagerImpl implements DbIndexManager
     query.executeUpdate();
   }
 
-
+  @Override
   @Transactional
   public void turnOnHouseholdIndex()
   {
@@ -39,6 +40,7 @@ public class DbIndexManagerImpl implements DbIndexManager
     query.executeUpdate();
   }
 
+  @Override
   @Transactional
   public void turnOnTimeslotIndex()
   {
@@ -47,6 +49,7 @@ public class DbIndexManagerImpl implements DbIndexManager
     query.executeUpdate();
   }
 
+  @Override
   @Transactional
   public void turnOffApplianceIndex()
   {
@@ -55,6 +58,7 @@ public class DbIndexManagerImpl implements DbIndexManager
     query.executeUpdate();
   }
 
+  @Override
   @Transactional
   public void turnOffHouseholdIndex()
   {
@@ -63,11 +67,21 @@ public class DbIndexManagerImpl implements DbIndexManager
     query.executeUpdate();
   }
 
+  @Override
   @Transactional
   public void turnOffTimeslotIndex()
   {
     log.debug("Dropping consumption_timeslot_id_idx");
     Query query = em.createNativeQuery("drop index consumption_timeslot_id_idx");
+    query.executeUpdate();
+  }
+
+  @Override
+  @Transactional
+  public void analyzeIndexes()
+  {
+    log.debug("Analysing Indexes");
+    Query query = em.createNativeQuery("ANALYZE");
     query.executeUpdate();
   }
 }

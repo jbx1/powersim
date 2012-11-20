@@ -83,12 +83,12 @@
 
 
     <bean id="simulator" class="uk.ac.kcl.inf.aps.powersim.simulator.SimulatorImpl">
-        <constructor-arg name="name" value="100 households with 18 appliances and 1 generator" />
+        <constructor-arg name="name" value="1000 households with 18 appliances and 1 generator" />
         <constructor-arg name="timeslotDuration" value="60000" />
         <property name="policies">
             <list>
                 <bean name="simplePolicy" class="uk.ac.kcl.inf.aps.powersim.policies.ondemand.EnergyOnDemandPolicy">
-                    <constructor-arg name="householdCount" value="100" />
+                    <constructor-arg name="householdCount" value="1000" />
                 </bean>
             </list>
         </property>

@@ -60,7 +60,7 @@ div#datacontainer
   float: left;
   display: inline-block;
   margin-top: 0px;
-  width: 220px;
+  width: 225px;
 }
 
 #fulldatabtn
@@ -81,7 +81,7 @@ div#datacontainer
 
 div#graphcontainer
 {
-   margin-left: 220px;
+   margin-left: 225px;
    display: block;
 }
 
@@ -152,12 +152,14 @@ div#messagearea
 
 div#simulation
 {
+    clear:both;
     padding: 10px;
 }
 
 div#simulations
 {
     padding: 10px;
+    clear: both;
 }
 
 .dygraph-legend
@@ -234,7 +236,28 @@ table#simulationlist tr:hover
   min-height:30px;
   color:#222222;
   text-decoration:none;
+  font-weight: bold;
+  font-size: 11px;
 }
+
+span.household
+{
+   background: url("images/household-icon.png") no-repeat left;
+   margin-right: 3px;
+   width: 32px;
+   height: 32px;
+   display: inline-block;
+   float: left;
+   vertical-align: middle;
+}
+
+div.household-data
+{
+    margin: auto;
+    padding: 0px;
+}
+
+
 
 .slider p:hover a
 {
@@ -254,8 +277,15 @@ table#simulationlist tr:hover
   background: #abcabc;
 
   color: #333;
-  font-weight:bold;
 
   -moz-box-shadow:inset 0px 0px 10px #555;
   -webkit-box-shadow:inset 0px 0px 10px #555;
+}
+
+.breadcrumb a
+{
+    color: #0E82C7;
+    text-decoration: none;
+    font-size: inherit;
+    font-weight: inherit;
 }

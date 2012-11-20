@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static uk.ac.kcl.inf.aps.powersim.policies.ondemand.DayBoundedGLApplianceRating.*;
 import static uk.ac.kcl.inf.aps.powersim.policies.ondemand.TwoStateApplianceUsageRating.*;
+import static uk.ac.kcl.inf.aps.powersim.policies.ondemand.DayBoundedGLApplianceRating.*;
 
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
