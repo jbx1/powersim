@@ -6,9 +6,7 @@ import uk.ac.kcl.inf.aps.powersim.api.Household;
 import uk.ac.kcl.inf.aps.powersim.api.Policy;
 import uk.ac.kcl.inf.aps.powersim.api.SimulationContext;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
@@ -21,26 +19,43 @@ public class EnergyOnDemandPolicy implements Policy
 
   private List<EnergyOnDemandHousehold> households;
 
-  private int householdCount = 0;
+  private int totalHouseholdCount;
 
-  public EnergyOnDemandPolicy(int householdCount)
+  private Map<String, Integer> householdCategoryCounts;
+
+  public EnergyOnDemandPolicy(Map<String, Integer> householdCategoryCounts)
   {
-    this.householdCount = householdCount;
+    this.householdCategoryCounts = householdCategoryCounts;
+
+    Set<String> householdCategories = householdCategoryCounts.keySet();
+    for (String householdcategory : householdCategories)
+    {
+      totalHouseholdCount += householdCategoryCounts.get(householdcategory);
+    }
   }
 
-  public int getHouseholdCount()
+  public int getTotalHouseholdCount()
   {
-    return householdCount;
+    return totalHouseholdCount;
+  }
+
+  public int getHouseholdCount(String category)
+  {
+    return householdCategoryCounts.get(category);
   }
 
   @Override
   public List<? extends Household> setup()
   {
-    //create 100 households
-    households = new ArrayList<>(householdCount);
-    for (int i = 0; i < householdCount; i++)
+    households = new ArrayList<>(totalHouseholdCount);
+
+    for (String householdCategory : householdCategoryCounts.keySet())
     {
-      households.add(new EnergyOnDemandHousehold(UUID.randomUUID().toString(), "default", this));
+      int categoryHouseholdCount = householdCategoryCounts.get(householdCategory);
+      for (int i = 0; i < categoryHouseholdCount; i++)
+      {
+        households.add(new EnergyOnDemandHousehold(UUID.randomUUID().toString(), householdCategory, this));
+      }
     }
 
     return households;
@@ -76,7 +91,8 @@ public class EnergyOnDemandPolicy implements Policy
     final StringBuilder sb = new StringBuilder();
     sb.append("EnergyOnDemandPolicy");
     sb.append("{descriptor=").append(getDescriptor());
-    sb.append(", householdCount=").append(householdCount);
+    sb.append(", totalHouseholdCount=").append(totalHouseholdCount);
+    sb.append(", householdCategories=").append(householdCategoryCounts.size());
     sb.append('}');
     return sb.toString();
   }

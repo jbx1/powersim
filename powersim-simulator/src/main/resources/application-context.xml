@@ -1,46 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-
 <beans xmlns="http://www.springframework.org/schema/beans"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xmlns:p="http://www.springframework.org/schema/p"
-           xmlns:context="http://www.springframework.org/schema/context"
-           xmlns:tx="http://www.springframework.org/schema/tx"
-           xsi:schemaLocation="http://www.springframework.org/schema/beans
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context.xsd
                            http://www.springframework.org/schema/tx
-                           http://www.springframework.org/schema/tx/spring-tx.xsd">
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util-3.0.xsd
+                          ">
 
-    <context:component-scan base-package="uk.ac.kcl.inf.aps.powersim" />
+    <context:component-scan base-package="uk.ac.kcl.inf.aps.powersim"/>
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 
     <bean id="transactionManager"
           class="org.springframework.orm.jpa.JpaTransactionManager"
-          p:entityManagerFactory-ref="entityManagerFactory" />
+          p:entityManagerFactory-ref="entityManagerFactory"/>
 
     <bean id="entityManagerFactory"
           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
           p:persistenceUnitName="powersim">
 
         <property name="jpaVendorAdapter">
-            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
         </property>
 
         <property name="jpaProperties">
             <props>
                 <prop key="hibernate.hbm2ddl.auto">validate</prop>
-                <prop key="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</prop>
-
-<!--                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
-                <prop key="hibernate.connection.driver_class">com.mysql.jdbc.Driver</prop>
-                <prop key="hibernate.connection.url">jdbc:mysql://localhost:3306/powersim</prop>
-                <prop key="hibernate.connection.username">root</prop>
-                <prop key="hibernate.connection.password">root</prop> -->
-
+                <prop key="hibernate.connection.provider_class">
+                    org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider
+                </prop>
 
                 <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL82Dialect</prop>
                 <prop key="hibernate.connection.driver_class">org.postgresql.Driver</prop>
@@ -67,28 +64,33 @@
 
     <bean id="deferredConsumptionDataDao"
           class="uk.ac.kcl.inf.aps.powersim.simulator.DeferredConsumptionEventDaoImpl">
-        <constructor-arg name="deferredCapacity" value="10000" />
+        <constructor-arg name="deferredCapacity" value="10000"/>
     </bean>
 
     <bean id="databaseTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-        <property name="corePoolSize" value="4" />
-        <property name="maxPoolSize" value="6" />
-        <property name="queueCapacity" value="60" />
-        <property name="waitForTasksToCompleteOnShutdown" value="true" />
-        <property name="keepAliveSeconds" value="10" />
-        <property name="rejectedExecutionHandler" >
+        <property name="corePoolSize" value="4"/>
+        <property name="maxPoolSize" value="6"/>
+        <property name="queueCapacity" value="60"/>
+        <property name="waitForTasksToCompleteOnShutdown" value="true"/>
+        <property name="keepAliveSeconds" value="10"/>
+        <property name="rejectedExecutionHandler">
             <bean class="java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy"/>
         </property>
     </bean>
 
+    <util:map id="householdCategories" map-class="java.util.TreeMap">
+        <entry key="default" value="10"/>
+        <entry key="other" value="10"/>
+    </util:map>
+
 
     <bean id="simulator" class="uk.ac.kcl.inf.aps.powersim.simulator.SimulatorImpl">
-        <constructor-arg name="name" value="1000 households with 18 appliances and 1 generator" />
-        <constructor-arg name="timeslotDuration" value="60000" />
+        <constructor-arg name="name" value="20 households with 18 appliances and 1 generator"/>
+        <constructor-arg name="timeslotDuration" value="60000"/>
         <property name="policies">
             <list>
                 <bean name="simplePolicy" class="uk.ac.kcl.inf.aps.powersim.policies.ondemand.EnergyOnDemandPolicy">
-                    <constructor-arg name="householdCount" value="1000" />
+                    <constructor-arg name="householdCategoryCounts"><ref bean="householdCategories"/></constructor-arg>
                 </bean>
             </list>
         </property>

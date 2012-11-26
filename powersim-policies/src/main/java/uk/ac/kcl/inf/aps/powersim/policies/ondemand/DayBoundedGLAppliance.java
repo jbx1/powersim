@@ -30,9 +30,10 @@ public class DayBoundedGLAppliance extends EnergyOnDemandAppliance
    */
   private boolean generator;
 
-  public DayBoundedGLAppliance(String uid, String type, long peakLoadWatts, int peakTimeHour, double loadVariance, double peakErrorVariance, int lowerBoundHour, int higherBoundHour, boolean generator)
+  public DayBoundedGLAppliance(String uid, String type, String subtype, long peakLoadWatts, int peakTimeHour, double loadVariance, double peakErrorVariance, int lowerBoundHour, int higherBoundHour, boolean generator)
   {
-    super(uid, type);
+    //todo: handle generation (negative load) more clearly
+    super(uid, type, subtype);
     this.peakLoadWatts = peakLoadWatts;
 
     //scale the time parameters to milliseconds
@@ -57,25 +58,14 @@ public class DayBoundedGLAppliance extends EnergyOnDemandAppliance
     log.trace("Lower bound {} and higher bound {}", lowerBoundHour, higherBoundHour);
     if ((startHour < lowerBoundHour) || (endHour > higherBoundHour))
     {
+      //todo: take care of overlapping midnight hours
       log.trace("Out of operation hourly bounds, no load.");
       return 0;
     }
 
     //calculate mean at current time using Hubbert Peak (Gaussian) curve
-    long midTime = simulationContext.getTimeslot().getMidTimeInMillis();
-    log.trace("Mid time for timeslot {}", midTime);
-
-    Calendar midTimeCal = Calendar.getInstance();
-    midTimeCal.setTimeInMillis(midTime);
-
-    int hour = midTimeCal.get(Calendar.HOUR_OF_DAY);
-
-    //todo: centralise this between poisson and this
-    //determine the time offset for which we want to calculate load
-    double minuteIncr = (double) midTimeCal.get(Calendar.MINUTE) / 60;
-    double secondIncr = (double) midTimeCal.get(Calendar.SECOND) / 3600;
-    double timeHour = hour + minuteIncr + secondIncr;
-    log.trace("Time hour for which to calculate: {}", timeHour);
+    double timeHour = simulationContext.getTimeslot().getMidTimeInHours();
+    log.trace("Mid-time in hours for which to calculate: {}", timeHour);
 
     log.trace("Peak load watts {} and variance {}", peakLoadWatts, loadVariance);
 
@@ -104,9 +94,9 @@ public class DayBoundedGLAppliance extends EnergyOnDemandAppliance
     return generator ? 0 - actualLoadWatts : actualLoadWatts;
   }
 
-  public static DayBoundedGLAppliance getInstance(String uuid, String name, DayBoundedGLApplianceRating applianceRating)
+  public static DayBoundedGLAppliance getInstance(String uuid, String name, String subtype, DayBoundedGLApplianceRating applianceRating)
   {
-    DayBoundedGLAppliance appliance = new DayBoundedGLAppliance(uuid, name,
+    DayBoundedGLAppliance appliance = new DayBoundedGLAppliance(uuid, name, subtype,
             applianceRating.getPeakLoadWatts(),
             applianceRating.getPeakTimeHour(),
             applianceRating.getLoadVariance(),

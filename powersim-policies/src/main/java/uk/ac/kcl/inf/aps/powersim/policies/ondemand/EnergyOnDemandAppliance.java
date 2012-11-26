@@ -10,8 +10,8 @@ import uk.ac.kcl.inf.aps.powersim.api.SimulationTimeslotConsumer;
  */
 public abstract class EnergyOnDemandAppliance extends Appliance implements SimulationTimeslotConsumer
 {
-  public EnergyOnDemandAppliance(String uid, String type)
+  public EnergyOnDemandAppliance(String uid, String type, String subtype)
   {
-    super(uid, type);
+    super(uid, type, subtype);
   }
 }

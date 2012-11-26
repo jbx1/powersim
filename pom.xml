@@ -14,6 +14,7 @@
     <module>powersim-persistence</module>
     <module>powersim-simulator</module>
     <module>powersim-analyser</module>
+      <module>powersim-configuration</module>
   </modules>
 
   <properties>
@@ -31,6 +32,7 @@
     <org.apache.velocity.version>1.7</org.apache.velocity.version>
     <junit.version>4.10</junit.version>
     <org.apache.commons.commons-math3.version>3.0</org.apache.commons.commons-math3.version>
+    <org.yaml.snakeyaml.version>1.11</org.yaml.snakeyaml.version>
   </properties>
 
 

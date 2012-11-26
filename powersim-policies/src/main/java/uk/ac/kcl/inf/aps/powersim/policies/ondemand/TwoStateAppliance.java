@@ -52,9 +52,9 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
 
   private StochasticProcess deactivateStrategy;
 
-  public TwoStateAppliance(String uid, String type, long onWattage, long offWattage, StochasticProcess activateStrategy, StochasticProcess deactivateStrategy)
+  public TwoStateAppliance(String uid, String type, String subtype, long onWattage, long offWattage, StochasticProcess activateStrategy, StochasticProcess deactivateStrategy)
   {
-    super(uid, type);
+    super(uid, type, subtype);
     this.onWattage = onWattage;
     this.offWattage = offWattage;
     this.activateStrategy = activateStrategy;
@@ -172,9 +172,9 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
     return false;
   }
 
-  public static TwoStateAppliance getInstance(String uuid, String name, TwoStateApplianceUsageRating usageRating)
+  public static TwoStateAppliance getInstance(String uuid, String name, String subtype, TwoStateApplianceUsageRating usageRating)
   {
-    TwoStateAppliance appliance = new TwoStateAppliance(uuid, name,
+    TwoStateAppliance appliance = new TwoStateAppliance(uuid, name, subtype,
             usageRating.getOnWattage(), usageRating.getOffWattage(),
             new NonHomogenousPoissonProcess(usageRating.getMapSwitchOnFreq()),
             new NormalDistProcess(usageRating.getMeanDurationMins(), usageRating.getStdDev()));

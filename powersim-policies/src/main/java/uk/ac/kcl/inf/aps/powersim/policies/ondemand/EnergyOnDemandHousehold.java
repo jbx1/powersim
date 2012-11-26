@@ -27,26 +27,26 @@ public class EnergyOnDemandHousehold extends Household implements SimulationTime
 
   private void setupAppliances()
   {
-    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), KETTLE.name(), KETTLE));
-    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), TOASTER.name(), TOASTER));
-    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), WASHING_MACHINE.name(), WASHING_MACHINE));
-    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), DISHWASHER.name(), DISHWASHER));
-    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), FRIDGE.name(), FRIDGE));
-    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), AQUARIUM.name(), AQUARIUM));
-    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), OVEN.name(), OVEN));
-    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), TV.name(), TV));
-    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LAPTOP.name(), LAPTOP));
-    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LIGHT.name(), LIGHT));
-    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LIGHT.name(), LIGHT));
-    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LIGHT.name(), LIGHT));
-    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LIGHT.name(), LIGHT));
-    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LIGHT.name(), LIGHT));
-    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LIGHT.name(), LIGHT));
-    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LIGHT.name(), LIGHT));
-    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LIGHT.name(), LIGHT));
-    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LIGHT.name(), LIGHT));
+    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), KETTLE.name(), "default", KETTLE));
+    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), TOASTER.name(), "default", TOASTER));
+    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), WASHING_MACHINE.name(),"default", WASHING_MACHINE));
+    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), DISHWASHER.name(), "default", DISHWASHER));
+    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), FRIDGE.name(), "default", FRIDGE));
+    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), AQUARIUM.name(),"default", AQUARIUM));
+    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), OVEN.name(), "default", OVEN));
+    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), TV.name(), "default", TV));
+    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LAPTOP.name(), "default", LAPTOP));
+    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LIGHT.name(),"default", LIGHT));
+    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LIGHT.name(), "default", LIGHT));
+    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LIGHT.name(), "default", LIGHT));
+    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LIGHT.name(), "default", LIGHT));
+    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LIGHT.name(), "default", LIGHT));
+    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LIGHT.name(), "default", LIGHT));
+    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LIGHT.name(), "default", LIGHT));
+    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LIGHT.name(), "default", LIGHT));
+    appliances.add(TwoStateAppliance.getInstance(UUID.randomUUID().toString(), LIGHT.name(), "default", LIGHT));
 
-    appliances.add(DayBoundedGLAppliance.getInstance(UUID.randomUUID().toString(), PV.name(), PV));
+    appliances.add(DayBoundedGLAppliance.getInstance(UUID.randomUUID().toString(), PV.name(), "default", PV));
   }
 
 

@@ -57,6 +57,24 @@ public final class Timeslot
     return (endTime.getTimeInMillis() + startTime.getTimeInMillis()) / 2;
   }
 
+  public double getMidTimeInHours()
+
+  {
+    long midTime = getMidTimeInMillis();
+
+    Calendar midTimeCal = Calendar.getInstance();
+    midTimeCal.setTimeInMillis(midTime);
+
+    int hour = midTimeCal.get(Calendar.HOUR_OF_DAY);
+
+    //determine the time offset for which we want to calculate load
+    double minuteIncr = (double) midTimeCal.get(Calendar.MINUTE) / 60;
+    double secondIncr = (double) midTimeCal.get(Calendar.SECOND) / 3600;
+    double timeHour = hour + minuteIncr + secondIncr;
+
+    return timeHour;
+  }
+
 
   @Override
   public String toString()

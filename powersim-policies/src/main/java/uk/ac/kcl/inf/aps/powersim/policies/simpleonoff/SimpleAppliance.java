@@ -23,7 +23,7 @@ public class SimpleAppliance extends Appliance
 
   public SimpleAppliance(String uid, SimpleApplianceType applianceType)
   {
-    super(uid, applianceType.toString());
+    super(uid, applianceType.toString(), "default");
     this.applianceType = applianceType;
     this.on = applianceType.isAlwaysOn();
   }
@@ -35,7 +35,7 @@ public class SimpleAppliance extends Appliance
 
   public long getCurrentWattageLoad(SimulationContext simulationContext)
   {
-    //todo: calcualate wattage more intelligently rather than a flat wattage
+    //todo: calculate wattage more intelligently rather than a flat wattage
 
     if (isOn())
       return applianceType.getWattage();
