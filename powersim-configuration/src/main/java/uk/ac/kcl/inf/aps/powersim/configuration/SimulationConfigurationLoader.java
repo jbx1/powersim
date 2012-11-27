@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
@@ -39,10 +39,39 @@ public class SimulationConfigurationLoader
     }
   }
 
-  public List<HouseholdConfig> loadHouseholdConfigurations()
+//todo: finish this
+  /*
+  public Simulation configureSimulation()
+          throws SimulationConfigurationException
+  {
+    Map<ApplianceTuple, ApplianceConfig> applianceConfigMap = loadApplianceConfigurations();
+    Map<String, ProfileConfig> profileConfigMap = loadProfileConfigurations();
+    Map<String, HouseholdConfig> householdConfigMap = loadHouseholdConfigurations();
+    Map<String, PolicyConfig> policyConfigMap = loadPolicyConfigurations();
+    SimulationConfig simulationConfig = loadSimulationConfiguration();
+
+
+    List<Policy> policies = new ArrayList<>();
+
+    for (String policyName : simulationConfig.getPolicies())
+    {
+      PolicyConfig policyConfig = policyConfigMap.get(policyName);
+
+      //todo: set the household factories to the policy
+      //todo: for each household factory, set the appliance factory
+
+    }
+
+
+
+  } */
+
+
+
+  public Map<String, HouseholdConfig> loadHouseholdConfigurations()
   {
     log.debug("Loading appliance configurations");
-    List<HouseholdConfig> householdConfigList = new ArrayList<>();
+    Map<String, HouseholdConfig> householdConfigMap = new TreeMap<>();
 
     File[] files = configDirectory.listFiles(new FileFilter()
     {
@@ -68,7 +97,7 @@ public class SimulationConfigurationLoader
           {
             HouseholdConfig configBean = (HouseholdConfig) object;
             log.info(configBean.toString());
-            householdConfigList.add(configBean);
+            householdConfigMap.put(configBean.getCategory(), configBean);
           }
         }
         catch (IOException ex)
@@ -82,14 +111,14 @@ public class SimulationConfigurationLoader
       log.debug("Files array is null!");
     }
 
-    return householdConfigList;
+    return householdConfigMap;
 
   }
 
-  public List<ApplianceConfig> loadApplianceConfigurations()
+  public Map<ApplianceTuple, ApplianceConfig> loadApplianceConfigurations()
   {
     log.debug("Loading appliance configurations");
-    List<ApplianceConfig> applianceConfigList = new ArrayList<>();
+    Map<ApplianceTuple, ApplianceConfig> applianceConfigMap = new TreeMap<>();
 
     File[] files = configDirectory.listFiles(new FileFilter()
     {
@@ -115,7 +144,7 @@ public class SimulationConfigurationLoader
           {
             ApplianceConfig configBean = (ApplianceConfig) object;
             log.info(configBean.toString());
-            applianceConfigList.add(configBean);
+            applianceConfigMap.put(new ApplianceTuple(configBean.getType(), configBean.getSubType()), configBean);
           }
         }
         catch (IOException ex)
@@ -129,14 +158,14 @@ public class SimulationConfigurationLoader
       log.debug("Files array is null!");
     }
 
-    return applianceConfigList;
+    return applianceConfigMap;
   }
 
 
-  public List<ProfileConfig> loadProfileConfigurations()
+  public Map<String, ProfileConfig> loadProfileConfigurations()
   {
     log.debug("Loading profile configurations");
-    List<ProfileConfig> profileConfigList = new ArrayList<>();
+    Map<String, ProfileConfig> profileConfigMap = new TreeMap<>();
 
     File[] files = configDirectory.listFiles(new FileFilter()
     {
@@ -162,7 +191,7 @@ public class SimulationConfigurationLoader
           {
             ProfileConfig configBean = (ProfileConfig) object;
             log.info(configBean.toString());
-            profileConfigList.add(configBean);
+            profileConfigMap.put(configBean.getName(), configBean);
           }
         }
         catch (IOException ex)
@@ -176,7 +205,7 @@ public class SimulationConfigurationLoader
       log.debug("Files array is null!");
     }
 
-    return profileConfigList;
+    return profileConfigMap;
   }
 
   public SimulationConfig loadSimulationConfiguration()
@@ -204,10 +233,10 @@ public class SimulationConfigurationLoader
     return simulationConfig;
   }
 
-  public List<PolicyConfig> loadPolicyConfigurations()
+  public Map<String, PolicyConfig> loadPolicyConfigurations()
   {
     log.debug("Loading policy configurations");
-    List<PolicyConfig> policyConfigList = new ArrayList<>();
+    Map<String, PolicyConfig> policyConfigMap = new TreeMap<>();
 
     File[] files = configDirectory.listFiles(new FileFilter()
     {
@@ -233,7 +262,7 @@ public class SimulationConfigurationLoader
           {
             PolicyConfig configBean = (PolicyConfig) object;
             log.info(configBean.toString());
-            policyConfigList.add(configBean);
+            policyConfigMap.put(configBean.getName(), configBean);
           }
         }
         catch (IOException ex)
@@ -247,7 +276,69 @@ public class SimulationConfigurationLoader
       log.debug("Files array is null!");
     }
 
-    return policyConfigList;
+    return policyConfigMap;
   }
+
+  private static class ApplianceTuple implements Comparable<ApplianceTuple>
+  {
+    private final String type;
+    private final String subtype;
+
+    private ApplianceTuple(String type, String subtype)
+    {
+      this.type = type;
+      this.subtype = subtype;
+    }
+
+    public String getType()
+    {
+      return type;
+    }
+
+    public String getSubtype()
+    {
+      return subtype;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+      if (this == o)
+      {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass())
+      {
+        return false;
+      }
+
+      ApplianceTuple that = (ApplianceTuple) o;
+
+      if (subtype != null ? !subtype.equals(that.subtype) : that.subtype != null)
+      {
+        return false;
+      }
+      if (type != null ? !type.equals(that.type) : that.type != null)
+      {
+        return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int compareTo(ApplianceTuple o)
+    {
+      if (!o.getType().equals(this.getType()))
+      {
+        return this.getType().compareTo(o.getType());
+      }
+      else
+      {
+        return this.getSubtype().compareTo(o.getSubtype());
+      }
+    }
+  }
+
 
 }

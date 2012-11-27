@@ -13,8 +13,8 @@ import java.util.Calendar;
 
 /**
  * Implements a two-state appliance. This can be either an On/Off appliance, or a High/low consumption appliance.
- * Two wattage specifications are provided, one for when the appliance is in the ON state, and one for when the appliance
- * is in the OFF (Low) state. For a purely On/Off state, the offWattage is 0.
+ * Two wattage specifications are provided, one for when the appliance is in the ON (active) state, and one for when the appliance
+ * is in the OFF (inactive) state. For a purely On/Off state, the inactiveWattage is 0.
  *
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
  *         Date: 09/11/12
@@ -40,25 +40,24 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
   /**
    * The wattage consumed when the appliance is active.
    */
-  private long onWattage;
+  private long activeWattage;
 
   /**
    * The wattage consumed when the appliance is inactive
    */
-  private long offWattage;
+  private long inactiveWattage;
 
 
   private StochasticProcess activateStrategy;
 
   private StochasticProcess deactivateStrategy;
 
-  public TwoStateAppliance(String uid, String type, String subtype, long onWattage, long offWattage, StochasticProcess activateStrategy, StochasticProcess deactivateStrategy)
+
+  public TwoStateAppliance(String uid, String type, String subtype, long activateWattage, long inactiveWattage)
   {
     super(uid, type, subtype);
-    this.onWattage = onWattage;
-    this.offWattage = offWattage;
-    this.activateStrategy = activateStrategy;
-    this.deactivateStrategy = deactivateStrategy;
+    this.activeWattage = activateWattage;
+    this.inactiveWattage = inactiveWattage;
   }
 
   public boolean isActive()
@@ -105,13 +104,13 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
   {
     if (isActive())
     {
-      log.trace("Appliance {} is ON consuming {}", this.getType(), onWattage);
-      return onWattage;
+      log.trace("Appliance {} is ON consuming {}", this.getType(), activeWattage);
+      return activeWattage;
     }
     else
     {
-      log.trace("Appliance {} is OFF consuming {}", this.getType(), offWattage);
-      return offWattage;
+      log.trace("Appliance {} is OFF consuming {}", this.getType(), inactiveWattage);
+      return inactiveWattage;
     }
   }
 
@@ -175,9 +174,10 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
   public static TwoStateAppliance getInstance(String uuid, String name, String subtype, TwoStateApplianceUsageRating usageRating)
   {
     TwoStateAppliance appliance = new TwoStateAppliance(uuid, name, subtype,
-            usageRating.getOnWattage(), usageRating.getOffWattage(),
-            new NonHomogenousPoissonProcess(usageRating.getMapSwitchOnFreq()),
-            new NormalDistProcess(usageRating.getMeanDurationMins(), usageRating.getStdDev()));
+            usageRating.getOnWattage(), usageRating.getOffWattage());
+
+    appliance.setActivateStrategy(new NonHomogenousPoissonProcess(usageRating.getMapSwitchOnFreq()));
+    appliance.setDeactivateStrategy(new NormalDistProcess(usageRating.getMeanDurationMins(), usageRating.getStdDev()));
 
     return appliance;
   }

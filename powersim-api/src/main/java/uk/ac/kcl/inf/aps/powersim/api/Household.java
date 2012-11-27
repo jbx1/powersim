@@ -27,11 +27,10 @@ public abstract class Household
    */
   private Policy policy;
 
-  public Household(String uid, String category, Policy policy)
+  public Household(String uid, String category)
   {
     this.uid = uid;
     this.category = category;
-    this.policy = policy;
   }
 
   public String getUid()
@@ -47,6 +46,11 @@ public abstract class Household
   public Policy getPolicy()
   {
     return policy;
+  }
+
+  public void setPolicy(Policy policy)
+  {
+    this.policy = policy;
   }
 
   @Override

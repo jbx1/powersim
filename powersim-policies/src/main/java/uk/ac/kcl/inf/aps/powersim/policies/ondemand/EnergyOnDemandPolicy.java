@@ -3,6 +3,7 @@ package uk.ac.kcl.inf.aps.powersim.policies.ondemand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.kcl.inf.aps.powersim.api.Household;
+import uk.ac.kcl.inf.aps.powersim.api.HouseholdFactory;
 import uk.ac.kcl.inf.aps.powersim.api.Policy;
 import uk.ac.kcl.inf.aps.powersim.api.SimulationContext;
 
@@ -21,7 +22,9 @@ public class EnergyOnDemandPolicy implements Policy
 
   private int totalHouseholdCount;
 
-  private Map<String, Integer> householdCategoryCounts;
+  private final Map<String, Integer> householdCategoryCounts;
+
+  private final Map<String, HouseholdFactory<EnergyOnDemandHousehold>> householdFactories = new TreeMap<>();
 
   public EnergyOnDemandPolicy(Map<String, Integer> householdCategoryCounts)
   {
@@ -32,6 +35,11 @@ public class EnergyOnDemandPolicy implements Policy
     {
       totalHouseholdCount += householdCategoryCounts.get(householdcategory);
     }
+  }
+
+  public void setHouseholdFactoryForCategory(String category, HouseholdFactory<EnergyOnDemandHousehold> householdFactory)
+  {
+    householdFactories.put(category, householdFactory);
   }
 
   public int getTotalHouseholdCount()
@@ -52,9 +60,13 @@ public class EnergyOnDemandPolicy implements Policy
     for (String householdCategory : householdCategoryCounts.keySet())
     {
       int categoryHouseholdCount = householdCategoryCounts.get(householdCategory);
+      HouseholdFactory<EnergyOnDemandHousehold> householdFactory = householdFactories.get(householdCategory);
+
       for (int i = 0; i < categoryHouseholdCount; i++)
       {
-        households.add(new EnergyOnDemandHousehold(UUID.randomUUID().toString(), householdCategory, this));
+        EnergyOnDemandHousehold household = householdFactory.getHouseholdInstance();
+        household.setPolicy(this);
+        households.add(household);
       }
     }
 

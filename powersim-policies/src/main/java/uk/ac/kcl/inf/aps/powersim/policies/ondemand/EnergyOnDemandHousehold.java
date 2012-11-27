@@ -18,9 +18,9 @@ public class EnergyOnDemandHousehold extends Household implements SimulationTime
 {
   List<EnergyOnDemandAppliance> appliances = new ArrayList<>();
 
-  public EnergyOnDemandHousehold(String uid, String category, Policy policy)
+  public EnergyOnDemandHousehold(String uid, String category)
   {
-    super(uid, category, policy);
+    super(uid, category);
     setupAppliances();
   }
 
