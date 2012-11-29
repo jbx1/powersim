@@ -4,9 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.kcl.inf.aps.powersim.api.ApplianceKeyTuple;
 
 import java.io.FileNotFoundException;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
@@ -17,14 +18,14 @@ public class TestSimulationConfigurationLoader
 {
   private static final Logger log = LoggerFactory.getLogger(TestSimulationConfigurationLoader.class);
 
-  private SimulationConfigurationLoader configurationLoader;
+  private SimulationConfigurationLoaderImpl configurationLoader;
 
   @Before
   public void setup()
   {
     try
     {
-      configurationLoader = new SimulationConfigurationLoader("default");
+      configurationLoader = new SimulationConfigurationLoaderImpl("default");
     }
     catch (FileNotFoundException ex)
     {
@@ -35,8 +36,8 @@ public class TestSimulationConfigurationLoader
   @Test
   public void testApplianceConfig()
   {
-    List<ApplianceConfig> configList = configurationLoader.loadApplianceConfigurations();
-    for (ApplianceConfig config : configList)
+    Map<ApplianceKeyTuple, ApplianceConfig> configList = configurationLoader.getApplianceConfigurations();
+    for (ApplianceConfig config : configList.values())
     {
       log.info("ApplianceConfig instance {} ", config.getClass());
     }
@@ -45,8 +46,8 @@ public class TestSimulationConfigurationLoader
   @Test
   public void testHouseholdConfig()
   {
-    List<HouseholdConfig> configList = configurationLoader.loadHouseholdConfigurations();
-    for (HouseholdConfig config : configList)
+    Map<String, HouseholdConfig> configList = configurationLoader.getHouseholdConfigurations();
+    for (HouseholdConfig config : configList.values())
     {
       log.info("HosueholdConfig instance {} ", config.getClass());
     }
@@ -55,8 +56,8 @@ public class TestSimulationConfigurationLoader
   @Test
   public void testPolicyConfig()
   {
-    List<PolicyConfig> configList = configurationLoader.loadPolicyConfigurations();
-    for (PolicyConfig config : configList)
+    Map<String, PolicyConfig> configList = configurationLoader.getPolicyConfigurations();
+    for (PolicyConfig config : configList.values())
     {
       log.info("PolicyConfig instance {} ", config.getClass());
     }
@@ -65,8 +66,8 @@ public class TestSimulationConfigurationLoader
   @Test
   public void testProfileConfig()
   {
-    List<ProfileConfig> configList = configurationLoader.loadProfileConfigurations();
-    for (ProfileConfig config : configList)
+    Map<String, ProfileConfig> configList = configurationLoader.getProfileConfigurations();
+    for (ProfileConfig config : configList.values())
     {
       log.info("ProfileConfig instance {} ", config.getClass());
     }
@@ -75,7 +76,7 @@ public class TestSimulationConfigurationLoader
   @Test
   public void testSimulationConfig()
   {
-    SimulationConfig simulationConfig = configurationLoader.loadSimulationConfiguration();
+    SimulationConfig simulationConfig = configurationLoader.getSimulationConfiguration();
     log.info("SimulationConfig instance {} ", simulationConfig.getClass());
   }
 

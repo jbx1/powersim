@@ -14,6 +14,8 @@ public abstract class HouseholdConfig<H extends Household> implements HouseholdF
   public String category;
   public Policy policy;
 
+  private SimulationConfigurationLoader configurationLoader;
+
   @Override
   public String getCategory()
   {
@@ -33,5 +35,27 @@ public abstract class HouseholdConfig<H extends Household> implements HouseholdF
   public void setPolicy(Policy policy)
   {
     this.policy = policy;
+  }
+
+  public void setConfigurationLoader(SimulationConfigurationLoader configurationLoader)
+  {
+    this.configurationLoader = configurationLoader;
+  }
+
+  public SimulationConfigurationLoader getConfigurationLoader()
+  {
+    return configurationLoader;
+  }
+
+
+  @Override
+  public String toString()
+  {
+    final StringBuilder sb = new StringBuilder();
+    sb.append("HouseholdConfig");
+    sb.append("{category='").append(category).append('\'');
+    sb.append(", policy=").append(policy);
+    sb.append('}');
+    return sb.toString();
   }
 }

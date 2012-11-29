@@ -34,6 +34,7 @@ public class DayBoundedGLAppliance extends EnergyOnDemandAppliance
   @Override
   public long consumeTimeSlot(SimulationContext simulationContext)
   {
+    log.trace("Appliance {} consuming timeslot {}", this.getUid(), simulationContext.getTimeslot());
     //lets work with the absolute value (ignoring the negative) and then invert it again in the end
     double absPeakLoad = Math.abs(peakLoadWatts);
 
@@ -74,7 +75,9 @@ public class DayBoundedGLAppliance extends EnergyOnDemandAppliance
     long actualLoadWatts = (long) normalDistribution.inverseCumulativeProbability(errorRand);
     log.trace("Actual load: {}watts", actualLoadWatts);
 
-    return (peakLoadWatts < 0) ? 0 - actualLoadWatts : actualLoadWatts;
+    long consumedLoad = (peakLoadWatts < 0) ? 0 - actualLoadWatts : actualLoadWatts;
+    log.trace("Appliance {} consumed {}", this.getUid(), consumedLoad);
+    return consumedLoad;
   }
 
   public long getPeakTimeHour()
@@ -126,18 +129,4 @@ public class DayBoundedGLAppliance extends EnergyOnDemandAppliance
   {
     this.higherBoundHour = higherBoundHour;
   }
-
-  public static DayBoundedGLAppliance getInstance(String uuid, String name, String subtype, DayBoundedGLApplianceRating applianceRating)
-  {
-    DayBoundedGLAppliance appliance = new DayBoundedGLAppliance(uuid, name, subtype, applianceRating.getPeakLoadWatts());
-
-    appliance.setPeakTimeHour(applianceRating.getPeakTimeHour());
-    appliance.setLoadVariance(applianceRating.getLoadVariance());
-    appliance.setPeakErrorVariance(applianceRating.getErrorVariance());
-    appliance.setLowerBoundHour(applianceRating.getLowerBoundHour());
-    appliance.setHigherBoundHour(applianceRating.getHigherBoundHour());
-
-    return appliance;
-  }
-
 }

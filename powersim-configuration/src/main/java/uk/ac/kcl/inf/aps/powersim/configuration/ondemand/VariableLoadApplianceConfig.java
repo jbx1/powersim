@@ -3,6 +3,8 @@ package uk.ac.kcl.inf.aps.powersim.configuration.ondemand;
 import uk.ac.kcl.inf.aps.powersim.configuration.ApplianceConfig;
 import uk.ac.kcl.inf.aps.powersim.policies.ondemand.DayBoundedGLAppliance;
 
+import java.util.UUID;
+
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
  *         Date: 23/11/12
@@ -25,7 +27,7 @@ public class VariableLoadApplianceConfig extends ApplianceConfig<DayBoundedGLApp
   @Override
   public DayBoundedGLAppliance getApplianceInstance()
   {
-    return null;
+   return new DayBoundedGLAppliance(UUID.randomUUID().toString(), this.getType(), this.getSubType(), peak);
   }
 
   @Override

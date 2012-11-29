@@ -4,8 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.kcl.inf.aps.powersim.api.SimulationContext;
 import uk.ac.kcl.inf.aps.powersim.api.Timeslot;
-import uk.ac.kcl.inf.aps.powersim.policies.stochastic.NonHomogenousPoissonProcess;
-import uk.ac.kcl.inf.aps.powersim.policies.stochastic.NormalDistProcess;
 import uk.ac.kcl.inf.aps.powersim.policies.stochastic.StochasticProcess;
 
 import java.text.SimpleDateFormat;
@@ -84,6 +82,7 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
   @Override
   public long consumeTimeSlot(SimulationContext simulationContext)
   {
+    log.trace("Appliance {} consuming timeslot {}", this.getUid(), simulationContext.getTimeslot());
     if (isActive())
     {
       turnOffRandomly(simulationContext);
@@ -169,16 +168,5 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
     }
 
     return false;
-  }
-
-  public static TwoStateAppliance getInstance(String uuid, String name, String subtype, TwoStateApplianceUsageRating usageRating)
-  {
-    TwoStateAppliance appliance = new TwoStateAppliance(uuid, name, subtype,
-            usageRating.getOnWattage(), usageRating.getOffWattage());
-
-    appliance.setActivateStrategy(new NonHomogenousPoissonProcess(usageRating.getMapSwitchOnFreq()));
-    appliance.setDeactivateStrategy(new NormalDistProcess(usageRating.getMeanDurationMins(), usageRating.getStdDev()));
-
-    return appliance;
   }
 }

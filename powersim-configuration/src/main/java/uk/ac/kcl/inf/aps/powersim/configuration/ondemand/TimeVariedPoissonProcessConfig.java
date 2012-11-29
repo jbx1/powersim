@@ -1,5 +1,9 @@
 package uk.ac.kcl.inf.aps.powersim.configuration.ondemand;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.ac.kcl.inf.aps.powersim.policies.stochastic.TimeVariedPoissonProcess;
+
 import java.util.Map;
 
 /**
@@ -7,8 +11,10 @@ import java.util.Map;
  *         Date: 26/11/12
  *         Time: 16:16
  */
-public class TimeVariedPoissonProcessConfig extends StochasticProcessConfig
+public class TimeVariedPoissonProcessConfig implements StochasticProcessConfig<TimeVariedPoissonProcess>
 {
+  protected static final Logger log = LoggerFactory.getLogger(TimeVariedPoissonProcessConfig.class);
+
   private Map<Integer, Double> rates;
 
   public TimeVariedPoissonProcessConfig()
@@ -33,5 +39,12 @@ public class TimeVariedPoissonProcessConfig extends StochasticProcessConfig
     sb.append("{rates=").append(rates);
     sb.append('}');
     return sb.toString();
+  }
+
+  @Override
+  public TimeVariedPoissonProcess getStochasticProcessInstance()
+  {
+    log.debug("Creating new TimeVariedPoissonProcess stochastic process with rates", rates);
+    return new TimeVariedPoissonProcess(rates);
   }
 }

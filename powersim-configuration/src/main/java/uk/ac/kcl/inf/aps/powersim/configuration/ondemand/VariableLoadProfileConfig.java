@@ -69,6 +69,10 @@ public class VariableLoadProfileConfig extends ProfileConfig<DayBoundedGLApplian
   @Override
   public void profileAppliance(DayBoundedGLAppliance appliance)
   {
-    //To change body of implemented methods use File | Settings | File Templates.
+    appliance.setLowerBoundHour(startHour);
+    appliance.setHigherBoundHour(stopHour);
+    appliance.setPeakTimeHour(peakHour);
+    appliance.setPeakErrorVariance(error);
+    appliance.setLoadVariance(variance);
   }
 }

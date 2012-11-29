@@ -9,13 +9,17 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
+ * Implements a non-homogenous poisson process, whose rate varies by time according to the provided mapping between hour and rate.
+ * The maximum configuration granularity is hourly, although hours can be skipped. This class will compute the actual
+ * rate in minute granularity, using the gradient between the provided 2 hourly rates bounding the specific required timeslot.
+ *
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
  *         Date: 12/11/12
  *         Time: 14:51
  */
-public class NonHomogenousPoissonProcess implements StochasticProcess
+public class TimeVariedPoissonProcess implements StochasticProcess
 {
-  public static final Logger log = LoggerFactory.getLogger(NonHomogenousPoissonProcess.class);
+  public static final Logger log = LoggerFactory.getLogger(TimeVariedPoissonProcess.class);
 
   public static final long RATE_TIMEUNIT_SIZE = 3600000; //1 hour (in milliseconds)
 
@@ -26,7 +30,7 @@ public class NonHomogenousPoissonProcess implements StochasticProcess
 
   private Double maxRate;
 
-  public NonHomogenousPoissonProcess(Map<Integer, Double> mapHourlyRate)
+  public TimeVariedPoissonProcess(Map<Integer, Double> mapHourlyRate)
   {
     this.mapHourlyRate = mapHourlyRate;
     this.maxRate = Collections.max(this.mapHourlyRate.values());

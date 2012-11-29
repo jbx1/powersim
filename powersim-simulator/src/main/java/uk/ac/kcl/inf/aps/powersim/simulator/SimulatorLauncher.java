@@ -17,15 +17,13 @@ public class SimulatorLauncher
   {
     log.info("Starting Power simulator");
 
+    //todo: read configuration name from command line
+
     // open/read the application context file
     log.debug("Loading Spring application context");
     ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("application-context.xml");
 
     Simulator simulator = (Simulator) ctx.getBean("simulator");
     simulator.start();
-
-    // instantiate our spring dao object from the application context
-//      FileEventDao fileEventDao = (FileEventDao)ctx.getBean("fileEventDao");
-
   }
 }

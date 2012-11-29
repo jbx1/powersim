@@ -1,5 +1,7 @@
 package uk.ac.kcl.inf.aps.powersim.configuration.ondemand;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.kcl.inf.aps.powersim.configuration.ProfileConfig;
 import uk.ac.kcl.inf.aps.powersim.policies.ondemand.TwoStateAppliance;
 
@@ -10,6 +12,8 @@ import uk.ac.kcl.inf.aps.powersim.policies.ondemand.TwoStateAppliance;
  */
 public class TwoStateProfileConfig extends ProfileConfig<TwoStateAppliance>
 {
+  protected static final Logger log = LoggerFactory.getLogger(TwoStateProfileConfig.class);
+
   private StochasticProcessConfig activation;
   private StochasticProcessConfig deactivation;
 
@@ -36,7 +40,9 @@ public class TwoStateProfileConfig extends ProfileConfig<TwoStateAppliance>
   @Override
   public void profileAppliance(TwoStateAppliance appliance)
   {
-    //To change body of implemented methods use File | Settings | File Templates.
+    log.debug("Setting activation and deactivation strategies for {}", appliance);
+    appliance.setActivateStrategy(activation.getStochasticProcessInstance());
+    appliance.setDeactivateStrategy(deactivation.getStochasticProcessInstance());
   }
 
   @Override

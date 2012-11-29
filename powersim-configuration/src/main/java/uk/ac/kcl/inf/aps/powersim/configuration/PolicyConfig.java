@@ -12,6 +12,8 @@ public abstract class PolicyConfig<P extends Policy> implements PolicyFactory<P>
 {
   String name;
 
+  private SimulationConfigurationLoader configurationLoader;
+
   public PolicyConfig()
   {
   }
@@ -24,5 +26,15 @@ public abstract class PolicyConfig<P extends Policy> implements PolicyFactory<P>
   public void setName(String name)
   {
     this.name = name;
+  }
+
+  public void setConfigurationLoader(SimulationConfigurationLoader configurationLoader)
+  {
+    this.configurationLoader = configurationLoader;
+  }
+
+  public SimulationConfigurationLoader getConfigurationLoader()
+  {
+    return configurationLoader;
   }
 }

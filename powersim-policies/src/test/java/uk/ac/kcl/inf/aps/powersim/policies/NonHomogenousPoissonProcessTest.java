@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.kcl.inf.aps.powersim.policies.stochastic.NonHomogenousPoissonProcess;
+import uk.ac.kcl.inf.aps.powersim.policies.stochastic.TimeVariedPoissonProcess;
 import uk.ac.kcl.inf.aps.powersim.policies.stochastic.StochasticProcess;
 
 import java.text.SimpleDateFormat;
@@ -38,7 +38,7 @@ public class NonHomogenousPoissonProcessTest
     map.put(22, 4d);
 
     log.info("Initialising stochastic process (Nonhomogenouspoisson");
-    stochasticProcess = new NonHomogenousPoissonProcess(map);
+    stochasticProcess = new TimeVariedPoissonProcess(map);
   }
 
   @Test

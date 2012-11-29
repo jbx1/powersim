@@ -22,54 +22,43 @@ public class EnergyOnDemandPolicy implements Policy
 
   private int totalHouseholdCount;
 
-  private final Map<String, Integer> householdCategoryCounts;
+  private final Map<String, HouseholdFactoryConfiguration<EnergyOnDemandHousehold>> householdFactoryConfigurationMap;
 
-  private final Map<String, HouseholdFactory<EnergyOnDemandHousehold>> householdFactories = new TreeMap<>();
-
-  public EnergyOnDemandPolicy(Map<String, Integer> householdCategoryCounts)
+  public EnergyOnDemandPolicy(Map<String, HouseholdFactoryConfiguration<EnergyOnDemandHousehold>> householdFactoryConfigurationMap)
   {
-    this.householdCategoryCounts = householdCategoryCounts;
+    this.householdFactoryConfigurationMap = householdFactoryConfigurationMap;
 
-    Set<String> householdCategories = householdCategoryCounts.keySet();
+    Set<String> householdCategories = householdFactoryConfigurationMap.keySet();
     for (String householdcategory : householdCategories)
     {
-      totalHouseholdCount += householdCategoryCounts.get(householdcategory);
+      totalHouseholdCount += householdFactoryConfigurationMap.get(householdcategory).getHouseholdCount();
     }
+    log.debug("Total households for {} {}", this.getDescriptor(), totalHouseholdCount);
   }
 
-  public void setHouseholdFactoryForCategory(String category, HouseholdFactory<EnergyOnDemandHousehold> householdFactory)
-  {
-    householdFactories.put(category, householdFactory);
-  }
-
-  public int getTotalHouseholdCount()
-  {
-    return totalHouseholdCount;
-  }
-
-  public int getHouseholdCount(String category)
-  {
-    return householdCategoryCounts.get(category);
-  }
 
   @Override
   public List<? extends Household> setup()
   {
     households = new ArrayList<>(totalHouseholdCount);
 
-    for (String householdCategory : householdCategoryCounts.keySet())
+    for (String householdCategory : householdFactoryConfigurationMap.keySet())
     {
-      int categoryHouseholdCount = householdCategoryCounts.get(householdCategory);
-      HouseholdFactory<EnergyOnDemandHousehold> householdFactory = householdFactories.get(householdCategory);
+      HouseholdFactoryConfiguration<EnergyOnDemandHousehold> householdConfiguration = householdFactoryConfigurationMap.get(householdCategory);
+      int categoryHouseholdCount = householdConfiguration.getHouseholdCount();
+      log.debug("Category {} requires {} households", householdCategory, categoryHouseholdCount);
+      HouseholdFactory<EnergyOnDemandHousehold> householdFactory = householdConfiguration.getHouseholdFactory();
 
       for (int i = 0; i < categoryHouseholdCount; i++)
       {
         EnergyOnDemandHousehold household = householdFactory.getHouseholdInstance();
         household.setPolicy(this);
         households.add(household);
+        household.setupAppliances();
       }
     }
 
+    log.debug("{} houses set up", households.size());
     return households;
   }
 
@@ -104,7 +93,7 @@ public class EnergyOnDemandPolicy implements Policy
     sb.append("EnergyOnDemandPolicy");
     sb.append("{descriptor=").append(getDescriptor());
     sb.append(", totalHouseholdCount=").append(totalHouseholdCount);
-    sb.append(", householdCategories=").append(householdCategoryCounts.size());
+    sb.append(", householdCategories=").append(householdFactoryConfigurationMap.size());
     sb.append('}');
     return sb.toString();
   }

@@ -3,6 +3,8 @@ package uk.ac.kcl.inf.aps.powersim.configuration.ondemand;
 import uk.ac.kcl.inf.aps.powersim.configuration.ApplianceConfig;
 import uk.ac.kcl.inf.aps.powersim.policies.ondemand.TwoStateAppliance;
 
+import java.util.UUID;
+
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
  *         Date: 23/11/12
@@ -51,6 +53,6 @@ public class TwoStateApplianceConfig extends ApplianceConfig<TwoStateAppliance>
   @Override
   public TwoStateAppliance getApplianceInstance()
   {
-    return null;  //To change body of implemented methods use File | Settings | File Templates.
+    return new TwoStateAppliance(UUID.randomUUID().toString(), this.getType(), this.getSubType(), active, inactive);
   }
 }

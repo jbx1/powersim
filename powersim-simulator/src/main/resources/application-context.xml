@@ -83,16 +83,11 @@
         <entry key="other" value="10"/>
     </util:map>
 
+    <bean id="simulationConfigurationLoader" class="uk.ac.kcl.inf.aps.powersim.configuration.SimulationConfigurationLoaderImpl" >
+        <constructor-arg name="configName" value="default" />
+    </bean>
 
     <bean id="simulator" class="uk.ac.kcl.inf.aps.powersim.simulator.SimulatorImpl">
-        <constructor-arg name="name" value="20 households with 18 appliances and 1 generator"/>
-        <constructor-arg name="timeslotDuration" value="60000"/>
-        <property name="policies">
-            <list>
-                <bean name="simplePolicy" class="uk.ac.kcl.inf.aps.powersim.policies.ondemand.EnergyOnDemandPolicy">
-                    <constructor-arg name="householdCategoryCounts"><ref bean="householdCategories"/></constructor-arg>
-                </bean>
-            </list>
-        </property>
+        <constructor-arg name="simulationConfigurationLoader"><ref bean="simulationConfigurationLoader" /></constructor-arg>
     </bean>
 </beans>

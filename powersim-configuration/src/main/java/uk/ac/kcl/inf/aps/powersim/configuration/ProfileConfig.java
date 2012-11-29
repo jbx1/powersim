@@ -22,7 +22,6 @@ public abstract class ProfileConfig<A extends Appliance> implements AppliancePro
     this.name = name;
   }
 
-
   @Override
   public String toString()
   {

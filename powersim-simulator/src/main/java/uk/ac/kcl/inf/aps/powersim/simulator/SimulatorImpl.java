@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import uk.ac.kcl.inf.aps.powersim.api.*;
+import uk.ac.kcl.inf.aps.powersim.configuration.SimulationConfig;
+import uk.ac.kcl.inf.aps.powersim.configuration.SimulationConfigurationLoader;
 import uk.ac.kcl.inf.aps.powersim.persistence.model.*;
 
 import java.text.SimpleDateFormat;
@@ -36,14 +38,9 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
   };
 
   /**
-   * Name of the simulation.
+   * The simulation configuration including name, duration and granularity
    */
-  private final String name;
-
-  /**
-   * Duration of each timeslot (in milliseconds)
-   */
-  private final long timeslotDuration;
+  private SimulationConfig simulationConfig;
 
   /**
    * The current simulation data.
@@ -100,15 +97,15 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
   //todo: configuration (time intervals, duration, etc.) use YAML?
 
 
-  public SimulatorImpl(String name, long timeslotDuration)
+  public SimulatorImpl(SimulationConfigurationLoader simulationConfigurationLoader)
   {
-    this.name = name;
-    this.timeslotDuration = timeslotDuration;
+    this.simulationConfig = simulationConfigurationLoader.getSimulationConfiguration();
+    setPolicies(simulationConfigurationLoader.getSimulationPolicies(simulationConfig));
   }
 
   public String getName()
   {
-    return name;
+    return simulationConfig.getName();
   }
 
   public void start()
@@ -122,7 +119,8 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
   public void run()
   {
     log.info("Preparing simulation, turning off indexes for faster data insertion.");
-    deferredConsumptionEventDao.turnOffConsumptionIndexes();
+    //todo: make this configurable
+//    deferredConsumptionEventDao.turnOffConsumptionIndexes();
 
     log.info("Starting Simulation!");
     long nowMillis = System.currentTimeMillis();
@@ -131,11 +129,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
 
     //set the start simulation time as today, but starting from midnight
     Calendar calSimulatedStart = Calendar.getInstance();
-    calSimulatedStart.setTimeInMillis(actualStart);
-    calSimulatedStart.set(Calendar.HOUR_OF_DAY, 4);
-    calSimulatedStart.set(Calendar.MINUTE, 0);
-    calSimulatedStart.set(Calendar.SECOND, 0);
-    calSimulatedStart.set(Calendar.MILLISECOND, 0);
+    calSimulatedStart.setTime(simulationConfig.getSimulatedStartTime());
 
     long simulatedStart = calSimulatedStart.getTimeInMillis();
 
@@ -150,7 +144,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     }
 
     //todo: use the configured simulated time
-    this.currentTimeSlot = new Timeslot(simulatedStart, simulatedStart + timeslotDuration);
+    this.currentTimeSlot = new Timeslot(simulatedStart, simulatedStart + getTimeslotDuration());
     this.timeslotCount = 0;
 
 
@@ -164,7 +158,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
       timeslotCount++;
       log.trace("Registering timeslot to database");
       currentTimeSlotData = registerTimeslot(currentTimeSlot, simulationData);
-      simulationContext = new SimulationContext(this, currentTimeSlot);  //todo: more complex information such as weather
+      simulationContext = new SimulationContext(this, currentTimeSlot);  //todo: more complex information such as weather?
       log.trace("Simulation Context {}", simulationContext);
 
       this.currentAggregateLoadData = new AggregateLoadData();
@@ -183,7 +177,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
       for (Policy policy : policies)
       {
         //wait at most 1 second for a policy to be ready
-        policy.ready(1000); //todo: configurable
+        policy.ready(1000);
       }
       log.debug("All policies complete from timeslot {} simulated current time {}", timeslotCount, sdf.get().format(currentTimeSlot.getEndTime().getTime()));
 
@@ -201,7 +195,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
       elapsed = nowMillis - simStart;
       simulatedElapsed = currentTimeSlot.getStartTime().getTimeInMillis() - simulatedStart;
     }
-    while (simulatedElapsed < 86400000);      //run for 24 hours
+    while (simulatedElapsed < getSimulationDuration());      //run for 24 hours
 
     log.info("Completed {} time ticks in {}ms", timeslotCount, elapsed);
     simulationData.setActualEndTime(new Date(nowMillis));
@@ -211,7 +205,8 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     deferredConsumptionEventDao.shutdown();
     log.info("Simulation execution ready!");
 
-    deferredConsumptionEventDao.turnOnConsumptionIndexes();
+    //todo: make this configurable
+//    deferredConsumptionEventDao.turnOnConsumptionIndexes();
 
     log.info("Simulation complete.");
   }
@@ -246,7 +241,12 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
 
   public long getTimeslotDuration()
   {
-    return timeslotDuration;
+    return simulationConfig.getGranularityMins() * 60000;
+  }
+
+  public long getSimulationDuration()
+  {
+    return simulationConfig.getDurationMins() * 60000;
   }
 
   public TimeslotData getCurrentTimeSlotData()
