@@ -14,7 +14,7 @@
     <module>powersim-persistence</module>
     <module>powersim-simulator</module>
     <module>powersim-analyser</module>
-      <module>powersim-configuration</module>
+    <module>powersim-configuration</module>
   </modules>
 
   <properties>
