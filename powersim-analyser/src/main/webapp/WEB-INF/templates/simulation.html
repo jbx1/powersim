@@ -46,7 +46,7 @@
 
         function renderApplianceData(householdId, applianceId)
         {
-            updateGraphData('./data/'+simulation_id+'/households/'+householdId+'/appliances/'+applianceId);
+            updateGraphData('./data/'+simulation_id+'/appliances/'+applianceId);
         }
 
         function onApplianceChange(householdId, applianceId)
@@ -65,7 +65,20 @@
         {
             updateGraphData('./data/'+simulation_id+'/households/'+householdId);
 
-            $.getJSON('./data/'+simulation_id+'/households/'+householdId+'/appliances', function(appliances)
+            $.getJSON('./data/'+simulation_id+'/households/'+householdId+'/details', function(household)
+            {
+                $('#data').html('<table id="householddetail" cellpadding="2" cellspacing="1">'+
+                    '<tr>' +
+                        '<th>Household</th><td>' + household.id + '</td>' +
+                        '<th>Reference</th><td>' + household.referenceId + '</td>' +
+                        '<th>Policy</th><td>' + household.policyDescriptor + '</td>' +
+                        '<th>Category</th><td>' + household.category + '</td>'+
+                   '</tr>' +
+                '</table>');
+
+            });
+
+            $.getJSON('./data/'+simulation_id+'/appliances?householdId='+householdId, function(appliances)
             {
                 $('#appliance_list').empty();
                 $('#appliance_list').removeAttr('disabled');
@@ -80,6 +93,77 @@
                 for (i = 0; i < appliances.length; i++)
                 {
                     $('#appliance_list').append('<option value="' + appliances[i].id + '">' + appliances[i].type + '[' + appliances[i].id + ']</option>')
+                }
+            });
+        }
+
+        function populatePolicies()
+        {
+            $.getJSON('./data/'+simulation_id+'/households/policies', function(policies)
+            {
+                $('#policy_list').empty();
+                $('#policy_list').removeAttr('disabled');
+                $('#policy_list').change(function()
+                {
+                    $(".slider").html('');
+                    $(".slider").mb_vSlider({
+                        //default attributes of the mb.vSlider
+                        template:"./"+simulation_id+"/households"
+                        ,easing:"easeOutExpo"
+                        ,slideTimer:1000
+                        ,nextEl:".vSnext"
+                        ,prevEl:".vSprev"
+                        ,height:445
+                        ,width:225
+                        },{ //data passed in the ajax query string
+                            elementsPerPage:20
+                            ,actualPage:0
+                            ,policy: $('#policy_list').val()
+                        });
+
+                });
+
+                $('#policy_list').append('<option value="0">All Policies</option>')
+
+                var i;
+                for (i = 0; i < policies.length; i++)
+                {
+                  $('#policy_list').append('<option value="' + policies[i] + '">' + policies[i] + '</option>')
+                }
+            });
+        }
+
+        function populateCategories()
+        {
+            $.getJSON('./data/'+simulation_id+'/households/categories', function(categories)
+            {
+                $('#category_list').empty();
+                $('#category_list').removeAttr('disabled');
+                $('#category_list').change(function()
+                {
+                    $(".slider").html('');
+                    $(".slider").mb_vSlider({
+                    //default attributes of the mb.vSlider
+                    template:"./"+simulation_id+"/households"
+                    ,easing:"easeOutExpo"
+                    ,slideTimer:1000
+                    ,nextEl:".vSnext"
+                    ,prevEl:".vSprev"
+                    ,height:445
+                    ,width:225
+                    },{ //data passed in the ajax query string
+                    elementsPerPage:20
+                    ,actualPage:0
+                    ,category: $('#category_list').val()
+                    });
+                });
+
+                $('#category_list').append('<option value="0">All Categories</option>')
+
+                var i;
+                for (i = 0; i < categories.length; i++)
+                {
+                    $('#category_list').append('<option value="' + categories[i] + '">' + categories[i] + '</option>')
                 }
             });
         }
@@ -105,7 +189,7 @@
             ,slideTimer:1000
             ,nextEl:".vSnext"
             ,prevEl:".vSprev"
-            ,height:492
+            ,height:445
             ,width:225
             },{ //data passed in the ajax query string
             elementsPerPage:20
@@ -134,12 +218,25 @@
     <div id="datacontainer">
         <div id="slider_container">
             <button id="fulldatabtn" onclick="updateGraphDataWithSimulation();">Show Full Aggregate Data</button>
+            <div id="policies" class="sidedropdown">
+                <select id="policy_list">
+                    <option name="all">All Policies</option>
+                </select>
+            </div>
+
+            <div id="categories" class="sidedropdown">
+                <select id="category_list">
+                    <option name="all">All Categories</option>
+                </select>
+            </div>
+
             <button class="vSprev" onclick="$('.slider').vsPrevPage()">Prev</button>
             <button class="vSnext" onclick="$('.slider').vsNextPage()">Next</button>
             <div class="slider"></div>
-            <div id="appliances"><select id="appliance_list">
-            <option name="all">All Appliances</option>
-            </select>
+            <div id="appliances" class="sidedropdown">
+                <select id="appliance_list">
+                    <option name="all">All Appliances</option>
+                </select>
             </div>
         </div>
         <div id="graphcontainer">
@@ -191,6 +288,8 @@
         $(document).ready(function()
         {
             updateGraphDataWithSimulation();
+            populatePolicies();
+            populateCategories();
         });
     </script>
     </div>

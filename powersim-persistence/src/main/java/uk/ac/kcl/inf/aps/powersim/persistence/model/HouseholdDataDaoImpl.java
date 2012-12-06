@@ -48,6 +48,67 @@ public class HouseholdDataDaoImpl extends GenericDaoImpl<HouseholdData> implemen
   }
 
   @Override
+  public List<HouseholdData> getHouseholdsForPolicy(long simulationId, String policy, int offset, int limit)
+  {
+    TypedQuery<HouseholdData> query = em.createNamedQuery("HouseholdData.getForPolicy", HouseholdData.class);
+    query.setParameter("simulationId", simulationId);
+    query.setParameter("policyDescriptor", policy);
+    query.setFirstResult(offset);
+    query.setMaxResults(limit);
+
+    return query.getResultList();
+  }
+
+  @Override
+  public List<HouseholdData> getHouseholdsForCategory(long simulationId, String category, int offset, int limit)
+  {
+    TypedQuery<HouseholdData> query = em.createNamedQuery("HouseholdData.getForCategory", HouseholdData.class);
+    query.setParameter("simulationId", simulationId);
+    query.setParameter("category", category);
+    query.setFirstResult(offset);
+    query.setMaxResults(limit);
+
+    return query.getResultList();
+  }
+
+  @Override
+  public List<HouseholdData> getHouseholdsForPolicyAndCategory(long simulationId, String policy, String category, int offset, int limit)
+  {
+    TypedQuery<HouseholdData> query = em.createNamedQuery("HouseholdData.getForPolicyAndCategory", HouseholdData.class);
+    query.setParameter("simulationId", simulationId);
+    query.setParameter("policyDescriptor", policy);
+    query.setParameter("category", category);
+    query.setFirstResult(offset);
+    query.setMaxResults(limit);
+
+    return query.getResultList();
+  }
+
+  @Override
+  public List<String> getCategoriesForSimulation(long simulationId)
+  {
+    TypedQuery<String> query = em.createNamedQuery("HouseholdData.getCategoriesForSimulation", String.class);
+    query.setParameter("simulationId", simulationId);
+    return query.getResultList();
+  }
+
+  @Override
+  public List<String> getCategoriesForPolicy(long simulationId, String policy)
+  {
+    TypedQuery<String> query = em.createNamedQuery("HouseholdData.getCategoriesForPolicy", String.class);
+    query.setParameter("simulationId", simulationId);
+    return query.getResultList();
+  }
+
+  @Override
+  public List<String> getPoliciesForSimulation(long simulationId)
+  {
+    TypedQuery<String> query = em.createNamedQuery("HouseholdData.getPoliciesForSimulation", String.class);
+    query.setParameter("simulationId", simulationId);
+    return query.getResultList();
+  }
+
+  @Override
   @Transactional
   public int deleteBySimulationId(long simulationId)
   {

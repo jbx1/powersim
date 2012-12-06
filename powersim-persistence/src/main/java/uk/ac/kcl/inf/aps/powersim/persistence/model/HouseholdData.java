@@ -15,7 +15,9 @@ import java.io.Serializable;
 @Table(name = "households")
 @org.hibernate.annotations.Table(appliesTo = "households", indexes =
         {
-                @Index(name = "households_simulation_id_idx", columnNames = "simulation_id")
+                @Index(name = "households_simulation_id_idx", columnNames = "simulation_id"),
+                @Index(name = "households_categories_idx", columnNames = "category"),
+                @Index(name = "households_policydescriptor_idx", columnNames = "policy_descriptor")
         })
 @NamedQueries({
         @NamedQuery(name="HouseholdData.countForSimulation",
@@ -23,6 +25,24 @@ import java.io.Serializable;
 
         @NamedQuery(name="HouseholdData.getForSimulation",
                 query="select h from HouseholdData h where h.simulationData.id=:simulationId order by h.id"),
+
+        @NamedQuery(name="HouseholdData.getForCategory",
+                query="select h from HouseholdData h where h.simulationData.id=:simulationId and h.category=:category order by h.id"),
+
+        @NamedQuery(name="HouseholdData.getForPolicy",
+                query="select h from HouseholdData h where h.simulationData.id=:simulationId and h.policyDescriptor=:policyDescriptor order by h.id"),
+
+        @NamedQuery(name="HouseholdData.getForPolicyAndCategory",
+                query="select h from HouseholdData h where h.simulationData.id=:simulationId and h.policyDescriptor=:policyDescriptor and h.category=:category order by h.id"),
+
+        @NamedQuery(name="HouseholdData.getCategoriesForSimulation",
+                query="select distinct(h.category) from HouseholdData h where h.simulationData.id=:simulationId order by h.category"),
+
+        @NamedQuery(name="HouseholdData.getCategoriesForPolicy",
+                query="select distinct(h.category) from HouseholdData h where h.simulationData.id=:simulationId and h.policyDescriptor=:policyDescriptor order by h.category"),
+
+        @NamedQuery(name="HouseholdData.getPoliciesForSimulation",
+                query="select distinct(h.policyDescriptor) from HouseholdData h where h.simulationData.id=:simulationId order by h.policyDescriptor"),
 
         @NamedQuery(name="HouseholdData.deleteBySimulationId",
         query = "delete from HouseholdData h where h.simulationData.id = :simulationId")
@@ -38,6 +58,7 @@ public class HouseholdData implements Serializable
 
   private String category;
 
+  @Column(name="policy_descriptor")
   private String policyDescriptor;
 
   @ManyToOne(optional = false)

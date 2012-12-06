@@ -77,19 +77,37 @@ public class VisualisationController
   public String getHouseholds(@PathVariable Long simulationId,
                               @RequestParam(value = "actualPage", required = false, defaultValue = "0") int offsetPage,
                               @RequestParam(value = "elementsPerPage", required = false, defaultValue = "0") int limit,
+                              @RequestParam(value = "policy", required = false) String policy,
+                              @RequestParam(value = "category", required = false) String category,
                               Model model)
   {
     log.debug("Getting list of households for simulation {} offsetPage {} limit {}", new Object[]{simulationId, offsetPage, limit});
 
     model.addAttribute("simulationId", simulationId);
 
+    List<HouseholdData> households;
+
     int offset = offsetPage * limit;
-    List<HouseholdData> households = householdDataDao.getHouseholdsForSimulation(simulationId, offset, limit);
+    if (policy == null && category == null)
+    {
+      households = householdDataDao.getHouseholdsForSimulation(simulationId, offset, limit);
+    }
+    else if (category == null)
+    {
+      households = householdDataDao.getHouseholdsForPolicy(simulationId, policy, offset, limit);
+    }
+    else if (policy == null)
+    {
+      households = householdDataDao.getHouseholdsForCategory(simulationId, category, offset, limit);
+    }
+    else
+    {
+      households = householdDataDao.getHouseholdsForPolicyAndCategory(simulationId, policy, category, offset, limit);
+    }
+
     model.addAttribute("households", households);
 
     return "householdList";
   }
-
-
 
 }

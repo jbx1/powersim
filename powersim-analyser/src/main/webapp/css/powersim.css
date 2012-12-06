@@ -31,7 +31,7 @@ td, th
 }
 
 
-table#simdetail
+table#simdetail, table#householddetail
 {
     border: 1px solid #111111;
 }
@@ -74,7 +74,7 @@ div#datacontainer
     width: 49%;
 }
 
-#appliance_list
+#appliance_list, #policy_list, #category_list
 {
     width: 100%;
 }

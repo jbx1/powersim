@@ -96,12 +96,38 @@ final class DataController
   @ResponseBody
   public final List<HouseholdData> getSimulationHouseholds(@PathVariable("simulationId") Long simulationId,
                                             @RequestParam(value="offset", required = false, defaultValue = "0") int offset,
-                                            @RequestParam(value="limit", required = false, defaultValue = "25") int limit)
+                                            @RequestParam(value="limit", required = false, defaultValue = "25") int limit,
+                                            @RequestParam(value="policyDescriptor", required = false) String policyDescriptor,
+                                            @RequestParam(value="category", required = false) String category)
   {
     log.info("Retrieving list of households for simulation {}", simulationId);
-    return householdDataDao.getHouseholdsForSimulation(simulationId, offset, limit);
+    if (policyDescriptor == null && category == null)
+    {
+      return householdDataDao.getHouseholdsForSimulation(simulationId, offset, limit);
+    }
+    else if (policyDescriptor == null)
+    {
+      return householdDataDao.getHouseholdsForCategory(simulationId, category, offset, limit);
+    }
+    else if (category == null)
+    {
+      return householdDataDao.getHouseholdsForPolicy(simulationId, policyDescriptor, offset, limit);
+    }
+    else
+    {
+      return householdDataDao.getHouseholdsForPolicyAndCategory(simulationId, policyDescriptor, category, offset, limit);
+    }
   }
 
+
+  @RequestMapping(value = "/{simulationId}/households/{householdId}/details", method = RequestMethod.GET, produces = "application/json")
+  @ResponseBody
+  public final HouseholdData getSimulationHouseholdDetails(@PathVariable("simulationId") Long simulationId,
+                                                            @PathVariable("householdId") Long householdId)
+  {
+    log.info("Retrieving household details for {} household {}", simulationId, householdId);
+    return householdDataDao.find(householdId);
+  }
 
   @RequestMapping(value = "/{simulationId}/households/{householdId}", method = RequestMethod.GET, produces = "application/json")
   @ResponseBody
@@ -131,25 +157,48 @@ final class DataController
     return data;
   }
 
-
-
-  @RequestMapping(value = "/{simulationId}/households/{householdId}/appliances", method = RequestMethod.GET, produces = "application/json")
+  @RequestMapping(value = "/{simulationId}/households/categories", method = RequestMethod.GET, produces = "application/json")
   @ResponseBody
-  public final List<ApplianceData> getSimulationHouseholds(@PathVariable("simulationId") Long simulationId,
-                                                           @PathVariable("householdId") Long householdId)
+  public final List<String> getSimulationHouseholdCategories(@PathVariable("simulationId") Long simulationId,
+                                                             @RequestParam(value="policyDescriptor", required = false) String policyDescriptor)
   {
-    log.info("Retrieving list of households for simulation {}", simulationId);
+    if (policyDescriptor == null)
+    {
+      log.info("Retrieving household categories for simulation {}", simulationId);
+      return householdDataDao.getCategoriesForSimulation(simulationId);
+    }
+    else
+    {
+      log.info("Retrieving household categories for simulation {} and policy {}", simulationId, policyDescriptor);
+      return householdDataDao.getCategoriesForPolicy(simulationId, policyDescriptor);
+    }
+  }
+
+  @RequestMapping(value = "/{simulationId}/households/policies", method = RequestMethod.GET, produces = "application/json")
+  @ResponseBody
+  public final List<String> getSimulationHouseholdPolicies(@PathVariable("simulationId") Long simulationId)
+  {
+    log.info("Retrieving household policies for simulation {}", simulationId);
+    return householdDataDao.getPoliciesForSimulation(simulationId);
+  }
+
+
+  @RequestMapping(value = "/{simulationId}/appliances", method = RequestMethod.GET, produces = "application/json")
+  @ResponseBody
+  public final List<ApplianceData> getSimulationHouseholdAppliances(@PathVariable("simulationId") Long simulationId,
+                                                           @RequestParam(value="householdId", required = true) Long householdId)
+  {
+    log.info("Retrieving list of appliances for simulation {} household {}", simulationId);
     return applianceDataDao.getAppliancesForHousehold(householdId);
   }
 
   //todo: move appliances URL to upper level, same level as households
-  @RequestMapping(value = "/{simulationId}/households/{householdId}/appliances/{applianceId}", method = RequestMethod.GET, produces = "application/json")
+//  @RequestMapping(value = "/{simulationId}/households/{householdId}/appliances/{applianceId}", method = RequestMethod.GET, produces = "application/json")
+  @RequestMapping(value = "/{simulationId}/appliances/{applianceId}", method = RequestMethod.GET, produces = "application/json")
   @ResponseBody
-  public final Object[][] getSimulationDataForHousehold(@PathVariable("simulationId") Long simulationId,
-                                                        @PathVariable("householdId") Long householdId,
-                                                        @PathVariable("applianceId") Long applianceId)
+  public final Object[][] getSimulationDataForAppliance(@PathVariable("simulationId") Long simulationId, @PathVariable("applianceId") Long applianceId)
   {
-    log.info("Retrieving consumption load data for simulation {} household {} appliance {}", new Object[]{simulationId, householdId, applianceId});
+    log.info("Retrieving consumption load data for simulation {} appliance {}", simulationId, applianceId);
 
     List<TimeslotData> timeslotList = timeslotDataDao.findAll(simulationId);
     List<TimeslotConsumptionData> timeslotConsumptionDataList = consumptionDataDao.getConsumptionDataForAppliance(applianceId);

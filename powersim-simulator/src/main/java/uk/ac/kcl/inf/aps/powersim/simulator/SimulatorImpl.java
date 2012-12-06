@@ -120,7 +120,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
   {
     log.info("Preparing simulation, turning off indexes for faster data insertion.");
     //todo: make this configurable
-//    deferredConsumptionEventDao.turnOffConsumptionIndexes();
+    deferredConsumptionEventDao.turnOffConsumptionIndexes();
 
     log.info("Starting Simulation!");
     long nowMillis = System.currentTimeMillis();
@@ -206,7 +206,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     log.info("Simulation execution ready!");
 
     //todo: make this configurable
-//    deferredConsumptionEventDao.turnOnConsumptionIndexes();
+    deferredConsumptionEventDao.turnOnConsumptionIndexes();
 
     log.info("Simulation complete.");
   }

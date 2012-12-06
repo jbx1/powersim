@@ -17,5 +17,17 @@ public interface HouseholdDataDao extends GenericDao<HouseholdData>
 
   public List<HouseholdData> getHouseholdsForSimulation(long simulationId, int offset, int limit);
 
+  public List<HouseholdData> getHouseholdsForPolicy(long simulationId, String policy, int offset, int limit);
+
+  public List<HouseholdData> getHouseholdsForCategory(long simulationId, String category, int offset, int limit);
+
+  public List<HouseholdData> getHouseholdsForPolicyAndCategory(long simulationId, String policy, String category, int offset, int limit);
+
+  public List<String> getCategoriesForSimulation(long simulationId);
+
+  public List<String> getCategoriesForPolicy(long simulationId, String policy);
+
+  public List<String> getPoliciesForSimulation(long simulationId);
+
   public int deleteBySimulationId(long simulationId);
 }
