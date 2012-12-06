@@ -60,6 +60,16 @@ public class HouseholdDataDaoImpl extends GenericDaoImpl<HouseholdData> implemen
   }
 
   @Override
+  public int getHouseholdCountForPolicy(long simulationId, String policy)
+  {
+    Query query = em.createNamedQuery("HouseholdData.countForPolicy");
+    query.setParameter("simulationId", simulationId);
+    query.setParameter("policyDescriptor", policy);
+
+    return ((Long) query.getSingleResult()).intValue();
+  }
+
+  @Override
   public List<HouseholdData> getHouseholdsForCategory(long simulationId, String category, int offset, int limit)
   {
     TypedQuery<HouseholdData> query = em.createNamedQuery("HouseholdData.getForCategory", HouseholdData.class);
@@ -69,6 +79,16 @@ public class HouseholdDataDaoImpl extends GenericDaoImpl<HouseholdData> implemen
     query.setMaxResults(limit);
 
     return query.getResultList();
+  }
+
+  @Override
+  public int getHouseholdCountForCategory(long simulationId, String category)
+  {
+    Query query = em.createNamedQuery("HouseholdData.countForCategory");
+    query.setParameter("simulationId", simulationId);
+    query.setParameter("category", category);
+
+    return ((Long) query.getSingleResult()).intValue();
   }
 
   @Override
@@ -82,6 +102,17 @@ public class HouseholdDataDaoImpl extends GenericDaoImpl<HouseholdData> implemen
     query.setMaxResults(limit);
 
     return query.getResultList();
+  }
+
+  @Override
+  public int getHouseholdCountForPolicyAndCategory(long simulationId, String policy, String category)
+  {
+    Query query = em.createNamedQuery("HouseholdData.countForPolicyAndCategory");
+    query.setParameter("simulationId", simulationId);
+    query.setParameter("policyDescriptor", policy);
+    query.setParameter("category", category);
+
+    return ((Long) query.getSingleResult()).intValue();
   }
 
   @Override

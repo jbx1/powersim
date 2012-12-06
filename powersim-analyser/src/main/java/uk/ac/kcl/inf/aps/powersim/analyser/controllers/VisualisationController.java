@@ -94,14 +94,17 @@ public class VisualisationController
     }
     else if (category == null)
     {
+      log.debug("Filtering by policy {}", policy);
       households = householdDataDao.getHouseholdsForPolicy(simulationId, policy, offset, limit);
     }
     else if (policy == null)
     {
+      log.debug("Filtering by category {}", category);
       households = householdDataDao.getHouseholdsForCategory(simulationId, category, offset, limit);
     }
     else
     {
+      log.debug("Filtering by policy {} and category {}", policy, category);
       households = householdDataDao.getHouseholdsForPolicyAndCategory(simulationId, policy, category, offset, limit);
     }
 

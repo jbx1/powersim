@@ -83,6 +83,7 @@ public class EnergyOnDemandPolicy implements Policy
   @Override
   public String getDescriptor()
   {
+    //todo: rename to simply: energy-on-demand
     return "energy-on-demand-policy";
   }
 

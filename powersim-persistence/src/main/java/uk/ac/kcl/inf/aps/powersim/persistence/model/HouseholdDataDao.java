@@ -13,15 +13,21 @@ public interface HouseholdDataDao extends GenericDao<HouseholdData>
 {
   public void createBulk(List<HouseholdData> householdDataList);
 
-  public int getHouseholdCountForSimulation(long simulationId);
-
   public List<HouseholdData> getHouseholdsForSimulation(long simulationId, int offset, int limit);
+
+  public int getHouseholdCountForSimulation(long simulationId);
 
   public List<HouseholdData> getHouseholdsForPolicy(long simulationId, String policy, int offset, int limit);
 
+  public int getHouseholdCountForPolicy(long simulationId, String policy);
+
   public List<HouseholdData> getHouseholdsForCategory(long simulationId, String category, int offset, int limit);
 
+  public int getHouseholdCountForCategory(long simulationId, String category);
+
   public List<HouseholdData> getHouseholdsForPolicyAndCategory(long simulationId, String policy, String category, int offset, int limit);
+
+  public int getHouseholdCountForPolicyAndCategory(long simulationId, String policy, String category);
 
   public List<String> getCategoriesForSimulation(long simulationId);
 

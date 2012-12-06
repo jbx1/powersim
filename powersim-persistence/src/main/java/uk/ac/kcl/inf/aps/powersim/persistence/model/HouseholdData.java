@@ -29,11 +29,20 @@ import java.io.Serializable;
         @NamedQuery(name="HouseholdData.getForCategory",
                 query="select h from HouseholdData h where h.simulationData.id=:simulationId and h.category=:category order by h.id"),
 
+        @NamedQuery(name="HouseholdData.countForCategory",
+                query="select count(h) from HouseholdData h where h.simulationData.id=:simulationId and h.category=:category"),
+
         @NamedQuery(name="HouseholdData.getForPolicy",
                 query="select h from HouseholdData h where h.simulationData.id=:simulationId and h.policyDescriptor=:policyDescriptor order by h.id"),
 
+        @NamedQuery(name="HouseholdData.countForPolicy",
+                query="select count(h) from HouseholdData h where h.simulationData.id=:simulationId and h.policyDescriptor=:policyDescriptor"),
+
         @NamedQuery(name="HouseholdData.getForPolicyAndCategory",
                 query="select h from HouseholdData h where h.simulationData.id=:simulationId and h.policyDescriptor=:policyDescriptor and h.category=:category order by h.id"),
+
+        @NamedQuery(name="HouseholdData.countForPolicyAndCategory",
+                query="select count(h) from HouseholdData h where h.simulationData.id=:simulationId and h.policyDescriptor=:policyDescriptor and h.category=:category"),
 
         @NamedQuery(name="HouseholdData.getCategoriesForSimulation",
                 query="select distinct(h.category) from HouseholdData h where h.simulationData.id=:simulationId order by h.category"),

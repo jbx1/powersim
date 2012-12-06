@@ -34,12 +34,14 @@ td, th
 table#simdetail, table#householddetail
 {
     border: 1px solid #111111;
+    display: inline-block;
 }
 
 div#data
 {
-    margin-left: 55px;
     margin-bottom: 10px;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 div#graphdiv
@@ -288,4 +290,15 @@ div.household-data
     text-decoration: none;
     font-size: inherit;
     font-weight: inherit;
+}
+
+a.fullaggregate
+{
+    background: url("images/graph-icon.png") no-repeat left;
+    margin: 2px 2px 2px 20px;
+    display: inline-block;
+    overflow: auto;
+    vertical-align: middle;
+    width: 32px;
+    height: 32px;
 }

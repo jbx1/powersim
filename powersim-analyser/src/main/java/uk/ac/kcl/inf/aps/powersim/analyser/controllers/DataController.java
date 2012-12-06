@@ -107,18 +107,49 @@ final class DataController
     }
     else if (policyDescriptor == null)
     {
+      log.info("Filtering by category {}", category);
       return householdDataDao.getHouseholdsForCategory(simulationId, category, offset, limit);
     }
     else if (category == null)
     {
+      log.info("Filtering by policy {}", policyDescriptor);
       return householdDataDao.getHouseholdsForPolicy(simulationId, policyDescriptor, offset, limit);
     }
     else
     {
+      log.info("Filtering by category {} and policy {}", category, policyDescriptor);
       return householdDataDao.getHouseholdsForPolicyAndCategory(simulationId, policyDescriptor, category, offset, limit);
     }
   }
 
+
+  @RequestMapping(value = "/{simulationId}/households", method = RequestMethod.GET, produces = "application/json", params={"count"})
+  @ResponseBody
+  public final int getSimulationHouseholdCount(@PathVariable("simulationId") Long simulationId,
+                                                           @RequestParam(value="policyDescriptor", required = false) String policyDescriptor,
+                                                           @RequestParam(value="category", required = false) String category)
+  {
+    log.info("Retrieving household count for simulation {}", simulationId);
+    if (policyDescriptor == null && category == null)
+    {
+      return householdDataDao.getHouseholdCountForSimulation(simulationId);
+    }
+    else if (policyDescriptor == null)
+    {
+      log.info("Filtering by category {}", category);
+      return householdDataDao.getHouseholdCountForCategory(simulationId, category);
+    }
+    else if (category == null)
+    {
+      log.info("Filtering by policy {}", policyDescriptor);
+      return householdDataDao.getHouseholdCountForPolicy(simulationId, policyDescriptor);
+    }
+    else
+    {
+      log.info("Filtering by category {} and policy {}", category, policyDescriptor);
+      return householdDataDao.getHouseholdCountForPolicyAndCategory(simulationId, policyDescriptor, category);
+    }
+  }
 
   @RequestMapping(value = "/{simulationId}/households/{householdId}/details", method = RequestMethod.GET, produces = "application/json")
   @ResponseBody
@@ -192,8 +223,6 @@ final class DataController
     return applianceDataDao.getAppliancesForHousehold(householdId);
   }
 
-  //todo: move appliances URL to upper level, same level as households
-//  @RequestMapping(value = "/{simulationId}/households/{householdId}/appliances/{applianceId}", method = RequestMethod.GET, produces = "application/json")
   @RequestMapping(value = "/{simulationId}/appliances/{applianceId}", method = RequestMethod.GET, produces = "application/json")
   @ResponseBody
   public final Object[][] getSimulationDataForAppliance(@PathVariable("simulationId") Long simulationId, @PathVariable("applianceId") Long applianceId)

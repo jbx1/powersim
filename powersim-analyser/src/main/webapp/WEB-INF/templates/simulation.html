@@ -97,32 +97,87 @@
             });
         }
 
+        function renderHouseholdSlider(url, count, params)
+        {
+            $(".slider").html('');
+            $(".slider").mb_vSlider
+             ({
+                //default attributes of the mb.vSlider
+                template: url
+                ,totalElements: count
+                ,easing:"easeOutExpo"
+                ,slideTimer:500
+                ,nextEl:".vSnext"
+                ,prevEl:".vSprev"
+                ,height:445
+                ,width:225
+               },
+                params
+             );
+        }
+
+        function updateHouseholds()
+        {
+            policy = $('#policy_list').val();
+            category = $('#category_list').val();
+
+            if ((policy == '0') && (category == '0'))
+            {
+                $.getJSON('./data/'+simulation_id+'/households?count=true',function(count)
+                {
+                    renderHouseholdSlider("./"+simulation_id+"/households", count,
+                    { //data passed in the ajax query string
+                        elementsPerPage:20
+                        ,actualPage:0
+                    });
+                });
+            }
+            else if (category == '0')
+            {
+                $.getJSON('./data/'+simulation_id+'/households?count=true&policy='+policy,function(count)
+                {
+                    renderHouseholdSlider("./"+simulation_id+"/households", count,
+                    { //data passed in the ajax query string
+                        elementsPerPage:20
+                        ,actualPage:0
+                        ,policy: policy
+                    });
+                });
+            }
+            else if (policy == '0')
+            {
+                $.getJSON('./data/'+simulation_id+'/households?count=true&category='+category,function(count)
+                {
+                    renderHouseholdSlider("./"+simulation_id+"/households", count,
+                    { //data passed in the ajax query string
+                        elementsPerPage:20
+                        ,actualPage:0
+                        ,category: category
+                    });
+                });
+            }
+            else
+            {
+                $.getJSON('./data/'+simulation_id+'/households?count=true&category='+category+'&policy='+policy,function(count)
+                {
+                    renderHouseholdSlider("./"+simulation_id+"/households", count,
+                    { //data passed in the ajax query string
+                        elementsPerPage:20
+                        ,actualPage:0
+                        ,category: category
+                        ,policy : policy
+                    });
+                });
+            }
+        }
+
         function populatePolicies()
         {
             $.getJSON('./data/'+simulation_id+'/households/policies', function(policies)
             {
                 $('#policy_list').empty();
                 $('#policy_list').removeAttr('disabled');
-                $('#policy_list').change(function()
-                {
-                    $(".slider").html('');
-                    $(".slider").mb_vSlider({
-                        //default attributes of the mb.vSlider
-                        template:"./"+simulation_id+"/households"
-                        ,easing:"easeOutExpo"
-                        ,slideTimer:1000
-                        ,nextEl:".vSnext"
-                        ,prevEl:".vSprev"
-                        ,height:445
-                        ,width:225
-                        },{ //data passed in the ajax query string
-                            elementsPerPage:20
-                            ,actualPage:0
-                            ,policy: $('#policy_list').val()
-                        });
-
-                });
-
+                $('#policy_list').change(updateHouseholds);
                 $('#policy_list').append('<option value="0">All Policies</option>')
 
                 var i;
@@ -133,31 +188,14 @@
             });
         }
 
+
         function populateCategories()
         {
             $.getJSON('./data/'+simulation_id+'/households/categories', function(categories)
             {
                 $('#category_list').empty();
                 $('#category_list').removeAttr('disabled');
-                $('#category_list').change(function()
-                {
-                    $(".slider").html('');
-                    $(".slider").mb_vSlider({
-                    //default attributes of the mb.vSlider
-                    template:"./"+simulation_id+"/households"
-                    ,easing:"easeOutExpo"
-                    ,slideTimer:1000
-                    ,nextEl:".vSnext"
-                    ,prevEl:".vSprev"
-                    ,height:445
-                    ,width:225
-                    },{ //data passed in the ajax query string
-                    elementsPerPage:20
-                    ,actualPage:0
-                    ,category: $('#category_list').val()
-                    });
-                });
-
+                $('#category_list').change(updateHouseholds);
                 $('#category_list').append('<option value="0">All Categories</option>')
 
                 var i;
@@ -180,7 +218,7 @@
     </script>
 
     <script type="text/javascript">
-        $(function(){
+/*        $(function(){
         $(".slider").mb_vSlider({
             //default attributes of the mb.vSlider
             template:"./"+simulation_id+"/households"
@@ -191,11 +229,10 @@
             ,prevEl:".vSprev"
             ,height:445
             ,width:225
-            },{ //data passed in the ajax query string
-            elementsPerPage:20
-            ,actualPage:0
-        })
-        });
+            },
+            params
+            )
+        });  */
     </script>
 
 </head>
@@ -217,7 +254,6 @@
 
     <div id="datacontainer">
         <div id="slider_container">
-            <button id="fulldatabtn" onclick="updateGraphDataWithSimulation();">Show Full Aggregate Data</button>
             <div id="policies" class="sidedropdown">
                 <select id="policy_list">
                     <option name="all">All Policies</option>
@@ -240,6 +276,7 @@
             </div>
         </div>
         <div id="graphcontainer">
+            <a class="fullaggregate" href="#" title="Show Full Aggregate Data" onclick="updateGraphDataWithSimulation();"></a>
             <div id="data">
                 <table id="simdetail" cellpadding="2" cellspacing="1">
                     <tr>
@@ -290,6 +327,9 @@
             updateGraphDataWithSimulation();
             populatePolicies();
             populateCategories();
+            params = {};
+
+            renderHouseholdSlider("./"+simulation_id+"/households", $households, {elementsPerPage: 20, actualPage: 0});
         });
     </script>
     </div>
