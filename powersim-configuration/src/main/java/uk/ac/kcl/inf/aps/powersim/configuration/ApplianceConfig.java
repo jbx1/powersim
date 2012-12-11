@@ -11,26 +11,15 @@ import uk.ac.kcl.inf.aps.powersim.api.ApplianceFactory;
 public abstract class ApplianceConfig<A extends Appliance> implements ApplianceFactory<A>
 {
   String type;
-  String subType;
 
   public String getType()
   {
     return type;
   }
 
-  public String getSubType()
-  {
-    return subType;
-  }
-
   public void setType(String type)
   {
     this.type = type;
-  }
-
-  public void setSubType(String subType)
-  {
-    this.subType = subType;
   }
 
   @Override
@@ -39,7 +28,6 @@ public abstract class ApplianceConfig<A extends Appliance> implements ApplianceF
     final StringBuilder sb = new StringBuilder();
     sb.append("ApplianceConfig");
     sb.append("{type='").append(type).append('\'');
-    sb.append(", subType='").append(subType).append('\'');
     sb.append('}');
     return sb.toString();
   }
@@ -58,10 +46,6 @@ public abstract class ApplianceConfig<A extends Appliance> implements ApplianceF
 
     ApplianceConfig that = (ApplianceConfig) o;
 
-    if (subType != null ? !subType.equals(that.subType) : that.subType != null)
-    {
-      return false;
-    }
     if (type != null ? !type.equals(that.type) : that.type != null)
     {
       return false;

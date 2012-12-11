@@ -3,7 +3,6 @@ package uk.ac.kcl.inf.aps.powersim.configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
-import uk.ac.kcl.inf.aps.powersim.api.ApplianceKeyTuple;
 import uk.ac.kcl.inf.aps.powersim.api.Policy;
 
 import java.io.*;
@@ -31,7 +30,7 @@ public class SimulationConfigurationLoaderImpl implements SimulationConfiguratio
   public static final String SIMULATION_CONFIG = "simulation.cfg";
 
   private final Map<String, HouseholdConfig> householdConfigurations;
-  private final Map<ApplianceKeyTuple, ApplianceConfig> applianceConfigurations;
+  private final Map<String, ApplianceConfig> applianceConfigurations;
   private final Map<String, ProfileConfig> profileConfigurations;
   private final Map<String, PolicyConfig> policyConfigurations;
   private final SimulationConfig simulationConfiguration;
@@ -157,10 +156,10 @@ public class SimulationConfigurationLoaderImpl implements SimulationConfiguratio
 
   }
 
-  private Map<ApplianceKeyTuple, ApplianceConfig> loadApplianceConfigurations()
+  private Map<String, ApplianceConfig> loadApplianceConfigurations()
   {
     log.debug("Loading appliance configurations");
-    Map<ApplianceKeyTuple, ApplianceConfig> applianceConfigMap = new TreeMap<>();
+    Map<String, ApplianceConfig> applianceConfigMap = new TreeMap<>();
 
     File[] files = configDirectory.listFiles(new FileFilter()
     {
@@ -186,7 +185,7 @@ public class SimulationConfigurationLoaderImpl implements SimulationConfiguratio
           {
             ApplianceConfig configBean = (ApplianceConfig) object;
             log.info(configBean.toString());
-            applianceConfigMap.put(new ApplianceKeyTuple(configBean.getType(), configBean.getSubType()), configBean);
+            applianceConfigMap.put(configBean.getType(), configBean);
           }
         }
         catch (IOException ex)
@@ -238,6 +237,7 @@ public class SimulationConfigurationLoaderImpl implements SimulationConfiguratio
         }
         catch (IOException ex)
         {
+          log.warn("I/O Error reading file {}", file.getAbsolutePath());
           log.warn("I/O Error while loading configuration!", ex);
         }
       }
@@ -303,7 +303,7 @@ public class SimulationConfigurationLoaderImpl implements SimulationConfiguratio
     return householdConfigurations;
   }
 
-  public Map<ApplianceKeyTuple, ApplianceConfig> getApplianceConfigurations()
+  public Map<String, ApplianceConfig> getApplianceConfigurations()
   {
     return applianceConfigurations;
   }

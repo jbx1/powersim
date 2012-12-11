@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.kcl.inf.aps.powersim.api.ApplianceKeyTuple;
 
 import java.io.FileNotFoundException;
 import java.util.Map;
@@ -36,7 +35,7 @@ public class TestSimulationConfigurationLoader
   @Test
   public void testApplianceConfig()
   {
-    Map<ApplianceKeyTuple, ApplianceConfig> configList = configurationLoader.getApplianceConfigurations();
+    Map<String, ApplianceConfig> configList = configurationLoader.getApplianceConfigurations();
     for (ApplianceConfig config : configList.values())
     {
       log.info("ApplianceConfig instance {} ", config.getClass());

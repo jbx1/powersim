@@ -1,6 +1,5 @@
 package uk.ac.kcl.inf.aps.powersim.configuration;
 
-import uk.ac.kcl.inf.aps.powersim.api.ApplianceKeyTuple;
 import uk.ac.kcl.inf.aps.powersim.api.Policy;
 
 import java.util.List;
@@ -21,7 +20,7 @@ public interface SimulationConfigurationLoader
 
   public Map<String, HouseholdConfig> getHouseholdConfigurations();
 
-  public Map<ApplianceKeyTuple, ApplianceConfig> getApplianceConfigurations();
+  public Map<String, ApplianceConfig> getApplianceConfigurations();
 
   public Map<String, ProfileConfig> getProfileConfigurations();
 }

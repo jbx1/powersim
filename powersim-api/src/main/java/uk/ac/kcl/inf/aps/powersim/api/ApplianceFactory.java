@@ -8,8 +8,4 @@ package uk.ac.kcl.inf.aps.powersim.api;
 public interface ApplianceFactory<A extends Appliance>
 {
   public A getApplianceInstance();
-
-  public String getType();
-
-  public String getSubType();
 }

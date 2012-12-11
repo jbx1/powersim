@@ -27,7 +27,12 @@ public class VariableLoadApplianceConfig extends ApplianceConfig<DayBoundedGLApp
   @Override
   public DayBoundedGLAppliance getApplianceInstance()
   {
-   return new DayBoundedGLAppliance(UUID.randomUUID().toString(), this.getType(), this.getSubType(), peak);
+    String[] types = getType().split("-", 2);
+
+    String type = types[0];
+    String subtype = types.length > 1 ? types[1] : "";
+
+    return new DayBoundedGLAppliance(UUID.randomUUID().toString(), type, subtype, peak);
   }
 
   @Override
@@ -36,7 +41,6 @@ public class VariableLoadApplianceConfig extends ApplianceConfig<DayBoundedGLApp
     final StringBuilder sb = new StringBuilder();
     sb.append("VariableLoadApplianceConfig");
     sb.append("{type='").append(this.getType()).append('\'');
-    sb.append(", subType='").append(this.getSubType()).append('\'');
     sb.append(", peak=").append(peak);
     sb.append('}');
     return sb.toString();

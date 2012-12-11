@@ -2,7 +2,6 @@ package uk.ac.kcl.inf.aps.powersim.configuration.ondemand;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.kcl.inf.aps.powersim.api.ApplianceKeyTuple;
 import uk.ac.kcl.inf.aps.powersim.configuration.ApplianceConfig;
 import uk.ac.kcl.inf.aps.powersim.configuration.HouseholdConfig;
 import uk.ac.kcl.inf.aps.powersim.configuration.ProfileConfig;
@@ -27,16 +26,16 @@ public class EnergyOnDemandHouseholdConfig extends HouseholdConfig<EnergyOnDeman
   {
     EnergyOnDemandHousehold household = new EnergyOnDemandHousehold(UUID.randomUUID().toString(), getCategory());
 
-    Map<ApplianceKeyTuple, ApplianceConfig> applianceKeyTupleMap = getConfigurationLoader().getApplianceConfigurations();
+    Map<String, ApplianceConfig> applianceKeyTupleMap = getConfigurationLoader().getApplianceConfigurations();
     Map<String, ProfileConfig> profileConfigMap = getConfigurationLoader().getProfileConfigurations();
 
     for (HouseholdAppliance appliance: appliances)
     {
-      ApplianceKeyTuple applianceKeyTuple = appliance.getApplianceKeyTuple();
-      ApplianceConfig applianceConfig = applianceKeyTupleMap.get(applianceKeyTuple);
+      String type = appliance.getType();
+      ApplianceConfig applianceConfig = applianceKeyTupleMap.get(type);
       if (applianceConfig == null)
       {
-        log.warn("No Appliance Configuration found matching {}", applianceKeyTuple);
+        log.warn("No Appliance Configuration found matching {}", type);
         continue;
       }
 
@@ -45,9 +44,9 @@ public class EnergyOnDemandHouseholdConfig extends HouseholdConfig<EnergyOnDeman
       {
         log.warn("No Profile Configuration found matching {}", appliance.getProfile());
       }
-      log.debug("Registering {} with household {}", applianceKeyTuple, household.getUid());
+      log.debug("Registering {} with household {}", type, household.getUid());
 
-      household.addApplianceFactoryConfiguration(applianceKeyTuple, applianceConfig, profileConfig, appliance.getQuantity());
+      household.addApplianceFactoryConfiguration(type, applianceConfig, profileConfig, appliance.getQuantity());
     }
 
     return household;
@@ -66,7 +65,6 @@ public class EnergyOnDemandHouseholdConfig extends HouseholdConfig<EnergyOnDeman
   public static class HouseholdAppliance
   {
     String type;
-    String subType;
     String profile;
     int quantity;
 
@@ -78,16 +76,6 @@ public class EnergyOnDemandHouseholdConfig extends HouseholdConfig<EnergyOnDeman
     public void setType(String type)
     {
       this.type = type;
-    }
-
-    public String getSubType()
-    {
-      return subType;
-    }
-
-    public void setSubType(String subType)
-    {
-      this.subType = subType;
     }
 
     public String getProfile()
@@ -110,18 +98,12 @@ public class EnergyOnDemandHouseholdConfig extends HouseholdConfig<EnergyOnDeman
       this.quantity = quantity;
     }
 
-    public ApplianceKeyTuple getApplianceKeyTuple()
-    {
-      return new ApplianceKeyTuple(type, subType);
-    }
-
     @Override
     public String toString()
     {
       final StringBuilder sb = new StringBuilder();
       sb.append("HouseholdAppliance");
       sb.append("{type='").append(type).append('\'');
-      sb.append(", subType='").append(subType).append('\'');
       sb.append(", profile='").append(profile).append('\'');
       sb.append(", quantity=").append(quantity);
       sb.append('}');

@@ -58,6 +58,10 @@
                 <prop key="hibernate.c3p0.timeout">1800</prop>
                 <prop key="hibernate.c3p0.checkoutTimeout">0</prop>
                 <prop key="hibernate.c3p0.preferredTestQuery">SELECT 1;</prop>
+
+                <prop key="hibernate.cache.use_second_level_cache">false</prop>
+                <prop key="hibernate.cache.use_query_cache">false</prop>
+                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
             </props>
         </property>
     </bean>

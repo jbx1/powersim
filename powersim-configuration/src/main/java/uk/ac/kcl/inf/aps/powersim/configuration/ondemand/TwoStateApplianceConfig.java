@@ -43,7 +43,6 @@ public class TwoStateApplianceConfig extends ApplianceConfig<TwoStateAppliance>
     final StringBuilder sb = new StringBuilder();
     sb.append("TwoStateApplianceConfig");
     sb.append("{type='").append(this.getType()).append('\'');
-    sb.append(", subType='").append(this.getSubType()).append('\'');
     sb.append(", active=").append(active);
     sb.append(", inactive=").append(inactive);
     sb.append('}');
@@ -53,6 +52,11 @@ public class TwoStateApplianceConfig extends ApplianceConfig<TwoStateAppliance>
   @Override
   public TwoStateAppliance getApplianceInstance()
   {
-    return new TwoStateAppliance(UUID.randomUUID().toString(), this.getType(), this.getSubType(), active, inactive);
+    String[] types = getType().split("-", 2);
+
+    String type = types[0];
+    String subtype = types.length > 1 ? types[1] : "";
+
+    return new TwoStateAppliance(UUID.randomUUID().toString(), type, subtype, active, inactive);
   }
 }
