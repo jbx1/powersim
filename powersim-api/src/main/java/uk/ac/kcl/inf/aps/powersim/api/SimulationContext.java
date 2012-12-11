@@ -11,8 +11,6 @@ public final class SimulationContext
 
   private final Timeslot timeslot;
 
-  //todo: add different contextual conditions such as Tariff information and Weather
-
   public SimulationContext(Simulation simulation, Timeslot timeslot)
   {
     this.simulation = simulation;

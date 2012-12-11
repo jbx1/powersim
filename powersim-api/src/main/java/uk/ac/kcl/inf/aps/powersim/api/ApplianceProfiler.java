@@ -10,5 +10,7 @@ package uk.ac.kcl.inf.aps.powersim.api;
  */
 public interface ApplianceProfiler<A extends Appliance>
 {
+  public String getName();
+
   public void profileAppliance(A appliance);
 }

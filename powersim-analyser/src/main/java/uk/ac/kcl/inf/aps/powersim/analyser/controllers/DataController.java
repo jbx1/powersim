@@ -68,14 +68,11 @@ final class DataController
 
   @RequestMapping(value = "/{simulationId}", method = RequestMethod.GET, produces = "application/json")
   @ResponseBody
-  public final Object[][] getSimulationData(@PathVariable("simulationId") Long simulationId,
-                                            @RequestParam(value="startTime", required = false) String startTime,
-                                            @RequestParam(value="endTime", required = false) String endTime)
+  public final Object[][] getSimulationData(@PathVariable("simulationId") Long simulationId)
   {
     log.info("Retrieving aggregate load data for simulation {}", simulationId);
 
-    //todo: date filtering by startTime and endTime
-    List<SimulationTimeslotAggregateData> aggregateLoadDataList = aggregateLoadDataDao.getAggregateLoadDataForSimulation(simulationId, new Date(), new Date());
+    List<SimulationTimeslotAggregateData> aggregateLoadDataList = aggregateLoadDataDao.getAggregateLoadDataForSimulation(simulationId);
 
     Object[][] data = new Object[aggregateLoadDataList.size()][4];
     int i = 0;

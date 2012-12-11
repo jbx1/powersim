@@ -19,7 +19,7 @@ import java.util.List;
 public class AggregateLoadDataDaoImpl extends GenericDaoImpl<AggregateLoadData> implements AggregateLoadDataDao
 {
   @Override
-  public List<SimulationTimeslotAggregateData> getAggregateLoadDataForSimulation(Long simulationId, Date startTime, Date endTime)
+  public List<SimulationTimeslotAggregateData> getAggregateLoadDataForSimulation(Long simulationId)
   {
     TypedQuery<SimulationTimeslotAggregateData> query = em.createNamedQuery("AggregateLoadData.getAggregateLoadForSimulation", SimulationTimeslotAggregateData.class);
     query.setParameter("simulationId", simulationId);

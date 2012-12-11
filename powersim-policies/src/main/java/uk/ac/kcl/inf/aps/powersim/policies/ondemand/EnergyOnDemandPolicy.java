@@ -65,7 +65,6 @@ public class EnergyOnDemandPolicy implements Policy
   @Override
   public void handleTimeSlot(SimulationContext context)
   {
-    //todo: handle multithreading
     for (EnergyOnDemandHousehold household : households)
     {
       //   log.debug("Handling household {} ", household.getUid());
@@ -76,7 +75,6 @@ public class EnergyOnDemandPolicy implements Policy
   @Override
   public boolean ready(int timeout)
   {
-    //todo: handle multithreading
     return true;
   }
 

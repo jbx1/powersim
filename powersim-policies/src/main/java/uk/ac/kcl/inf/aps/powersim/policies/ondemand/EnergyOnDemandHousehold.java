@@ -18,7 +18,7 @@ public class EnergyOnDemandHousehold extends Household implements SimulationTime
 {
   protected static final Logger log = LoggerFactory.getLogger(EnergyOnDemandHousehold.class);
 
-  Map<String, ApplianceFactoryConfiguration<EnergyOnDemandAppliance>> applianceFactoryMap = new TreeMap<>();
+  Map<String, List<ApplianceFactoryConfiguration<EnergyOnDemandAppliance>>> applianceFactoryMap = new TreeMap<>();
 
   List<EnergyOnDemandAppliance> appliances = new ArrayList<>();
 
@@ -29,7 +29,14 @@ public class EnergyOnDemandHousehold extends Household implements SimulationTime
 
   public void addApplianceFactoryConfiguration(String applianceType, ApplianceFactory<EnergyOnDemandAppliance> applianceFactory, ApplianceProfiler<EnergyOnDemandAppliance> applianceProfiler, int applianceCount)
   {
-    applianceFactoryMap.put(applianceType, new ApplianceFactoryConfiguration<>(applianceFactory, applianceProfiler, applianceCount));
+    List<ApplianceFactoryConfiguration<EnergyOnDemandAppliance>> applianceFactoryConfigurations = applianceFactoryMap.get(applianceType);
+    if (applianceFactoryConfigurations == null)
+    {
+      applianceFactoryConfigurations = new ArrayList<>();
+      applianceFactoryMap.put(applianceType, applianceFactoryConfigurations);
+    }
+
+    applianceFactoryConfigurations.add(new ApplianceFactoryConfiguration<>(applianceFactory, applianceProfiler, applianceCount));
   }
 
   public void setupAppliances()
@@ -39,17 +46,20 @@ public class EnergyOnDemandHousehold extends Household implements SimulationTime
     for (String applianceType: applianceFactoryMap.keySet())
     {
       log.trace("Configuring {}", applianceType);
-      ApplianceFactoryConfiguration<EnergyOnDemandAppliance> applianceFactoryConfiguration = applianceFactoryMap.get(applianceType);
+      List<ApplianceFactoryConfiguration<EnergyOnDemandAppliance>> applianceFactoryConfigurations = applianceFactoryMap.get(applianceType);
 
-      log.trace("{} requires {} instances", applianceType, applianceFactoryConfiguration.getApplianceCount());
-      for (int i = 0; i < applianceFactoryConfiguration.getApplianceCount(); i++)
+      for (ApplianceFactoryConfiguration<EnergyOnDemandAppliance> applianceFactoryConfiguration : applianceFactoryConfigurations)
       {
-        EnergyOnDemandAppliance energyOnDemandAppliance = applianceFactoryConfiguration.getApplianceFactory().getApplianceInstance();
-        log.trace("Created new appliance {} for household {}", energyOnDemandAppliance, this.getUid());
+        log.trace("Appliance {} Profile {} requires {} instances", new Object[]{applianceType, applianceFactoryConfiguration.getApplianceProfiler().getName(), applianceFactoryConfiguration.getApplianceCount()});
+        for (int i = 0; i < applianceFactoryConfiguration.getApplianceCount(); i++)
+        {
+          EnergyOnDemandAppliance energyOnDemandAppliance = applianceFactoryConfiguration.getApplianceFactory().getApplianceInstance();
+          log.trace("Created new appliance {} for household {}", energyOnDemandAppliance, this.getUid());
 
-        applianceFactoryConfiguration.getApplianceProfiler().profileAppliance(energyOnDemandAppliance);
-        log.trace("Appliance {} profile set.", energyOnDemandAppliance);
-        appliances.add(energyOnDemandAppliance);
+          applianceFactoryConfiguration.getApplianceProfiler().profileAppliance(energyOnDemandAppliance);
+          log.trace("Appliance {} profile set.", energyOnDemandAppliance);
+          appliances.add(energyOnDemandAppliance);
+        }
       }
     }
   }

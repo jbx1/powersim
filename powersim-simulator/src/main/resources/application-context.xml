@@ -67,7 +67,7 @@
     </bean>
 
     <bean id="deferredConsumptionDataDao"
-          class="uk.ac.kcl.inf.aps.powersim.simulator.DeferredConsumptionEventDaoImpl">
+          class="uk.ac.kcl.inf.aps.powersim.simulator.SimulationRepositoryImpl">
         <constructor-arg name="deferredCapacity" value="10000"/>
     </bean>
 
@@ -93,5 +93,6 @@
 
     <bean id="simulator" class="uk.ac.kcl.inf.aps.powersim.simulator.SimulatorImpl">
         <constructor-arg name="simulationConfigurationLoader"><ref bean="simulationConfigurationLoader" /></constructor-arg>
+        <property name="turnOffIndices" value="true" />
     </bean>
 </beans>

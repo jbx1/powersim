@@ -52,6 +52,8 @@ public class ApplianceData implements Serializable
   @OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
   private SimulationData simulationData;
 
+  //todo: add profile
+
   public Long getId()
   {
     return id;
