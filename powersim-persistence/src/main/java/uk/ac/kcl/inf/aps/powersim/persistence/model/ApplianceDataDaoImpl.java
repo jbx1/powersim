@@ -7,6 +7,8 @@ import uk.ac.kcl.inf.aps.powersim.persistence.GenericDaoImpl;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
@@ -52,5 +54,22 @@ public class ApplianceDataDaoImpl extends GenericDaoImpl<ApplianceData> implemen
     query.setParameter("householdId", householdId);
 
     return query.getResultList();
+  }
+
+  @Override
+  public Map<HouseholdData, ApplianceData> getAppliancesForHouseholds(List<HouseholdData> households)
+  {
+    Query query = em.createNamedQuery("ApplianceData.getForHouseholds");
+    query.setParameter("households", households);
+
+    List<Object[]> householdsAndAppliances = query.getResultList();
+    Map<HouseholdData, ApplianceData> householdApplianceMap = new TreeMap<>();
+
+    for (Object[] row : householdsAndAppliances)
+    {
+      householdApplianceMap.put((HouseholdData) row[0], (ApplianceData) row[1]);
+    }
+
+    return householdApplianceMap;
   }
 }

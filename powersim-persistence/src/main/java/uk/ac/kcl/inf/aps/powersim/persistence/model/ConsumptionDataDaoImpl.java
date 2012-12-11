@@ -48,6 +48,8 @@ public class ConsumptionDataDaoImpl extends GenericDaoImpl<ConsumptionData> impl
   {
     TypedQuery<TimeslotConsumptionData> query = em.createNamedQuery("ConsumptionData.getConsumptionForHousehold", TimeslotConsumptionData.class);
     query.setParameter("householdId", householdId);
+    query.setHint("org.hibernate.cacheable", true);
+
     return query.getResultList();
   }
 
@@ -56,6 +58,8 @@ public class ConsumptionDataDaoImpl extends GenericDaoImpl<ConsumptionData> impl
   {
     TypedQuery<TimeslotConsumptionData> query = em.createNamedQuery("ConsumptionData.getConsumptionForAppliance", TimeslotConsumptionData.class);
     query.setParameter("applianceId", applianceId);
+    query.setHint("org.hibernate.cacheable", true);
+
     return query.getResultList();
   }
 

@@ -2,6 +2,8 @@ package uk.ac.kcl.inf.aps.powersim.persistence.model;
 
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,6 +21,9 @@ import java.io.Serializable;
       @Index(name = "consumption_timeslot_id_idx", columnNames = "timeslot_id"),
       @Index(name = "consumption_household_id_idx", columnNames = "household_id")
 })
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+
 @NamedQueries({
         @NamedQuery(name="ConsumptionData.getConsumptionForHousehold",
                 query = "select new uk.ac.kcl.inf.aps.powersim.persistence.reporting.TimeslotConsumptionData(t.id, t.startTime, t.endTime, c.loadWatts) " +

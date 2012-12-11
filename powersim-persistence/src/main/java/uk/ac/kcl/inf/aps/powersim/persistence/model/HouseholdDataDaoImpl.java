@@ -33,6 +33,8 @@ public class HouseholdDataDaoImpl extends GenericDaoImpl<HouseholdData> implemen
   {
     Query query = em.createNamedQuery("HouseholdData.countForSimulation");
     query.setParameter("simulationId", simulationId);
+    query.setHint("org.hibernate.cacheable", true);
+
     return ((Long) query.getSingleResult()).intValue();
   }
 
@@ -41,6 +43,8 @@ public class HouseholdDataDaoImpl extends GenericDaoImpl<HouseholdData> implemen
   {
     TypedQuery<HouseholdData> query = em.createNamedQuery("HouseholdData.getForSimulation", HouseholdData.class);
     query.setParameter("simulationId", simulationId);
+    query.setHint("org.hibernate.cacheable", true);
+
     query.setFirstResult(offset);
     query.setMaxResults(limit);
 
@@ -53,6 +57,8 @@ public class HouseholdDataDaoImpl extends GenericDaoImpl<HouseholdData> implemen
     TypedQuery<HouseholdData> query = em.createNamedQuery("HouseholdData.getForPolicy", HouseholdData.class);
     query.setParameter("simulationId", simulationId);
     query.setParameter("policyDescriptor", policy);
+    query.setHint("org.hibernate.cacheable", true);
+
     query.setFirstResult(offset);
     query.setMaxResults(limit);
 
@@ -65,6 +71,8 @@ public class HouseholdDataDaoImpl extends GenericDaoImpl<HouseholdData> implemen
     Query query = em.createNamedQuery("HouseholdData.countForPolicy");
     query.setParameter("simulationId", simulationId);
     query.setParameter("policyDescriptor", policy);
+    query.setHint("org.hibernate.cacheable", true);
+
 
     return ((Long) query.getSingleResult()).intValue();
   }
@@ -75,6 +83,8 @@ public class HouseholdDataDaoImpl extends GenericDaoImpl<HouseholdData> implemen
     TypedQuery<HouseholdData> query = em.createNamedQuery("HouseholdData.getForCategory", HouseholdData.class);
     query.setParameter("simulationId", simulationId);
     query.setParameter("category", category);
+    query.setHint("org.hibernate.cacheable", true);
+
     query.setFirstResult(offset);
     query.setMaxResults(limit);
 
@@ -87,6 +97,7 @@ public class HouseholdDataDaoImpl extends GenericDaoImpl<HouseholdData> implemen
     Query query = em.createNamedQuery("HouseholdData.countForCategory");
     query.setParameter("simulationId", simulationId);
     query.setParameter("category", category);
+    query.setHint("org.hibernate.cacheable", true);
 
     return ((Long) query.getSingleResult()).intValue();
   }
@@ -98,6 +109,8 @@ public class HouseholdDataDaoImpl extends GenericDaoImpl<HouseholdData> implemen
     query.setParameter("simulationId", simulationId);
     query.setParameter("policyDescriptor", policy);
     query.setParameter("category", category);
+    query.setHint("org.hibernate.cacheable", true);
+
     query.setFirstResult(offset);
     query.setMaxResults(limit);
 
@@ -111,6 +124,7 @@ public class HouseholdDataDaoImpl extends GenericDaoImpl<HouseholdData> implemen
     query.setParameter("simulationId", simulationId);
     query.setParameter("policyDescriptor", policy);
     query.setParameter("category", category);
+    query.setHint("org.hibernate.cacheable", true);
 
     return ((Long) query.getSingleResult()).intValue();
   }
@@ -120,6 +134,8 @@ public class HouseholdDataDaoImpl extends GenericDaoImpl<HouseholdData> implemen
   {
     TypedQuery<String> query = em.createNamedQuery("HouseholdData.getCategoriesForSimulation", String.class);
     query.setParameter("simulationId", simulationId);
+    query.setHint("org.hibernate.cacheable", true);
+
     return query.getResultList();
   }
 
@@ -128,6 +144,8 @@ public class HouseholdDataDaoImpl extends GenericDaoImpl<HouseholdData> implemen
   {
     TypedQuery<String> query = em.createNamedQuery("HouseholdData.getCategoriesForPolicy", String.class);
     query.setParameter("simulationId", simulationId);
+    query.setHint("org.hibernate.cacheable", true);
+
     return query.getResultList();
   }
 
@@ -136,6 +154,8 @@ public class HouseholdDataDaoImpl extends GenericDaoImpl<HouseholdData> implemen
   {
     TypedQuery<String> query = em.createNamedQuery("HouseholdData.getPoliciesForSimulation", String.class);
     query.setParameter("simulationId", simulationId);
+    query.setHint("org.hibernate.cacheable", true);
+
     return query.getResultList();
   }
 

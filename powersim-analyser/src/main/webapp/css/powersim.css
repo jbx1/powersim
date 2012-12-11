@@ -259,7 +259,10 @@ div.household-data
     padding: 0px;
 }
 
-
+.slider p .appliances
+{
+    display: none;
+}
 
 .slider p:hover a
 {
@@ -273,7 +276,6 @@ div.household-data
 
 }
 
-
 .slider p.selected a
 {
   background: #abcabc;
@@ -283,6 +285,12 @@ div.household-data
   -moz-box-shadow:inset 0px 0px 10px #555;
   -webkit-box-shadow:inset 0px 0px 10px #555;
 }
+
+.slider p.selected .appliances
+{
+    display: block;
+}
+
 
 .breadcrumb a
 {
@@ -301,4 +309,82 @@ a.fullaggregate
     vertical-align: middle;
     width: 32px;
     height: 32px;
+}
+
+#scroll-up
+{
+    border-color: transparent transparent #5F85A0 transparent;
+    border-style: solid;
+    border-width: 0 112px 15px 112px;
+    margin-bottom: 2px;
+    height: 0;
+    width: 0;
+}
+
+#scroll-up.disabled
+{
+    border-color: transparent transparent #EEEEEE transparent;
+}
+
+#scroll-up:hover
+{
+   border-color: transparent transparent #0F5580 transparent;
+   cursor: pointer;
+}
+
+#scroll-up.disabled:hover
+{
+  border-color: transparent transparent #EEEEEE transparent;
+   cursor: default;
+}
+
+
+#scroll-down
+{
+    border-color: #5F85A0 transparent transparent transparent;
+    border-style: solid;
+    border-width: 15px 112px 0px 112px;
+    height: 0;
+    width: 0;
+}
+
+#scroll-down.disabled
+{
+    border-color: #EEEEFF transparent transparent transparent;
+}
+
+#scroll-down:hover
+{
+   border-color: #0F5580 transparent transparent transparent;
+   cursor: pointer;
+}
+
+#scroll-down.disabled:hover
+{
+   border-color: #EEE transparent transparent transparent;
+   cursor: default;
+}
+
+.scrollbackground
+{
+   text-align: center;
+   width: 225px;
+   height: 15px;
+   background-color: #FFF;
+   margin: 2px 0px 2px 0px;
+}
+
+.scrollbackground:hover
+{
+   background-color: #CCC;  /* COLOR_NTP_TEXT */;
+}
+
+.scrollbackground.disabled
+{
+   background-color: #FFF;
+}
+
+.scrollbackground.disabled:hover
+{
+   background-color: #FFF;
 }

@@ -1,5 +1,7 @@
 package uk.ac.kcl.inf.aps.powersim.persistence.model;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -12,6 +14,8 @@ import java.util.Date;
 
 @Entity
 @Table(name = "simulations")
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @NamedQueries(
         @NamedQuery(name = "SimulationData.findAll", query = "select s from SimulationData s order by actualStartTime")
 )

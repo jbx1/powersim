@@ -217,24 +217,6 @@
         }
     </script>
 
-    <script type="text/javascript">
-/*        $(function(){
-        $(".slider").mb_vSlider({
-            //default attributes of the mb.vSlider
-            template:"./"+simulation_id+"/households"
-            ,totalElements: $households
-            ,easing:"easeOutExpo"
-            ,slideTimer:1000
-            ,nextEl:".vSnext"
-            ,prevEl:".vSprev"
-            ,height:445
-            ,width:225
-            },
-            params
-            )
-        });  */
-    </script>
-
 </head>
 <body>
 <div id="content">
@@ -266,9 +248,10 @@
                 </select>
             </div>
 
-            <button class="vSprev" onclick="$('.slider').vsPrevPage()">Prev</button>
-            <button class="vSnext" onclick="$('.slider').vsNextPage()">Next</button>
+            <div class="scrollbackground vSprev"><div id="scroll-up" class="vSprev" onclick="$('.slider').vsPrevPage()"></div></div>
             <div class="slider"></div>
+            <div class="scrollbackground vSnext"><div id="scroll-down" class="vSnext" onclick="$('.slider').vsNextPage()"></div></div>
+
             <div id="appliances" class="sidedropdown">
                 <select id="appliance_list">
                     <option name="all">All Appliances</option>

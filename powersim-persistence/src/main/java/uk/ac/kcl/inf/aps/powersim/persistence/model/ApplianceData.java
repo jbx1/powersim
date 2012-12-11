@@ -2,6 +2,8 @@ package uk.ac.kcl.inf.aps.powersim.persistence.model;
 
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,12 +19,18 @@ import java.io.Serializable;
         {
                 @Index(name = "appliances_simulation_id_idx", columnNames = "simulation_id")
         })
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+
 @NamedQueries({
         @NamedQuery(name = "ApplianceData.countForSimulation",
                 query = "select count(a) from ApplianceData a where a.simulationData.id = :simulationId"),
 
         @NamedQuery(name = "ApplianceData.getForHousehold",
                 query = "select a from ApplianceData a, ConsumptionData c where c.applianceData.id = a.id and c.householdData.id = :householdId group by a order by a.type, a.id"),
+
+        @NamedQuery(name = "ApplianceData.getForHouseholds",
+                query = "select distinct h, a from ConsumptionData c inner join c.householdData h inner join c.applianceData a where c.householdData in :households order by h.id, a.type, a.id"),
 
         @NamedQuery(name="ApplianceData.deleteBySimulationId",
                 query = "delete from ApplianceData a where a.simulationData.id = :simulationId")

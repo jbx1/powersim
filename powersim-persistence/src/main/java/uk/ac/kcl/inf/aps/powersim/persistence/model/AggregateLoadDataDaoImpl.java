@@ -18,12 +18,13 @@ import java.util.List;
 @Repository("aggregateLoadDataDao")
 public class AggregateLoadDataDaoImpl extends GenericDaoImpl<AggregateLoadData> implements AggregateLoadDataDao
 {
-
   @Override
   public List<SimulationTimeslotAggregateData> getAggregateLoadDataForSimulation(Long simulationId, Date startTime, Date endTime)
   {
     TypedQuery<SimulationTimeslotAggregateData> query = em.createNamedQuery("AggregateLoadData.getAggregateLoadForSimulation", SimulationTimeslotAggregateData.class);
     query.setParameter("simulationId", simulationId);
+    query.setHint("org.hibernate.cacheable", true);
+
     return query.getResultList();
   }
 

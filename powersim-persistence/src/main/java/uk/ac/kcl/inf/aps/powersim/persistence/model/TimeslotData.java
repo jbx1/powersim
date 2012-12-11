@@ -2,6 +2,8 @@ package uk.ac.kcl.inf.aps.powersim.persistence.model;
 
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,6 +20,9 @@ import java.util.Date;
         {
                 @Index(name = "timeslots_simulation_id_idx", columnNames = "simulation_id")
         })
+
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @NamedQueries({
         @NamedQuery(name = "TimeslotData.findAll",
                 query = "select t from TimeslotData t where t.simulationData.id = :simulationId order by startTime"),

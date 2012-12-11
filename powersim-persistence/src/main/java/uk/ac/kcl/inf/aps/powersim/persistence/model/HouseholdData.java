@@ -2,6 +2,8 @@ package uk.ac.kcl.inf.aps.powersim.persistence.model;
 
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,6 +15,8 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "households")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @org.hibernate.annotations.Table(appliesTo = "households", indexes =
         {
                 @Index(name = "households_simulation_id_idx", columnNames = "simulation_id"),
@@ -56,7 +60,7 @@ import java.io.Serializable;
         @NamedQuery(name="HouseholdData.deleteBySimulationId",
         query = "delete from HouseholdData h where h.simulationData.id = :simulationId")
 })
-public class HouseholdData implements Serializable
+public class HouseholdData implements Serializable, Comparable<HouseholdData>
 {
   @Id
   @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -137,5 +141,11 @@ public class HouseholdData implements Serializable
     sb.append(", simulationData=").append(simulationData);
     sb.append('}');
     return sb.toString();
+  }
+
+  @Override
+  public int compareTo(HouseholdData o)
+  {
+    return this.getId().compareTo(o.getId());
   }
 }
