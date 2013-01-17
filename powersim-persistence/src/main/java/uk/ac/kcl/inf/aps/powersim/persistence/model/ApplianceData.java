@@ -53,6 +53,7 @@ public class ApplianceData implements Serializable
   private SimulationData simulationData;
 
   //todo: add profile
+  //todo: add sub type
 
   public Long getId()
   {

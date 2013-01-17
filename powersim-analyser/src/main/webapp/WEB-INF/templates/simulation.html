@@ -51,7 +51,7 @@
 
         function onApplianceChange(householdId, applianceId)
         {
-            if (applianceId == 0)
+            if (applianceId == '0')
             {
                 updateGraphData('./data/'+simulation_id+'/households/'+householdId);
             }
@@ -80,6 +80,7 @@
 
             $.getJSON('./data/'+simulation_id+'/appliances?householdId='+householdId, function(appliances)
             {
+                $('#appliance_list').unbind('change');
                 $('#appliance_list').empty();
                 $('#appliance_list').removeAttr('disabled');
                 $('#appliance_list').change(function()
