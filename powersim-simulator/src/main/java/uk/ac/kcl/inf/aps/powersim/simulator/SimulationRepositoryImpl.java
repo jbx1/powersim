@@ -280,14 +280,14 @@ public class SimulationRepositoryImpl implements SimulationRepository
    * @param appliance - the appliance to be registered
    * @return the Entity saved to the database
    * @throws HouseholdNotRegisteredException
-   */
+   */                                                          
   @Override
   public ApplianceData registerAppliance(SimulationData simulationData, Appliance appliance)
           throws HouseholdNotRegisteredException
   {
     ApplianceData applianceData = applianceDataMap.get(appliance.getUid());
     if (applianceData == null)
-    {
+    {                                                          
        applianceData = new ApplianceData();
 
        applianceData.setReferenceId(appliance.getUid());
