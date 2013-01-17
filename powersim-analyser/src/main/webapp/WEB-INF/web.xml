@@ -28,4 +28,8 @@
         <servlet-name>simulations</servlet-name>
         <url-pattern>/simulations/*</url-pattern>
     </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>simulations/</welcome-file>
+    </welcome-file-list>
 </web-app>
