@@ -49,7 +49,7 @@
                 <prop key="hibernate.connection.driver_class">org.postgresql.Driver</prop>
                 <prop key="hibernate.connection.url">jdbc:postgresql://localhost:5432/powersim</prop>
                 <prop key="hibernate.connection.username">postgres</prop>
-                <prop key="hibernate.connection.password">postgres</prop>
+                <prop key="hibernate.connection.password">postgRR4321</prop>
 
                 <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
                 <prop key="hibernate.id.new_generator_mappings">true</prop>

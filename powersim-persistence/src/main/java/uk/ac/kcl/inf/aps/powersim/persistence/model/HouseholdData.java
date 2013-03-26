@@ -79,6 +79,8 @@ public class HouseholdData implements Serializable, Comparable<HouseholdData>
   @OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
   private SimulationData simulationData;
 
+  //todo: store extra information such as Policy and any other parameters in JSON format
+
   public Long getId()
   {
     return id;

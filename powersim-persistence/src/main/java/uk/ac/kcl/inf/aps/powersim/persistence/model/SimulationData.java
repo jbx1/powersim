@@ -48,6 +48,7 @@ public class SimulationData implements Serializable
    */
   private Date simulatedEndTime;
 
+  //todo: store any extra information like granularity
 
   public Long getId()
   {

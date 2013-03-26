@@ -54,6 +54,7 @@ public class ApplianceData implements Serializable
 
   //todo: add profile
   //todo: add sub type
+  //todo: add extra information (in JSON format) passed through config.
 
   public Long getId()
   {
