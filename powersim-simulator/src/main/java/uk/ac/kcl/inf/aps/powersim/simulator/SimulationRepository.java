@@ -44,4 +44,8 @@ public interface SimulationRepository
   public void turnOffConsumptionIndexes();
 
   public void shutdown();
+
+  public boolean isPersistingConsumptionData();
+
+  public void setPersistingConsumptionData(boolean persistingConsumptionData);
 }

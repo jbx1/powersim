@@ -137,6 +137,8 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     calSimulatedStart.setTime(simulationConfig.getSimulatedStartTime());
 
     long simulatedStart = calSimulatedStart.getTimeInMillis();
+  //  long simulatedStart = warmSimStart.getTimeInMillis();
+
 
     this.simulationData = simulationRepository.registerSimulation(getName(), new Date(actualStart), new Date(simulatedStart));
 
@@ -148,7 +150,11 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
       log.info("Policy {} registered {} households", policy, households.size());
     }
 
-    this.currentTimeSlot = new Timeslot(simulatedStart, simulatedStart + getTimeslotDuration());
+    //start a few hours in advance so that we have appliances running when the actual simulation time starts
+    Calendar warmSimStart = Calendar.getInstance();
+    warmSimStart.setTime(new Date(calSimulatedStart.getTimeInMillis() - (1000 * 60 * 60 * 2))); //start 2hrs before
+
+    this.currentTimeSlot = new Timeslot(warmSimStart.getTimeInMillis(), warmSimStart.getTimeInMillis() + getTimeslotDuration());
     this.timeslotCount = 0;
 
 
@@ -161,6 +167,11 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     do
     {
       timeslotCount++;
+      if (!simulationRepository.isPersistingConsumptionData() && this.currentTimeSlot.getStartTime().after(calSimulatedStart))
+      {
+          simulationRepository.setPersistingConsumptionData(true);
+      }
+
       log.trace("Registering timeslot to database");
       currentTimeSlotData = simulationRepository.registerTimeslot(simulationData, currentTimeSlot);
       simulationContext = new SimulationContext(this, currentTimeSlot);

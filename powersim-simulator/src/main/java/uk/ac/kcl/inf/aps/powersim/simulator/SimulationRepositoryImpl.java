@@ -34,6 +34,8 @@ public class SimulationRepositoryImpl implements SimulationRepository
 
   private Map<String, ApplianceData> applianceDataMap = new TreeMap<>();
 
+  private boolean persistingConsumptionData = false;
+
   private int deferredCapacity;
 
   @Autowired
@@ -72,12 +74,15 @@ public class SimulationRepositoryImpl implements SimulationRepository
 
   public void createBulkDeferredConcumptionData(List<ConsumptionData> consumptionDataList)
   {
-    if (consumptionDataList.size() > deferredConsumptionDataList.remainingCapacity())
+    if (persistingConsumptionData)
     {
-      flushDeferred();
-    }
+        if (consumptionDataList.size() > deferredConsumptionDataList.remainingCapacity())
+        {
+          flushDeferred();
+        }
 
-    deferredConsumptionDataList.addAll(consumptionDataList);
+        deferredConsumptionDataList.addAll(consumptionDataList);
+    }
   }
 
   @Override
@@ -328,7 +333,10 @@ public class SimulationRepositoryImpl implements SimulationRepository
     timeslotData.setStartTime(timeslot.getStartTime().getTime());
     timeslotData.setEndTime(timeslot.getEndTime().getTime());
 
-    timeslotDataDao.create(timeslotData);
+    if (persistingConsumptionData)
+    {
+        timeslotDataDao.create(timeslotData);
+    }
 
     return timeslotData;
   }
@@ -336,12 +344,27 @@ public class SimulationRepositoryImpl implements SimulationRepository
   @Override
   public void saveAggregateLoadData(AggregateLoadData aggregateLoadData)
   {
-    aggregateLoadDataDao.create(aggregateLoadData);
+    if (persistingConsumptionData)
+    {
+        aggregateLoadDataDao.create(aggregateLoadData);
+    }
   }
 
   @Override
   public void updateSimulationData(SimulationData simulationData)
   {
     simulationDataDao.update(simulationData);
+  }
+
+  @Override
+  public void setPersistingConsumptionData(boolean persistingConsumptionData)
+  {
+     this.persistingConsumptionData = persistingConsumptionData;
+  }
+
+  @Override
+  public boolean isPersistingConsumptionData()
+  {
+     return persistingConsumptionData;
   }
 }
