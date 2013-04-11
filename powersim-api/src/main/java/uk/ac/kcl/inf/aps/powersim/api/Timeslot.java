@@ -2,6 +2,7 @@ package uk.ac.kcl.inf.aps.powersim.api;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
@@ -15,19 +16,19 @@ public final class Timeslot
 
   public Timeslot(Date startTime, Date endTime)
   {
-    this.startTime = Calendar.getInstance();
+    this.startTime = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
     this.startTime.setTime(startTime);
 
-    this.endTime = Calendar.getInstance();
+    this.endTime = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
     this.endTime.setTime(endTime);
   }
 
   public Timeslot(long starTimeMillis, long endTimeMillis)
   {
-    this.startTime = Calendar.getInstance();
+    this.startTime = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
     this.startTime.setTimeInMillis(starTimeMillis);
 
-    this.endTime = Calendar.getInstance();
+    this.endTime = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
     this.endTime.setTimeInMillis(endTimeMillis);
   }
 
@@ -62,7 +63,7 @@ public final class Timeslot
   {
     long midTime = getMidTimeInMillis();
 
-    Calendar midTimeCal = Calendar.getInstance();
+    Calendar midTimeCal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
     midTimeCal.setTimeInMillis(midTime);
 
     int hour = midTimeCal.get(Calendar.HOUR_OF_DAY);

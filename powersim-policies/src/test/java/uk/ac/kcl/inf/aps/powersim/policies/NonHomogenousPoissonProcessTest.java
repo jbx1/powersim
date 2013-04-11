@@ -10,6 +10,7 @@ import uk.ac.kcl.inf.aps.powersim.policies.stochastic.StochasticProcess;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 /**
@@ -46,7 +47,7 @@ public class NonHomogenousPoissonProcessTest
   {
     log.info("Initialising test");
 
-    Calendar startTime = Calendar.getInstance();
+    Calendar startTime = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
     startTime.set(Calendar.HOUR_OF_DAY, 12);
     startTime.set(Calendar.MINUTE, 55);
 

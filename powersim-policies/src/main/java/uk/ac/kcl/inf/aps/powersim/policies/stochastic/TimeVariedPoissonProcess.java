@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -43,7 +44,7 @@ public class TimeVariedPoissonProcess implements StochasticProcess
   {
     //todo: handle the case when the rate is 0 better (currently it hangs)
 
-    Calendar rateTimeCal = Calendar.getInstance();
+    Calendar rateTimeCal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
     double maxRatePerDuration = maxRate * ((double) slotDuration / RATE_TIMEUNIT_SIZE);
     log.trace("Max Rate per duration: {}", maxRatePerDuration);
     boolean found = false;

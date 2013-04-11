@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -38,7 +39,7 @@ public class NormalDistProcess implements StochasticProcess
 
     long nextTime = startTime.getTimeInMillis() + ((long) timeOffsetMins * 60000);// convert it to milliseconds
 
-    Calendar calNextTime = Calendar.getInstance();
+    Calendar calNextTime = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
     calNextTime.setTimeInMillis(nextTime);
 
     return calNextTime;

@@ -9,10 +9,7 @@ import uk.ac.kcl.inf.aps.powersim.configuration.SimulationConfigurationLoader;
 import uk.ac.kcl.inf.aps.powersim.persistence.model.*;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Josef Bajada <josef.bajada@kcl.ac.uk>
@@ -133,7 +130,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     long actualStart = nowMillis;
 
     //set the start simulation time as today, but starting from midnight
-    Calendar calSimulatedStart = Calendar.getInstance();
+    Calendar calSimulatedStart = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
     calSimulatedStart.setTime(simulationConfig.getSimulatedStartTime());
 
     long simulatedStart = calSimulatedStart.getTimeInMillis();
@@ -151,8 +148,8 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     }
 
     //start a few hours in advance so that we have appliances running when the actual simulation time starts
-    Calendar warmSimStart = Calendar.getInstance();
-    warmSimStart.setTime(new Date(calSimulatedStart.getTimeInMillis() - (1000 * 60 * 60 * 2))); //start 2hrs before
+    Calendar warmSimStart = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    warmSimStart.setTime(new Date(calSimulatedStart.getTimeInMillis() - (1000 * 60 * 60 * 3))); //start 3hrs before
 
     this.currentTimeSlot = new Timeslot(warmSimStart.getTimeInMillis(), warmSimStart.getTimeInMillis() + getTimeslotDuration());
     this.timeslotCount = 0;

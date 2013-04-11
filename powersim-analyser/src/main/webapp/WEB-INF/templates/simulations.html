@@ -49,11 +49,24 @@
             <tr>
                 <td>$simulation.getId()</td>
                 <td><a href="./$simulation.getId()">$simulation.getName()</a></td>
+
                 <td>$simulation.getActualStartTime()</td>
-                <td>$simulation.getActualEndTime()</td>
+                <td>
+                  #if ($simulation.getActualEndTime())
+                    $simulation.getActualEndTime()
+                  #else
+                    <i>Still Running</i>
+                  #end
+                </td>
 
                 <td>$simulation.getSimulatedStartTime()</td>
-                <td>$simulation.getSimulatedEndTime()</td>
+                <td>
+                    #if ($simulation.getSimulatedEndTime())
+                      $simulation.getSimulatedEndTime()
+                    #else
+                    <i>Still Running</i>
+                    #end
+                </td>
 
                 <td><a class="delete" href="#" onclick="deleteSimulation($simulation.getId())" title="Delete Simulation Data"></a></td>
             </tr>
