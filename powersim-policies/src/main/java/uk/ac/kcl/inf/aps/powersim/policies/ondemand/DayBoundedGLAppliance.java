@@ -25,9 +25,9 @@ public class DayBoundedGLAppliance extends EnergyOnDemandAppliance
   private int lowerBoundHour;
   private int higherBoundHour;
 
-  public DayBoundedGLAppliance(String uid, String type, String subtype, long peakLoadWatts)
+  public DayBoundedGLAppliance(String uid, String type, long peakLoadWatts)
   {
-    super(uid, type, subtype);
+    super(uid, type);
     this.peakLoadWatts = peakLoadWatts;
   }
 

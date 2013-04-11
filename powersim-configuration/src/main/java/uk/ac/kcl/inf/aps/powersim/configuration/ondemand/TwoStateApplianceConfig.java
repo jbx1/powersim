@@ -52,11 +52,6 @@ public class TwoStateApplianceConfig extends ApplianceConfig<TwoStateAppliance>
   @Override
   public TwoStateAppliance getApplianceInstance()
   {
-    String[] types = getType().split("-", 2);
-
-    String type = types[0];
-    String subtype = types.length > 1 ? types[1] : "";
-
-    return new TwoStateAppliance(UUID.randomUUID().toString(), type, subtype, active, inactive);
+    return new TwoStateAppliance(UUID.randomUUID().toString(), getType(), active, inactive);
   }
 }

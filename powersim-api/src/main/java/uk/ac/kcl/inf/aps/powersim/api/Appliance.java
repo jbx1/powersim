@@ -21,16 +21,10 @@ public abstract class Appliance
    */
   private String type;
 
-  /**
-   * A string that identifies the sub-type of the appliance. (E.g. CRT, LED, Incandescent etc.)
-   */
-  private String subtype;
-
-  public Appliance(String uid, String type, String subtype)
+  public Appliance(String uid, String type)
   {
     this.uid = uid;
     this.type = type;
-    this.subtype = subtype;
   }
 
   public String getUid()
@@ -43,18 +37,12 @@ public abstract class Appliance
     return type;
   }
 
-  public String getSubtype()
-  {
-    return subtype;
-  }
-
   @Override
   public String toString()
   {
     final StringBuilder sb = new StringBuilder();
     sb.append("{uid='").append(uid).append('\'');
     sb.append(", type='").append(type).append('\'');
-    sb.append(", subtype='").append(subtype).append('\'');
     sb.append('}');
     return sb.toString();
   }

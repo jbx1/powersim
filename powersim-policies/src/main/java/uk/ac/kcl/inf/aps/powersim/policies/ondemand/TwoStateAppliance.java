@@ -51,9 +51,9 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
   private StochasticProcess deactivateStrategy;
 
 
-  public TwoStateAppliance(String uid, String type, String subtype, long activateWattage, long inactiveWattage)
+  public TwoStateAppliance(String uid, String type, long activateWattage, long inactiveWattage)
   {
-    super(uid, type, subtype);
+    super(uid, type);
     this.activeWattage = activateWattage;
     this.inactiveWattage = inactiveWattage;
   }
