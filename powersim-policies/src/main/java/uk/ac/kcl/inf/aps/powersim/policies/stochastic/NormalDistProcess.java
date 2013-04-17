@@ -39,7 +39,7 @@ public class NormalDistProcess implements StochasticProcess
 
     long nextTime = startTime.getTimeInMillis() + ((long) timeOffsetMins * 60000);// convert it to milliseconds
 
-    Calendar calNextTime = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    Calendar calNextTime = Calendar.getInstance();
     calNextTime.setTimeInMillis(nextTime);
 
     return calNextTime;

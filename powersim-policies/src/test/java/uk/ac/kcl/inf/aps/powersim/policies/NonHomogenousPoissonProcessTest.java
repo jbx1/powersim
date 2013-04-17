@@ -47,7 +47,7 @@ public class NonHomogenousPoissonProcessTest
   {
     log.info("Initialising test");
 
-    Calendar startTime = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    Calendar startTime = Calendar.getInstance();
     startTime.set(Calendar.HOUR_OF_DAY, 12);
     startTime.set(Calendar.MINUTE, 55);
 

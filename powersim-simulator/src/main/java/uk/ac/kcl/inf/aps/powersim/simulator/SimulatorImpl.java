@@ -130,7 +130,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     long actualStart = nowMillis;
 
     //set the start simulation time as today, but starting from midnight
-    Calendar calSimulatedStart = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    Calendar calSimulatedStart = Calendar.getInstance();
     calSimulatedStart.setTime(simulationConfig.getSimulatedStartTime());
 
     long simulatedStart = calSimulatedStart.getTimeInMillis();
@@ -148,7 +148,7 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     }
 
     //start a few hours in advance so that we have appliances running when the actual simulation time starts
-    Calendar warmSimStart = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    Calendar warmSimStart = Calendar.getInstance();
     warmSimStart.setTime(new Date(calSimulatedStart.getTimeInMillis() - (1000 * 60 * 60 * 3))); //start 3hrs before
 
     this.currentTimeSlot = new Timeslot(warmSimStart.getTimeInMillis(), warmSimStart.getTimeInMillis() + getTimeslotDuration());

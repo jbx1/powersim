@@ -16,19 +16,19 @@ public final class Timeslot
 
   public Timeslot(Date startTime, Date endTime)
   {
-    this.startTime = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    this.startTime = Calendar.getInstance();
     this.startTime.setTime(startTime);
 
-    this.endTime = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    this.endTime = Calendar.getInstance();
     this.endTime.setTime(endTime);
   }
 
   public Timeslot(long starTimeMillis, long endTimeMillis)
   {
-    this.startTime = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    this.startTime = Calendar.getInstance();
     this.startTime.setTimeInMillis(starTimeMillis);
 
-    this.endTime = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    this.endTime = Calendar.getInstance();
     this.endTime.setTimeInMillis(endTimeMillis);
   }
 
@@ -63,7 +63,7 @@ public final class Timeslot
   {
     long midTime = getMidTimeInMillis();
 
-    Calendar midTimeCal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    Calendar midTimeCal = Calendar.getInstance();
     midTimeCal.setTimeInMillis(midTime);
 
     int hour = midTimeCal.get(Calendar.HOUR_OF_DAY);
