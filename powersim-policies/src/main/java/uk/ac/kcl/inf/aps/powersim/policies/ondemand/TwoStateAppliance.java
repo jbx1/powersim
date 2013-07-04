@@ -31,7 +31,14 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
     }
   };
 
-  private boolean active = false;
+  private enum STATUS
+  {
+    INACTIVE,
+    ACTIVE,
+    PENDING_ACTIVATION;
+  }
+
+  private STATUS status = STATUS.INACTIVE;
 
   private Calendar nextSwitchTime = null;
 
@@ -60,7 +67,7 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
 
   public boolean isActive()
   {
-    return active;
+    return status == STATUS.ACTIVE;
   }
 
   public void setActivateStrategy(StochasticProcess activateStrategy)
@@ -74,6 +81,20 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
   }
 
 
+  @Override
+  public void prepareForTimeslot(SimulationContext simulationContext)
+  {
+    //todo: ask the policy for permission to turn on
+    if (isActive())
+    {
+      turnOffRandomly(simulationContext);
+    }
+    else
+    {
+      turnOnRandomly(simulationContext);
+    }
+  }
+
   /**
    * Instructs the appliance to update its state according to the simulation context and return the wattage consumed.
    * @param simulationContext - the simulation context, including the timeslot and other relevant information
@@ -83,14 +104,6 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
   public long consumeTimeSlot(SimulationContext simulationContext)
   {
     log.trace("Appliance {} consuming timeslot {}", this.getUid(), simulationContext.getTimeslot());
-    if (isActive())
-    {
-      turnOffRandomly(simulationContext);
-    }
-    else
-    {
-      turnOnRandomly(simulationContext);
-    }
 
     return getCurrentWattageLoad(simulationContext);
   }
@@ -113,6 +126,15 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
     }
   }
 
+  private Calendar getNextActivationTime(Calendar from, long slotDuration)
+  {
+    return activateStrategy.getNextSimulatedEventTime(from, slotDuration);
+  }
+
+  private Calendar getNextDeactivationTime(Calendar from, long slotDuration)
+  {
+    return deactivateStrategy.getNextSimulatedEventTime(from, slotDuration);
+  }
 
   /**
    * Turns the appliance ON randomly according to its TurnOnStrategy
@@ -130,7 +152,7 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
     {
       nextSwitchTime = null; //we've used this switch, so turn it to 0 so that the next time a new one is computed
       log.trace("Turning appliance {}[{}] ON", this.getType(), this.getUid());
-      this.active = true;
+      this.status = STATUS.ACTIVE;
     }
   }
 
@@ -150,7 +172,7 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
     {
       log.trace("Turning appliance {}[{}] OFF", this.getType(), this.getUid());
       nextSwitchTime = null;
-      this.active = false;
+      this.status = STATUS.INACTIVE;
     }
   }
 

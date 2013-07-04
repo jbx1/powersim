@@ -3,6 +3,7 @@ package uk.ac.kcl.inf.aps.powersim.policies.ondemand;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.kcl.inf.aps.powersim.api.Policy;
 import uk.ac.kcl.inf.aps.powersim.api.SimulationContext;
 import uk.ac.kcl.inf.aps.powersim.policies.stochastic.NormalDistProcess;
 
@@ -29,6 +30,12 @@ public class DayBoundedGLAppliance extends EnergyOnDemandAppliance
   {
     super(uid, type);
     this.peakLoadWatts = peakLoadWatts;
+  }
+
+  @Override
+  public void prepareForTimeslot(SimulationContext simulationContext)
+  {
+
   }
 
   @Override

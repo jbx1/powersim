@@ -2,10 +2,7 @@ package uk.ac.kcl.inf.aps.powersim.policies.ondemand;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.kcl.inf.aps.powersim.api.Household;
-import uk.ac.kcl.inf.aps.powersim.api.HouseholdFactory;
-import uk.ac.kcl.inf.aps.powersim.api.Policy;
-import uk.ac.kcl.inf.aps.powersim.api.SimulationContext;
+import uk.ac.kcl.inf.aps.powersim.api.*;
 
 import java.util.*;
 
@@ -14,7 +11,7 @@ import java.util.*;
  *         Date: 09/11/12
  *         Time: 16:46
  */
-public class EnergyOnDemandPolicy implements Policy
+public class EnergyOnDemandPolicy extends AbstractThreeStagePolicy
 {
   protected static final Logger log = LoggerFactory.getLogger(EnergyOnDemandPolicy.class);
 
@@ -62,8 +59,21 @@ public class EnergyOnDemandPolicy implements Policy
     return households;
   }
 
-  @Override
-  public void handleTimeSlot(SimulationContext context)
+  protected void preparationStage(SimulationContext context)
+  {
+    for (EnergyOnDemandHousehold household : households)
+    {
+      //   log.debug("Handling household {} ", household.getUid());
+      household.prepareForTimeslot(context);
+    }
+  }
+
+  protected void schedulingStage(SimulationContext context)
+  {
+
+  }
+
+  protected void consumptionStage(SimulationContext context)
   {
     for (EnergyOnDemandHousehold household : households)
     {
@@ -71,6 +81,7 @@ public class EnergyOnDemandPolicy implements Policy
       household.consumeTimeSlot(context);
     }
   }
+
 
   @Override
   public boolean ready(int timeout)
@@ -96,4 +107,9 @@ public class EnergyOnDemandPolicy implements Policy
     return sb.toString();
   }
 
+  @Override
+  public void requestActivity(ActivityRequest activityRequest)
+  {
+    //To change body of implemented methods use File | Settings | File Templates.
+  }
 }

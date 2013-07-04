@@ -8,7 +8,7 @@ package uk.ac.kcl.inf.aps.powersim.api;
  *         Date: 18/10/12
  *         Time: 15:17
  */
-public abstract class Appliance
+public abstract class Appliance implements SimulationTimeslotConsumer
 {
   /**
    * A unique identifier for this appliance. Ideally a UUID / GUID.
@@ -20,6 +20,11 @@ public abstract class Appliance
    * A string that identifies the type of the appliance. (E.g. Laptop, Fridge, TV, PV etc.)
    */
   private String type;
+
+  /**
+   * The household this appliance is residing in.
+   */
+  private Household household;
 
   public Appliance(String uid, String type)
   {
@@ -35,6 +40,11 @@ public abstract class Appliance
   public String getType()
   {
     return type;
+  }
+
+  public void setHousehold(Household household)
+  {
+    this.household = household;
   }
 
   @Override

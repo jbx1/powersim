@@ -8,7 +8,7 @@ import uk.ac.kcl.inf.aps.powersim.api.SimulationTimeslotConsumer;
  *         Date: 15/11/12
  *         Time: 17:04
  */
-public abstract class EnergyOnDemandAppliance extends Appliance implements SimulationTimeslotConsumer
+public abstract class EnergyOnDemandAppliance extends Appliance
 {
   public EnergyOnDemandAppliance(String uid, String type)
   {

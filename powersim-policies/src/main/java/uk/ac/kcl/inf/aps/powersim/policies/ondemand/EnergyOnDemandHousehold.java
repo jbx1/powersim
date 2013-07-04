@@ -14,7 +14,7 @@ import java.util.TreeMap;
  *         Date: 09/11/12
  *         Time: 16:48
  */
-public class EnergyOnDemandHousehold extends Household implements SimulationTimeslotConsumer
+public class EnergyOnDemandHousehold extends Household
 {
   protected static final Logger log = LoggerFactory.getLogger(EnergyOnDemandHousehold.class);
 
@@ -43,7 +43,7 @@ public class EnergyOnDemandHousehold extends Household implements SimulationTime
   {
     log.info("Setting up {} appliance types of {}", applianceFactoryMap.size(), this.getUid());
 
-    for (String applianceType: applianceFactoryMap.keySet())
+    for (String applianceType : applianceFactoryMap.keySet())
     {
       log.trace("Configuring {}", applianceType);
       List<ApplianceFactoryConfiguration<EnergyOnDemandAppliance>> applianceFactoryConfigurations = applianceFactoryMap.get(applianceType);
@@ -54,6 +54,8 @@ public class EnergyOnDemandHousehold extends Household implements SimulationTime
         for (int i = 0; i < applianceFactoryConfiguration.getApplianceCount(); i++)
         {
           EnergyOnDemandAppliance energyOnDemandAppliance = applianceFactoryConfiguration.getApplianceFactory().getApplianceInstance();
+          energyOnDemandAppliance.setHousehold(this);
+
           log.trace("Created new appliance {} for household {}", energyOnDemandAppliance, this.getUid());
 
           applianceFactoryConfiguration.getApplianceProfiler().profileAppliance(energyOnDemandAppliance);
@@ -64,6 +66,16 @@ public class EnergyOnDemandHousehold extends Household implements SimulationTime
     }
   }
 
+  @Override
+  public void prepareForTimeslot(SimulationContext simulationContext)
+  {
+    log.trace("Household {} preparing for timeslot {}", this.getUid(), simulationContext.getTimeslot());
+    for (EnergyOnDemandAppliance appliance : appliances)
+    {
+      log.trace("Notifying appliance {} of timeslot preparation", appliance.getUid());
+      appliance.prepareForTimeslot(simulationContext);
+    }
+  }
 
   @Override
   public long consumeTimeSlot(SimulationContext simulationContext)
@@ -74,7 +86,7 @@ public class EnergyOnDemandHousehold extends Household implements SimulationTime
     log.trace("Household has {} appliances", appliances.size());
     for (EnergyOnDemandAppliance appliance : appliances)
     {
-      log.trace("Notifying appliance {}", appliance.getUid());
+      log.trace("Notifying appliance {} of timeslot consumption", appliance.getUid());
       long applianceLoad = appliance.consumeTimeSlot(simulationContext);
       if (applianceLoad != 0)
       {
@@ -85,5 +97,11 @@ public class EnergyOnDemandHousehold extends Household implements SimulationTime
 
     simulationContext.getSimulation().notifyConsumptionEvents(consumptionEvents);
     return load;
+  }
+
+  @Override
+  public void requestActivity(ActivityRequest activityRequest)
+  {
+    //To change body of implemented methods use File | Settings | File Templates.
   }
 }

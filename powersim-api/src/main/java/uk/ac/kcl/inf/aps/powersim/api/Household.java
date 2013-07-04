@@ -8,7 +8,7 @@ package uk.ac.kcl.inf.aps.powersim.api;
  *         Date: 18/10/12
  *         Time: 15:17
  */
-public abstract class Household
+public abstract class Household implements SimulationTimeslotConsumer, ActivityAuthoriser
 {
   /**
    * A unique identifier of the household. Has to be unique across the simulation.
