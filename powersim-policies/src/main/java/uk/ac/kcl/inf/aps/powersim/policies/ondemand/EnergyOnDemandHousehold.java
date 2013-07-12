@@ -27,6 +27,12 @@ public class EnergyOnDemandHousehold extends Household
     super(uid, category);
   }
 
+  @Override
+  public void setup()
+  {
+    setupAppliances();
+  }
+
   public void addApplianceFactoryConfiguration(String applianceType, ApplianceFactory<EnergyOnDemandAppliance> applianceFactory, ApplianceProfiler<EnergyOnDemandAppliance> applianceProfiler, int applianceCount)
   {
     List<ApplianceFactoryConfiguration<EnergyOnDemandAppliance>> applianceFactoryConfigurations = applianceFactoryMap.get(applianceType);
@@ -39,7 +45,7 @@ public class EnergyOnDemandHousehold extends Household
     applianceFactoryConfigurations.add(new ApplianceFactoryConfiguration<>(applianceFactory, applianceProfiler, applianceCount));
   }
 
-  public void setupAppliances()
+  private void setupAppliances()
   {
     log.info("Setting up {} appliance types of {}", applianceFactoryMap.size(), this.getUid());
 
@@ -102,6 +108,16 @@ public class EnergyOnDemandHousehold extends Household
   @Override
   public void requestActivity(ActivityRequest activityRequest)
   {
-    //To change body of implemented methods use File | Settings | File Templates.
+    assert(activityRequest.getHousehold() == this);
+
+    getPolicy().requestActivity(activityRequest);
+  }
+
+  @Override
+  public void notifyActivityTermination(ActivityRequest activityRequest)
+  {
+    assert(activityRequest.getHousehold() == this);
+
+    getPolicy().notifyActivityTermination(activityRequest);
   }
 }

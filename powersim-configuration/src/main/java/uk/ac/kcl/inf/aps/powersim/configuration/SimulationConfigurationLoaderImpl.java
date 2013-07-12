@@ -3,6 +3,7 @@ package uk.ac.kcl.inf.aps.powersim.configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
+import uk.ac.kcl.inf.aps.powersim.api.Household;
 import uk.ac.kcl.inf.aps.powersim.api.Policy;
 
 import java.io.*;
@@ -29,7 +30,7 @@ public class SimulationConfigurationLoaderImpl implements SimulationConfiguratio
   public static final String POLICY_CONFIG_REGEX = "policy(-.+)?\\.cfg";
   public static final String SIMULATION_CONFIG = "simulation.cfg";
 
-  private final Map<String, HouseholdConfig> householdConfigurations;
+  private final Map<String, HouseholdConfig<? extends Household>> householdConfigurations;
   private final Map<String, ApplianceConfig> applianceConfigurations;
   private final Map<String, ProfileConfig> profileConfigurations;
   private final Map<String, PolicyConfig> policyConfigurations;
@@ -108,10 +109,10 @@ public class SimulationConfigurationLoaderImpl implements SimulationConfiguratio
     return simulationConfig;
   }
 
-  private Map<String, HouseholdConfig> loadHouseholdConfigurations()
+  private Map<String, HouseholdConfig<? extends Household>> loadHouseholdConfigurations()
   {
     log.debug("Loading appliance configurations");
-    Map<String, HouseholdConfig> householdConfigMap = new TreeMap<>();
+    Map<String, HouseholdConfig<? extends Household>> householdConfigMap = new TreeMap<>();
 
     File[] files = configDirectory.listFiles(new FileFilter()
     {
@@ -298,7 +299,7 @@ public class SimulationConfigurationLoaderImpl implements SimulationConfiguratio
     return policyConfigMap;
   }
 
-  public Map<String, HouseholdConfig> getHouseholdConfigurations()
+  public Map<String, HouseholdConfig<? extends Household>> getHouseholdConfigurations()
   {
     return householdConfigurations;
   }

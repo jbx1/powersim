@@ -6,7 +6,9 @@ package uk.ac.kcl.inf.aps.powersim.api;
  *
  * @author: josef
  */
-public interface ActivityAuthoriser
+public interface ActivityManager
 {
   public void requestActivity(ActivityRequest activityRequest);
+
+  public void notifyActivityTermination(ActivityRequest activityRequest);
 }

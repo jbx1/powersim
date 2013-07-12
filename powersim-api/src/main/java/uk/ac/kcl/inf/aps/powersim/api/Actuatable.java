@@ -11,22 +11,22 @@ public interface Actuatable
     /**
      * Activates the device. The activity the device was waiting to perform will start.
      */
-    public void activate();
+    public void activate(SimulationContext simulationContext, ActivityRequest activityRequest);
 
     /**
      * (Forcibly) deactivates the device. The activity the device was performing will stop (aborted).
      */
-    public void deactivate();
+    public void deactivate(SimulationContext simulationContext);
 
     /**
      * Suspends the device from performing the current activity.
      * The activity can be resumed at a later stage.
      */
-    public void suspend();
+    public void suspend(SimulationContext simulationContext);
 
     /**
      * Resumes a suspended activity.
      * The device will continue performing the activity until it is completed, or the device is suspended again or deactivated.
      */
-    public void resume();
+    public void resume(SimulationContext simulationContext);
 }

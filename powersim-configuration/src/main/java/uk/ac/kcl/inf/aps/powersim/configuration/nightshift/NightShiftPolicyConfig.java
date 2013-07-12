@@ -1,4 +1,4 @@
-package uk.ac.kcl.inf.aps.powersim.configuration.ondemand;
+package uk.ac.kcl.inf.aps.powersim.configuration.nightshift;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,8 +6,7 @@ import uk.ac.kcl.inf.aps.powersim.api.Household;
 import uk.ac.kcl.inf.aps.powersim.configuration.HouseholdConfig;
 import uk.ac.kcl.inf.aps.powersim.configuration.PolicyConfig;
 import uk.ac.kcl.inf.aps.powersim.configuration.PolicyHouseholdData;
-import uk.ac.kcl.inf.aps.powersim.policies.ondemand.EnergyOnDemandHousehold;
-import uk.ac.kcl.inf.aps.powersim.policies.ondemand.EnergyOnDemandPolicy;
+import uk.ac.kcl.inf.aps.powersim.policies.nightshift.NightShiftPolicy;
 import uk.ac.kcl.inf.aps.powersim.policies.ondemand.HouseholdFactoryConfiguration;
 
 import java.util.ArrayList;
@@ -20,14 +19,19 @@ import java.util.TreeMap;
  *         Date: 22/11/12
  *         Time: 15:01
  */
-public class EnergyOnDemandPolicyConfig extends PolicyConfig<EnergyOnDemandPolicy>
+public class NightShiftPolicyConfig extends PolicyConfig<NightShiftPolicy>
 {
-  protected static final Logger log = LoggerFactory.getLogger(EnergyOnDemandPolicyConfig.class);
+  protected static final Logger log = LoggerFactory.getLogger(NightShiftPolicyConfig.class);
 
   private List<PolicyHouseholdData> households = new ArrayList<>();
 
+  private long nightAggregatePeakWattage = 400000;
+  private long nightPeakWattageMaxStep = 10000;
+  private int nightStartHour = 1;
+  private int nightStopHour = 6;
+
   @Override
-  public EnergyOnDemandPolicy getPolicyInstance()
+  public NightShiftPolicy getPolicyInstance()
   {
     log.info("Creating new EnergyOnDemandPolicy instance");
     //return an EnergyOnDemandPolicy instance populated with our stuff
@@ -49,7 +53,13 @@ public class EnergyOnDemandPolicyConfig extends PolicyConfig<EnergyOnDemandPolic
       mapHouseholdCount.put(policyHouseholdConfig.getCategory(), householdFactoryConfiguration);
     }
 
-    return new EnergyOnDemandPolicy(mapHouseholdCount);
+    NightShiftPolicy policy = new NightShiftPolicy(mapHouseholdCount);
+    policy.setNightAggregatePeakWattage(this.nightAggregatePeakWattage);
+    policy.setNightStartHour(this.nightStartHour);
+    policy.setNightStopHour(this.nightStopHour);
+    policy.setNightPeakWattageMaxStep(this.nightPeakWattageMaxStep);
+
+    return policy;
   }
 
   public List<PolicyHouseholdData> getHouseholds()
@@ -60,5 +70,45 @@ public class EnergyOnDemandPolicyConfig extends PolicyConfig<EnergyOnDemandPolic
   public void setHouseholds(List<PolicyHouseholdData> households)
   {
     this.households = households;
+  }
+
+  public long getNightAggregatePeakWattage()
+  {
+    return nightAggregatePeakWattage;
+  }
+
+  public int getNightStartHour()
+  {
+    return nightStartHour;
+  }
+
+  public void setNightStartHour(int nightStartHour)
+  {
+    this.nightStartHour = nightStartHour;
+  }
+
+  public int getNightStopHour()
+  {
+    return nightStopHour;
+  }
+
+  public void setNightStopHour(int nightStopHour)
+  {
+    this.nightStopHour = nightStopHour;
+  }
+
+  public void setNightAggregatePeakWattage(long nightAggregatePeakWattage)
+  {
+    this.nightAggregatePeakWattage = nightAggregatePeakWattage;
+  }
+
+  public long getNightPeakWattageMaxStep()
+  {
+    return nightPeakWattageMaxStep;
+  }
+
+  public void setNightPeakWattageMaxStep(long nightPeakWattageMaxStep)
+  {
+    this.nightPeakWattageMaxStep = nightPeakWattageMaxStep;
   }
 }

@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.kcl.inf.aps.powersim.api.Household;
 
 import java.io.FileNotFoundException;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class TestSimulationConfigurationLoader
   @Test
   public void testHouseholdConfig()
   {
-    Map<String, HouseholdConfig> configList = configurationLoader.getHouseholdConfigurations();
+    Map<String, HouseholdConfig<? extends Household>> configList = configurationLoader.getHouseholdConfigurations();
     for (HouseholdConfig config : configList.values())
     {
       log.info("HosueholdConfig instance {} ", config.getClass());

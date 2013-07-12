@@ -149,7 +149,8 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
 
     //start a few hours in advance so that we have appliances running when the actual simulation time starts
     Calendar warmSimStart = Calendar.getInstance();
-    warmSimStart.setTime(new Date(calSimulatedStart.getTimeInMillis() - (1000 * 60 * 60 * 3))); //start 3hrs before
+    //todo: make the warm-up period configurable
+    warmSimStart.setTime(new Date(calSimulatedStart.getTimeInMillis() - (1000 * 60 * 60 * 24))); //start 24hrs before
 
     this.currentTimeSlot = new Timeslot(warmSimStart.getTimeInMillis(), warmSimStart.getTimeInMillis() + getTimeslotDuration());
     this.timeslotCount = 0;

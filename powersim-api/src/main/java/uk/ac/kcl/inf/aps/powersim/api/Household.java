@@ -8,7 +8,7 @@ package uk.ac.kcl.inf.aps.powersim.api;
  *         Date: 18/10/12
  *         Time: 15:17
  */
-public abstract class Household implements SimulationTimeslotConsumer, ActivityAuthoriser
+public abstract class Household implements SimulationTimeslotConsumer, ActivityManager
 {
   /**
    * A unique identifier of the household. Has to be unique across the simulation.
@@ -52,6 +52,8 @@ public abstract class Household implements SimulationTimeslotConsumer, ActivityA
   {
     this.policy = policy;
   }
+
+  public abstract void setup();
 
   @Override
   public String toString()

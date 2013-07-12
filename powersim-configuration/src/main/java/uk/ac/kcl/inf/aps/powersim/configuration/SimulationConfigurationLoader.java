@@ -1,5 +1,6 @@
 package uk.ac.kcl.inf.aps.powersim.configuration;
 
+import uk.ac.kcl.inf.aps.powersim.api.Household;
 import uk.ac.kcl.inf.aps.powersim.api.Policy;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface SimulationConfigurationLoader
 
   public Map<String, PolicyConfig> getPolicyConfigurations();
 
-  public Map<String, HouseholdConfig> getHouseholdConfigurations();
+  public Map<String, HouseholdConfig<? extends Household>> getHouseholdConfigurations();
 
   public Map<String, ApplianceConfig> getApplianceConfigurations();
 

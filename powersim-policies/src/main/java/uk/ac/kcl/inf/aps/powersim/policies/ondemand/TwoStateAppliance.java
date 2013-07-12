@@ -2,6 +2,7 @@ package uk.ac.kcl.inf.aps.powersim.policies.ondemand;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.kcl.inf.aps.powersim.api.ActivityRequest;
 import uk.ac.kcl.inf.aps.powersim.api.SimulationContext;
 import uk.ac.kcl.inf.aps.powersim.api.Timeslot;
 import uk.ac.kcl.inf.aps.powersim.policies.stochastic.StochasticProcess;
@@ -39,6 +40,8 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
   }
 
   private STATUS status = STATUS.INACTIVE;
+
+  private ActivityRequest currentActivity = null;
 
   private Calendar nextSwitchTime = null;
 
@@ -85,13 +88,18 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
   public void prepareForTimeslot(SimulationContext simulationContext)
   {
     //todo: ask the policy for permission to turn on
-    if (isActive())
+    switch (status)
     {
-      turnOffRandomly(simulationContext);
-    }
-    else
-    {
-      turnOnRandomly(simulationContext);
+      case ACTIVE:
+        checkForDeactivation(simulationContext);
+        break;
+
+      case INACTIVE:
+        checkForActivation(simulationContext);
+        break;
+
+      case PENDING_ACTIVATION:
+        break;
     }
   }
 
@@ -140,19 +148,30 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
    * Turns the appliance ON randomly according to its TurnOnStrategy
    * @param simulationContext - the simulation context, including the timeslot
    */
-  private void turnOnRandomly(SimulationContext simulationContext)
+  private void checkForActivation(SimulationContext simulationContext)
   {
-    if (nextSwitchTime == null)
+    if (status == STATUS.INACTIVE)
     {
-      nextSwitchTime = activateStrategy.getNextSimulatedEventTime(simulationContext.getTimeslot().getStartTime(), simulationContext.getTimeslot().getDuration());
-      log.trace("Next switch ON time for {} is {}", this.getType(), sdf.get().format(nextSwitchTime.getTime()));
-    }
+      //if we have no switching time, generate one
+      if (nextSwitchTime == null)
+      {
+        nextSwitchTime = activateStrategy.getNextSimulatedEventTime(simulationContext.getTimeslot().getStartTime(), simulationContext.getTimeslot().getDuration());
+        log.trace("Next switch ON time for {} is {}", this.getType(), sdf.get().format(nextSwitchTime.getTime()));
+      }
 
-    if (isSwitchingTime(simulationContext))
-    {
-      nextSwitchTime = null; //we've used this switch, so turn it to 0 so that the next time a new one is computed
-      log.trace("Turning appliance {}[{}] ON", this.getType(), this.getUid());
-      this.status = STATUS.ACTIVE;
+      //check if the switching time is in the current timeslot
+      if (isSwitchingTime(simulationContext))
+      {
+        nextSwitchTime = null; //we've used this switch, so turn it to 0 so that the next time a new one is computed if necessary
+        log.trace("Appliance {}[{}] requesting activation", this.getType(), this.getUid());
+
+        Calendar curTime = simulationContext.getTimeslot().getStartTime();
+        Calendar deactivationTime = deactivateStrategy.getNextSimulatedEventTime(simulationContext.getTimeslot().getStartTime(), simulationContext.getTimeslot().getDuration());
+        long duration = deactivationTime.getTimeInMillis() - curTime.getTimeInMillis();
+        this.status = STATUS.PENDING_ACTIVATION;
+
+        getHousehold().requestActivity(new ActivityRequest(getHousehold(), this, simulationContext, this.activeWattage, duration));
+      }
     }
   }
 
@@ -160,19 +179,24 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
    * Turns the appliance OFF randomly according to its TurnOnStrategy
    * @param simulationContext - the simulation context, including the timeslot
    */
-  private void turnOffRandomly(SimulationContext simulationContext)
+  private void checkForDeactivation(SimulationContext simulationContext)
   {
-    if (nextSwitchTime == null)
+    if (status == STATUS.ACTIVE)
     {
-      nextSwitchTime = deactivateStrategy.getNextSimulatedEventTime(simulationContext.getTimeslot().getStartTime(), simulationContext.getTimeslot().getDuration());
-      log.trace("Next OFF switch time for {} is {}", this.getType(), sdf.get().format(nextSwitchTime.getTime()));
-    }
+      if (nextSwitchTime == null)
+      {
+        nextSwitchTime = deactivateStrategy.getNextSimulatedEventTime(simulationContext.getTimeslot().getStartTime(), simulationContext.getTimeslot().getDuration());
+        log.trace("Next OFF switch time for {} is {}", this.getType(), sdf.get().format(nextSwitchTime.getTime()));
+      }
 
-    if (isSwitchingTime(simulationContext))
-    {
-      log.trace("Turning appliance {}[{}] OFF", this.getType(), this.getUid());
-      nextSwitchTime = null;
-      this.status = STATUS.INACTIVE;
+      if (isSwitchingTime(simulationContext))
+      {
+        log.trace("Turning appliance {}[{}] OFF", this.getType(), this.getUid());
+        nextSwitchTime = null;
+        this.status = STATUS.INACTIVE;
+
+        getHousehold().notifyActivityTermination(this.currentActivity);
+      }
     }
   }
 
@@ -191,4 +215,39 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
 
     return false;
   }
+
+  @Override
+  public void activate(SimulationContext simulationContext, ActivityRequest activityRequest)
+  {
+    if (status == STATUS.PENDING_ACTIVATION)
+    {
+      Calendar calNextTime = Calendar.getInstance();
+      calNextTime.setTimeInMillis(simulationContext.getTimeslot().getStartTime().getTimeInMillis() + activityRequest.getDuration());
+
+      this.nextSwitchTime = calNextTime;
+      log.trace("Activating {}[{}] till {}", new Object[]{this.getType(), this.getUid(), nextSwitchTime.toString()});
+
+      this.currentActivity = activityRequest;
+      status = STATUS.ACTIVE;
+    }
+  }
+
+  @Override
+  public void deactivate(SimulationContext simulationContext)
+  {
+    //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  @Override
+  public void suspend(SimulationContext simulationContext)
+  {
+    //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  @Override
+  public void resume(SimulationContext simulationContext)
+  {
+    //To change body of implemented methods use File | Settings | File Templates.
+  }
+
 }

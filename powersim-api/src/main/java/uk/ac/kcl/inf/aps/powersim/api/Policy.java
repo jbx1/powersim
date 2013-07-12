@@ -9,7 +9,7 @@ import java.util.List;
  *         Date: 15/10/12
  *         Time: 17:55
  */
-public interface Policy extends SimulationTimeslotListener, ActivityAuthoriser
+public interface Policy extends SimulationTimeslotListener, ActivityManager
 {
   /**
    * Informs the policy that the simulation is about to start.

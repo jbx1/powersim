@@ -3,6 +3,7 @@ package uk.ac.kcl.inf.aps.powersim.policies.ondemand;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.kcl.inf.aps.powersim.api.ActivityRequest;
 import uk.ac.kcl.inf.aps.powersim.api.Policy;
 import uk.ac.kcl.inf.aps.powersim.api.SimulationContext;
 import uk.ac.kcl.inf.aps.powersim.policies.stochastic.NormalDistProcess;
@@ -135,5 +136,29 @@ public class DayBoundedGLAppliance extends EnergyOnDemandAppliance
   public void setHigherBoundHour(int higherBoundHour)
   {
     this.higherBoundHour = higherBoundHour;
+  }
+
+  @Override
+  public void activate(SimulationContext simulationContext, ActivityRequest request)
+  {
+    //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  @Override
+  public void deactivate(SimulationContext simulationContext)
+  {
+    //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  @Override
+  public void suspend(SimulationContext simulationContext)
+  {
+    //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  @Override
+  public void resume(SimulationContext simulationContext)
+  {
+    //To change body of implemented methods use File | Settings | File Templates.
   }
 }

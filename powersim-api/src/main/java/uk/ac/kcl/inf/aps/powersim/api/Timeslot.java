@@ -9,7 +9,7 @@ import java.util.TimeZone;
  *         Date: 18/10/12
  *         Time: 14:48
  */
-public final class Timeslot
+public final class Timeslot implements Comparable<Timeslot>
 {
   private Calendar startTime;
   private Calendar endTime;
@@ -76,6 +76,39 @@ public final class Timeslot
     return timeHour;
   }
 
+  @Override
+  public boolean equals(Object o)
+  {
+    if (this == o)
+    {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass())
+    {
+      return false;
+    }
+
+    Timeslot timeslot = (Timeslot) o;
+
+    if (!endTime.equals(timeslot.endTime))
+    {
+      return false;
+    }
+    if (!startTime.equals(timeslot.startTime))
+    {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    int result = startTime.hashCode();
+    result = 31 * result + endTime.hashCode();
+    return result;
+  }
 
   @Override
   public String toString()
@@ -86,5 +119,18 @@ public final class Timeslot
     sb.append(", endTime=").append(endTime);
     sb.append('}');
     return sb.toString();
+  }
+
+  /**
+   * Compares two timeslots. A timeslot is 'less' than another if its start time comes before the start time of the other timeslot.
+   * If both timeslots have the same start time, the end time is compared. (Unlikely to have a timeslot with same start time but different end times
+   * @param o - the timeslot to be compared with
+   * @return less than 0 if the timeslot comes before, 0 if the timeslot is identical, greater than 0 if the timeslot comes after
+   */
+  @Override
+  public int compareTo(Timeslot o)
+  {
+    int start = startTime.compareTo(o.getStartTime());
+    return start == 0 ? start : endTime.compareTo(o.getEndTime());
   }
 }

@@ -4,9 +4,9 @@ package uk.ac.kcl.inf.aps.powersim.api;
  * Date: 04/07/13
  * Time: 16:41
  *
- * @author: josef
+ * @author: Josef Bajada &lt; josef.bajada@kcl.ac.uk &gt;
  */
-public class ActivityRequest
+public class ActivityRequest implements Comparable<ActivityRequest>
 {
   private final Household household;
   private final Appliance appliance;
@@ -14,6 +14,7 @@ public class ActivityRequest
   private final long wattage;
   private final long duration;
 
+  //todo: add deadline
 
   public ActivityRequest(Household household, Appliance appliance, SimulationContext simulationContext, long wattage, long duration)
   {
@@ -50,6 +51,55 @@ public class ActivityRequest
   }
 
   @Override
+  public boolean equals(Object o)
+  {
+    if (this == o)
+    {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass())
+    {
+      return false;
+    }
+
+    ActivityRequest that = (ActivityRequest) o;
+
+    if (duration != that.duration)
+    {
+      return false;
+    }
+    if (wattage != that.wattage)
+    {
+      return false;
+    }
+    if (!appliance.equals(that.appliance))
+    {
+      return false;
+    }
+    if (!household.equals(that.household))
+    {
+      return false;
+    }
+    if (!simulationContext.equals(that.simulationContext))
+    {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    int result = household.hashCode();
+    result = 31 * result + appliance.hashCode();
+    result = 31 * result + simulationContext.hashCode();
+    result = 31 * result + (int) (wattage ^ (wattage >>> 32));
+    result = 31 * result + (int) (duration ^ (duration >>> 32));
+    return result;
+  }
+
+  @Override
   public String toString()
   {
     final StringBuilder sb = new StringBuilder("ActivityRequest{");
@@ -60,5 +110,16 @@ public class ActivityRequest
     sb.append(", duration=").append(duration);
     sb.append('}');
     return sb.toString();
+  }
+
+  @Override
+  public int compareTo(ActivityRequest o)
+  {
+    long time = this.getSimulationContext().compareTo(o.getSimulationContext());
+
+    if (time != 0)
+      return (int) time;
+
+    return this.getAppliance().getUid().compareTo(o.getAppliance().getUid());
   }
 }

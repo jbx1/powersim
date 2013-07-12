@@ -8,7 +8,7 @@ package uk.ac.kcl.inf.aps.powersim.api;
  *         Date: 18/10/12
  *         Time: 15:17
  */
-public abstract class Appliance implements SimulationTimeslotConsumer
+public abstract class Appliance implements SimulationTimeslotConsumer, Actuatable
 {
   /**
    * A unique identifier for this appliance. Ideally a UUID / GUID.
@@ -45,6 +45,11 @@ public abstract class Appliance implements SimulationTimeslotConsumer
   public void setHousehold(Household household)
   {
     this.household = household;
+  }
+
+  public Household getHousehold()
+  {
+    return household;
   }
 
   @Override

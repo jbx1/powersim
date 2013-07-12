@@ -3,6 +3,7 @@ package uk.ac.kcl.inf.aps.powersim.policies.ondemand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.kcl.inf.aps.powersim.api.*;
+import uk.ac.kcl.inf.aps.powersim.policies.AbstractThreeStagePolicy;
 
 import java.util.*;
 
@@ -15,73 +16,30 @@ public class EnergyOnDemandPolicy extends AbstractThreeStagePolicy
 {
   protected static final Logger log = LoggerFactory.getLogger(EnergyOnDemandPolicy.class);
 
-  private List<EnergyOnDemandHousehold> households;
-
-  private int totalHouseholdCount;
-
-  private final Map<String, HouseholdFactoryConfiguration<EnergyOnDemandHousehold>> householdFactoryConfigurationMap;
-
-  public EnergyOnDemandPolicy(Map<String, HouseholdFactoryConfiguration<EnergyOnDemandHousehold>> householdFactoryConfigurationMap)
+  public EnergyOnDemandPolicy(Map<String, HouseholdFactoryConfiguration<? extends Household>> householdFactoryConfigurationMap)
   {
-    this.householdFactoryConfigurationMap = householdFactoryConfigurationMap;
-
-    Set<String> householdCategories = householdFactoryConfigurationMap.keySet();
-    for (String householdcategory : householdCategories)
-    {
-      totalHouseholdCount += householdFactoryConfigurationMap.get(householdcategory).getHouseholdCount();
-    }
-    log.debug("Total households for {} {}", this.getDescriptor(), totalHouseholdCount);
+    super(householdFactoryConfigurationMap);
   }
 
 
   @Override
   public List<? extends Household> setup()
   {
-    households = new ArrayList<>(totalHouseholdCount);
-
-    for (String householdCategory : householdFactoryConfigurationMap.keySet())
-    {
-      HouseholdFactoryConfiguration<EnergyOnDemandHousehold> householdConfiguration = householdFactoryConfigurationMap.get(householdCategory);
-      int categoryHouseholdCount = householdConfiguration.getHouseholdCount();
-      log.debug("Category {} requires {} households", householdCategory, categoryHouseholdCount);
-      HouseholdFactory<EnergyOnDemandHousehold> householdFactory = householdConfiguration.getHouseholdFactory();
-
-      for (int i = 0; i < categoryHouseholdCount; i++)
-      {
-        EnergyOnDemandHousehold household = householdFactory.getHouseholdInstance();
-        household.setPolicy(this);
-        households.add(household);
-        household.setupAppliances();
-      }
-    }
-
-    log.debug("{} houses set up", households.size());
-    return households;
-  }
-
-  protected void preparationStage(SimulationContext context)
-  {
-    for (EnergyOnDemandHousehold household : households)
-    {
-      //   log.debug("Handling household {} ", household.getUid());
-      household.prepareForTimeslot(context);
-    }
+    return super.setup();
   }
 
   protected void schedulingStage(SimulationContext context)
   {
+    //energy is provided on demand, so all activity requests are served
+    Queue<ActivityRequest> activityRequests = getActivityRequests();
+    log.debug("Providing energy to all {} activity requests", activityRequests.size());
 
-  }
-
-  protected void consumptionStage(SimulationContext context)
-  {
-    for (EnergyOnDemandHousehold household : households)
+    while (!activityRequests.isEmpty())
     {
-      //   log.debug("Handling household {} ", household.getUid());
-      household.consumeTimeSlot(context);
+     ActivityRequest activityRequest = activityRequests.remove();
+     activityRequest.getAppliance().activate(context, activityRequest);
     }
   }
-
 
   @Override
   public boolean ready(int timeout)
@@ -95,21 +53,19 @@ public class EnergyOnDemandPolicy extends AbstractThreeStagePolicy
     return "energy-on-demand";
   }
 
+
   @Override
   public String toString()
   {
-    final StringBuilder sb = new StringBuilder();
-    sb.append("EnergyOnDemandPolicy");
-    sb.append("{descriptor=").append(getDescriptor());
-    sb.append(", totalHouseholdCount=").append(totalHouseholdCount);
-    sb.append(", householdCategories=").append(householdFactoryConfigurationMap.size());
+    final StringBuilder sb = new StringBuilder("EnergyOnDemandPolicy{");
+    sb.append(super.toString());
     sb.append('}');
     return sb.toString();
   }
 
   @Override
-  public void requestActivity(ActivityRequest activityRequest)
+  public void notifyActivityTermination(ActivityRequest activityRequest)
   {
-    //To change body of implemented methods use File | Settings | File Templates.
+    //todo: account for this termination
   }
 }
