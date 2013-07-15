@@ -7,15 +7,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.kcl.inf.aps.powersim.analyser.utilities.ConsumptionAggregate;
+import uk.ac.kcl.inf.aps.powersim.analyser.utilities.CsvData;
 import uk.ac.kcl.inf.aps.powersim.persistence.model.*;
 import uk.ac.kcl.inf.aps.powersim.persistence.reporting.SimulationTimeslotAggregateData;
 import uk.ac.kcl.inf.aps.powersim.persistence.reporting.TimeslotConsumptionData;
 
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Controller that provides REST style data about the simuations
@@ -87,6 +87,50 @@ final class DataController
     }
 
     return data;
+  }
+
+  @RequestMapping(value = "/{simulationId}/csv", method = RequestMethod.GET, produces = "text/csv")
+  @ResponseBody
+  public final CsvData getSimulationDataCSV(@PathVariable("simulationId") Long simulationId)
+          throws Exception
+  {
+    log.info("Getting Simulation info");
+    SimulationData simulationData = simulationDataDao.find(simulationId);
+    if (simulationData == null)
+    {
+      log.warn("Unable to get data for simulation {} it does not exist.", simulationId);
+      throw new Exception( "Error: Unable to get data for simulation " + simulationId + " it does not exist");
+    }
+
+    log.info("Retrieving aggregate load data for simulation {}", simulationId);
+    List<SimulationTimeslotAggregateData> aggregateLoadDataList = aggregateLoadDataDao.getAggregateLoadDataForSimulation(simulationId);
+
+    String[] headings = new String[] {"Date/Time", "Generated", "Consumed", "Net"};
+
+    Object[][] data = new Object[aggregateLoadDataList.size()][4];
+
+    int i = 0;
+    for (SimulationTimeslotAggregateData aggregateLoadData : aggregateLoadDataList)
+    {
+      data[i][0] = formatDate(aggregateLoadData.getTimeSlotStartTime());
+      data[i][1] = aggregateLoadData.getGenerated();
+      data[i][2] = aggregateLoadData.getConsumed();
+      //calculate the net
+      data[i][3] = aggregateLoadData.getConsumed() - aggregateLoadData.getGenerated();
+      i++;
+    }
+    String filename = toSlug(simulationData.getName())+".csv";
+    return new CsvData(filename, headings, data);
+  }
+
+  private static final Pattern NONLATIN = Pattern.compile("[^\\w-]");
+  private static final Pattern WHITESPACE = Pattern.compile("[\\s]");
+
+  public static String toSlug(String input) {
+    String nowhitespace = WHITESPACE.matcher(input).replaceAll("-");
+    String normalized = Normalizer.normalize(nowhitespace, Normalizer.Form.NFD);
+    String slug = NONLATIN.matcher(normalized).replaceAll("");
+    return slug.toLowerCase(Locale.ENGLISH);
   }
 
   @RequestMapping(value = "/{simulationId}/households", method = RequestMethod.GET, produces = "application/json")
@@ -284,7 +328,7 @@ final class DataController
   @ResponseBody
   public final String handleAllExceptions(Exception ex)
   {
-    log.debug("Handling Exception Return the error message.");
+    log.debug("Handling Exception Return the error message.", ex);
     return ex.getMessage();
   }
 

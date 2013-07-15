@@ -68,7 +68,8 @@
                     #end
                 </td>
 
-                <td><a class="delete" href="#" onclick="deleteSimulation($simulation.getId())" title="Delete Simulation Data"></a></td>
+                <td><a class="delete" href="#" onclick="deleteSimulation($simulation.getId())" title="Delete Simulation Data"></a>
+                    <a class="csvexport" href="./data/$simulation.getId()/csv" title="Export Simulation Data to CSV"></a></td>
             </tr>
         #end
         </table>

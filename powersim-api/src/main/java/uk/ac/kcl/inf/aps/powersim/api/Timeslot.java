@@ -71,9 +71,8 @@ public final class Timeslot implements Comparable<Timeslot>
     //determine the time offset for which we want to calculate load
     double minuteIncr = (double) midTimeCal.get(Calendar.MINUTE) / 60;
     double secondIncr = (double) midTimeCal.get(Calendar.SECOND) / 3600;
-    double timeHour = hour + minuteIncr + secondIncr;
 
-    return timeHour;
+    return hour + minuteIncr + secondIncr;
   }
 
   @Override

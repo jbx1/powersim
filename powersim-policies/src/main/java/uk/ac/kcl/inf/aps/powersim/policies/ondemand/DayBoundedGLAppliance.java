@@ -4,7 +4,6 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.kcl.inf.aps.powersim.api.ActivityRequest;
-import uk.ac.kcl.inf.aps.powersim.api.Policy;
 import uk.ac.kcl.inf.aps.powersim.api.SimulationContext;
 import uk.ac.kcl.inf.aps.powersim.policies.stochastic.NormalDistProcess;
 
@@ -71,7 +70,7 @@ public class DayBoundedGLAppliance extends EnergyOnDemandAppliance
     double expRes = Math.exp(eulerExponent);
     log.trace("Euler power result: {}", expRes);
 
-    double expectedLoadWatts = (double) absPeakLoad * expRes;
+    double expectedLoadWatts = absPeakLoad * expRes;
     log.trace("Expected load {}watts from peak load {}watts", expectedLoadWatts, absPeakLoad);
 
     //calculate the actual random load based on the mean and error variance

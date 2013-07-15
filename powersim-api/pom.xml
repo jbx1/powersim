@@ -8,7 +8,6 @@
       <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>uk.ac.kcl.inf.aps.powersim</groupId>
   <artifactId>powersim-api</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>

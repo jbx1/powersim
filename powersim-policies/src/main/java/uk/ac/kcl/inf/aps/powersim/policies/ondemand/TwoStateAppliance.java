@@ -36,7 +36,7 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
   {
     INACTIVE,
     ACTIVE,
-    PENDING_ACTIVATION;
+    PENDING_ACTIVATION
   }
 
   private STATUS status = STATUS.INACTIVE;

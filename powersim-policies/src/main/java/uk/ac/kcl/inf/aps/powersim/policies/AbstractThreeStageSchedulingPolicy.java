@@ -11,7 +11,7 @@ import java.util.*;
  * Date: 09/07/13
  * Time: 14:08
  *
- * @author: Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
+ * @author Josef Bajada &lt;josef.bajada@kcl.ac.uk&gt;
  */
 public abstract class AbstractThreeStageSchedulingPolicy extends AbstractThreeStagePolicy
 {

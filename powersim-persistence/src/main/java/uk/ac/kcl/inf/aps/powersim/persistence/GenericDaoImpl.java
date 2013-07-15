@@ -28,26 +28,30 @@ public abstract class GenericDaoImpl<T> implements GenericDao<T>
 
   @Override
   @Transactional
-  public T create(final T t) {
+  public T create(final T t)
+  {
     this.em.persist(t);
     return t;
   }
 
   @Override
   @Transactional
-  public void delete(final Object id) {
+  public void delete(final Object id)
+  {
     this.em.remove(this.em.getReference(type, id));
   }
 
   @Override
   @Transactional
-  public T find(final Object id) {
+  public T find(final Object id)
+  {
     return this.em.find(type, id);
   }
 
   @Override
   @Transactional
-  public T update(final T t) {
+  public T update(final T t)
+  {
     return this.em.merge(t);
   }
 }

@@ -15,7 +15,7 @@ import java.util.*;
  */
 public abstract class AbstractThreeStagePolicy implements Policy
 {
-  protected static final Logger log = LoggerFactory.getLogger(AbstractThreeStagePolicy.class);
+  static final Logger log = LoggerFactory.getLogger(AbstractThreeStagePolicy.class);
 
   private List<Household> households;
   private int totalHouseholdCount;
@@ -24,7 +24,7 @@ public abstract class AbstractThreeStagePolicy implements Policy
 
   private Queue<ActivityRequest> activityRequests = new LinkedList<>();
 
-  public AbstractThreeStagePolicy(Map<String, HouseholdFactoryConfiguration<? extends Household>> householdFactoryConfigurationMap)
+  protected AbstractThreeStagePolicy(Map<String, HouseholdFactoryConfiguration<? extends Household>> householdFactoryConfigurationMap)
   {
     this.householdFactoryConfigurationMap = householdFactoryConfigurationMap;
 
@@ -74,7 +74,7 @@ public abstract class AbstractThreeStagePolicy implements Policy
     consumptionStage(context);
   }
 
-  protected void preparationStage(SimulationContext context)
+  void preparationStage(SimulationContext context)
   {
     for (Household household : getHouseholds())
     {
@@ -85,7 +85,7 @@ public abstract class AbstractThreeStagePolicy implements Policy
 
   protected abstract void schedulingStage(SimulationContext context);
 
-  protected void consumptionStage(SimulationContext context)
+  void consumptionStage(SimulationContext context)
   {
     for (Household household : households)
     {
@@ -105,7 +105,7 @@ public abstract class AbstractThreeStagePolicy implements Policy
     return activityRequests;
   }
 
-  public List<Household> getHouseholds()
+  List<Household> getHouseholds()
   {
     return households;
   }

@@ -232,7 +232,8 @@
 
     <div id="simulation">
         <div id="siminfo">
-            <h2>$simulation.getName() [$simulation.getId()]</h2><a class="delete" href="#" onclick="deleteSimulation($simulation.getId())" title="Delete Simulation Data"></a>
+            <h2>$simulation.getName() [$simulation.getId()]</h2><a class="delete" href="#" onclick="deleteSimulation($simulation.getId())" title="Delete Simulation Data"></a><a class="csvexport" href="./data/$simulation.getId()/csv" title="Export Simulation Data to CSV"></a>
+
         </div>
 
     <div id="datacontainer">
@@ -261,6 +262,7 @@
         </div>
         <div id="graphcontainer">
             <a class="fullaggregate" href="#" title="Show Full Aggregate Data" onclick="updateGraphDataWithSimulation();"></a>
+
             <div id="data">
                 <table id="simdetail" cellpadding="2" cellspacing="1">
                     <tr>

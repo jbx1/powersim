@@ -43,11 +43,6 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
   private SimulationData simulationData;
 
   /**
-   * The current simulation context.
-   */
-  private SimulationContext simulationContext;
-
-  /**
    * The time slot currently being simulated
    */
   private Timeslot currentTimeSlot;
@@ -56,11 +51,6 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
    * The database entity representing the current timeslot.
    */
   private TimeslotData currentTimeSlotData;
-
-  /**
-   * A counter counting how many timeslots where created
-   */
-  private int timeslotCount;
 
   /**
    * The current aggregate load data, for the current timeslot
@@ -153,13 +143,16 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
     warmSimStart.setTime(new Date(calSimulatedStart.getTimeInMillis() - (1000 * 60 * 60 * 24))); //start 24hrs before
 
     this.currentTimeSlot = new Timeslot(warmSimStart.getTimeInMillis(), warmSimStart.getTimeInMillis() + getTimeslotDuration());
-    this.timeslotCount = 0;
+    /*
+    A counter counting how many timeslots where created
+   */
+    int timeslotCount = 0;
 
 
     log.info("*** Starting Simulation Execution at {} with granularity {}ms", this.currentTimeSlot.getStartTime().getTime(), this.getTimeslotDuration());
 
-    long elapsed = 0;
-    long simulatedElapsed = 0;
+    long elapsed;
+    long simulatedElapsed;
     long simStart = System.currentTimeMillis();
 
     do
@@ -172,7 +165,10 @@ public class SimulatorImpl implements Runnable, Simulator, Simulation
 
       log.trace("Registering timeslot to database");
       currentTimeSlotData = simulationRepository.registerTimeslot(simulationData, currentTimeSlot);
-      simulationContext = new SimulationContext(this, currentTimeSlot);
+      /*
+    The current simulation context.
+   */
+      SimulationContext simulationContext = new SimulationContext(this, currentTimeSlot);
       log.trace("Simulation Context {}", simulationContext);
 
       this.currentAggregateLoadData = new AggregateLoadData();

@@ -26,7 +26,7 @@ public abstract class Appliance implements SimulationTimeslotConsumer, Actuatabl
    */
   private Household household;
 
-  public Appliance(String uid, String type)
+  protected Appliance(String uid, String type)
   {
     this.uid = uid;
     this.type = type;

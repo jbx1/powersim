@@ -311,6 +311,17 @@ a.fullaggregate
     height: 32px;
 }
 
+a.csvexport
+{
+    background: url("images/excel.png") no-repeat left;
+    margin: 2px 2px 2px 10px;
+    display: inline-block;
+    overflow: auto;
+    vertical-align: middle;
+    width: 32px;
+    height: 32px;
+}
+
 #scroll-up
 {
     border-color: transparent transparent #5F85A0 transparent;

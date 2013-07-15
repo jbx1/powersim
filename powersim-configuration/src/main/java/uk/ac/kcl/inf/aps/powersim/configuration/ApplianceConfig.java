@@ -10,7 +10,7 @@ import uk.ac.kcl.inf.aps.powersim.api.ApplianceFactory;
  */
 public abstract class ApplianceConfig<A extends Appliance> implements ApplianceFactory<A>
 {
-  String type;
+  private String type;
 
   public String getType()
   {
