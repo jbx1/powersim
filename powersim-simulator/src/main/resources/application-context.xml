@@ -88,7 +88,7 @@
     </util:map>
 
     <bean id="simulationConfigurationLoader" class="uk.ac.kcl.inf.aps.powersim.configuration.SimulationConfigurationLoaderImpl" >
-        <constructor-arg value="survey-wkday" />
+        <constructor-arg value="survey-wkend-fixed" />
     </bean>
 
     <bean id="simulator" class="uk.ac.kcl.inf.aps.powersim.simulator.SimulatorImpl">
