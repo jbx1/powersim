@@ -43,7 +43,8 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
 
   private ActivityRequest currentActivity = null;
 
-  private Calendar nextSwitchTime = null;
+  private Calendar nextSwitchOnTime = null;
+  private Calendar nextSwitchOffTime = null;
 
   /**
    * The wattage consumed when the appliance is active.
@@ -87,7 +88,6 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
   @Override
   public void prepareForTimeslot(SimulationContext simulationContext)
   {
-    //todo: ask the policy for permission to turn on
     switch (status)
     {
       case ACTIVE:
@@ -153,16 +153,16 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
     if (status == STATUS.INACTIVE)
     {
       //if we have no switching time, generate one
-      if (nextSwitchTime == null)
+      if (nextSwitchOnTime == null)
       {
-        nextSwitchTime = activateStrategy.getNextSimulatedEventTime(simulationContext.getTimeslot().getStartTime(), simulationContext.getTimeslot().getDuration());
-        log.trace("Next switch ON time for {} is {}", this.getType(), sdf.get().format(nextSwitchTime.getTime()));
+        nextSwitchOnTime = activateStrategy.getNextSimulatedEventTime(simulationContext.getTimeslot().getStartTime(), simulationContext.getTimeslot().getDuration());
+        log.trace("Next switch ON time for {} is {}", this.getType(), sdf.get().format(nextSwitchOnTime.getTime()));
       }
 
       //check if the switching time is in the current timeslot
-      if (isSwitchingTime(simulationContext))
+      if (isSwitchingOnTime(simulationContext))
       {
-        nextSwitchTime = null; //we've used this switch, so turn it to 0 so that the next time a new one is computed if necessary
+        nextSwitchOnTime = activateStrategy.getNextSimulatedEventTime(simulationContext.getTimeslot().getStartTime(), simulationContext.getTimeslot().getDuration()); //we've used this switch, so turn it to 0 so that the next time a new one is computed if necessary
         log.trace("Appliance {}[{}] requesting activation", this.getType(), this.getUid());
 
         Calendar curTime = simulationContext.getTimeslot().getStartTime();
@@ -183,16 +183,16 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
   {
     if (status == STATUS.ACTIVE)
     {
-      if (nextSwitchTime == null)
+      if (nextSwitchOffTime == null)
       {
-        nextSwitchTime = deactivateStrategy.getNextSimulatedEventTime(simulationContext.getTimeslot().getStartTime(), simulationContext.getTimeslot().getDuration());
-        log.trace("Next OFF switch time for {} is {}", this.getType(), sdf.get().format(nextSwitchTime.getTime()));
+        nextSwitchOffTime = deactivateStrategy.getNextSimulatedEventTime(simulationContext.getTimeslot().getStartTime(), simulationContext.getTimeslot().getDuration());
+        log.trace("Next OFF switch time for {} is {}", this.getType(), sdf.get().format(nextSwitchOnTime.getTime()));
       }
 
-      if (isSwitchingTime(simulationContext))
+      if (isSwitchingOffTime(simulationContext))
       {
         log.trace("Turning appliance {}[{}] OFF", this.getType(), this.getUid());
-        nextSwitchTime = null;
+        nextSwitchOffTime = null;
         this.status = STATUS.INACTIVE;
 
         getHousehold().notifyActivityTermination(this.currentActivity);
@@ -200,15 +200,31 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
     }
   }
 
-  private boolean isSwitchingTime(SimulationContext simulationContext)
+  private boolean isSwitchingOnTime(SimulationContext simulationContext)
   {
-    if (nextSwitchTime == null)
+    if (nextSwitchOnTime == null)
     {
       return false;
     }
 
     Timeslot timeslot = simulationContext.getTimeslot();
-    if (timeslot.getEndTime().after(nextSwitchTime))
+    if (timeslot.getEndTime().after(nextSwitchOnTime))
+    {
+      return true;
+    }
+
+    return false;
+  }
+
+  private boolean isSwitchingOffTime(SimulationContext simulationContext)
+  {
+    if (nextSwitchOffTime == null)
+    {
+      return false;
+    }
+
+    Timeslot timeslot = simulationContext.getTimeslot();
+    if (timeslot.getEndTime().after(nextSwitchOffTime))
     {
       return true;
     }
@@ -224,8 +240,9 @@ public class TwoStateAppliance extends EnergyOnDemandAppliance
       Calendar calNextTime = Calendar.getInstance();
       calNextTime.setTimeInMillis(simulationContext.getTimeslot().getStartTime().getTimeInMillis() + activityRequest.getDuration());
 
-      this.nextSwitchTime = calNextTime;
-      log.trace("Activating {}[{}] till {}", new Object[]{this.getType(), this.getUid(), nextSwitchTime.toString()});
+      //todo: continue here
+      this.nextSwitchOffTime = calNextTime;
+      log.trace("Activating {}[{}] till {}", new Object[]{this.getType(), this.getUid(), nextSwitchOnTime.toString()});
 
       this.currentActivity = activityRequest;
       status = STATUS.ACTIVE;
