@@ -18,7 +18,11 @@ low demand.
 
 A web-based tool which shows the aggregate load profile, with capabilities of drilling down into the individual households and see their power consumption, categorised by device.
 
-If you find this useful for your work, kindly cite the original paper describing this simulator:
+The algorithms used by the simulator are described in:
+
+Bajada, Josef, Maria Fox, and Derek Long. "Load modelling and simulation of household electricity consumption for the evaluation of demand-side management strategies." IEEE PES ISGT Europe 2013. IEEE, 2013.
+
+If you find this useful for your work, kindly cite it as follows:
 
 ```
 @inproceedings{bajada2013load,
